@@ -1,10 +1,12 @@
-import type { Briefing, CalendarDay } from "@/lib/types";
+import type { Briefing, CalendarDay, TheaterId } from "@/lib/types";
 import { DESKS } from "@/lib/desks";
 import { morningLine } from "@/lib/morning";
 import { theaterLabel } from "@/lib/data/theaters";
 import { formatInZone, formatYmdLong, parseNoaaGmt } from "@/lib/time";
 import { ORIGIN } from "@/lib/tweet";
 import { skyCopy } from "@/lib/wx";
+import type { NewsletterIssue } from "@/lib/newsletter";
+import { coastEditionLabel } from "@/lib/coasts";
 
 function escapeHtml(value: string) {
   return value
@@ -290,6 +292,100 @@ export function morningEmailHtml(briefing: Briefing, yolo?: CalendarDay | null) 
     </p>
     <p style="margin:28px 0 0;font-size:12px;color:#6a7580;line-height:1.45">
       Scores are 1–10, not a bite. This is not a chart for navigation. The gauges stay live on the page — this mail is a snapshot of ${escapeHtml(briefing.forDate)}, not a nightly batch.
+    </p>
+  </div>
+</body></html>`;
+}
+
+export function letterSubject(issue: NewsletterIssue, coasts: TheaterId[] | null) {
+  const edition = coastEditionLabel(coasts);
+  const names = issue.desks
+    .map((d) => d.briefing?.area.shortName ?? d.desk.replace(" desk", ""))
+    .join(" · ");
+  return `Field Letter · ${issue.monthName} · ${names || edition}`;
+}
+
+export function letterEmailText(issue: NewsletterIssue, coasts: TheaterId[] | null) {
+  const edition = coastEditionLabel(coasts);
+  const parts = [
+    `Field Letter · ${edition}`,
+    issue.rangeLabel,
+    "",
+    issue.letter,
+    "",
+  ];
+  for (const desk of issue.desks) {
+    const name = desk.briefing?.area.shortName ?? desk.desk;
+    const score = desk.briefing ? desk.briefing.overall.toFixed(1) : "quiet";
+    parts.push(
+      `${desk.desk.toUpperCase()} · ${name} · ${score}`,
+      desk.briefing?.headline ?? desk.error ?? desk.kicker,
+      desk.seasonal,
+      "",
+    );
+  }
+  if (issue.peaks.length) {
+    parts.push(
+      "IN PEAK",
+      ...issue.peaks.map((p) => `• ${p.name} (${p.theaters}) — ${p.why}`),
+      "",
+    );
+  }
+  if (issue.closures.length) {
+    parts.push("CLOSED OR CLOSING", ...issue.closures.map((c) => `• ${c.title} — ${c.body}`), "");
+  }
+  const qs = coasts?.length && coasts.length < 7 ? `?coasts=${coasts.join(",")}` : "";
+  parts.push(
+    `Read the letter: ${ORIGIN}/newsletter${qs}`,
+    `Season: ${ORIGIN}/fundamentals${qs ? `?theater=${coasts![0]}` : ""}`,
+    "",
+    "This edition is the water you elected. A Texas list does not carry Andros or Seychelles. Scores are 1–10, not a bite.",
+  );
+  return parts.join("\n");
+}
+
+export function letterEmailHtml(issue: NewsletterIssue, coasts: TheaterId[] | null) {
+  const edition = coastEditionLabel(coasts);
+  const qs = coasts?.length && coasts.length < 7 ? `?coasts=${coasts.join(",")}` : "";
+  const desks = issue.desks
+    .map((desk) => {
+      const name = desk.briefing?.area.shortName ?? desk.desk.replace(" desk", "");
+      const score = desk.briefing ? desk.briefing.overall.toFixed(1) : "—";
+      const head = desk.briefing?.headline ?? desk.error ?? desk.kicker;
+      return `<div style="margin:0 0 22px;padding:0 0 18px;border-bottom:1px solid #e4dcc8">
+        <p style="margin:0;letter-spacing:.16em;text-transform:uppercase;font-size:11px;color:#b87333">${escapeHtml(desk.desk)}</p>
+        <p style="margin:6px 0 0;font-size:20px"><strong>${escapeHtml(name)}</strong> · ${escapeHtml(score)}</p>
+        <p style="margin:8px 0 0;font-size:15px;line-height:1.4">${escapeHtml(head)}</p>
+        <p style="margin:8px 0 0;font-size:13px;color:#3d4d5c">${escapeHtml(desk.seasonal)}</p>
+      </div>`;
+    })
+    .join("");
+  const peaks = issue.peaks.length
+    ? `${sectionTitle("In peak")}<ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.4">${issue.peaks
+        .map((p) => `<li style="margin:0 0 10px"><strong>${escapeHtml(p.name)}</strong> · ${escapeHtml(p.theaters)}<br/><span style="color:#3d4d5c">${escapeHtml(p.why)}</span></li>`)
+        .join("")}</ul>`
+    : "";
+  const closures = issue.closures.length
+    ? `${sectionTitle("Closed or closing")}<ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.4">${issue.closures
+        .map((c) => `<li style="margin:0 0 10px"><strong>${escapeHtml(c.title)}</strong><br/><span style="color:#3d4d5c">${escapeHtml(c.body)}</span></li>`)
+        .join("")}</ul>`
+    : "";
+  return `<!doctype html>
+<html><body style="margin:0;background:#f4efe6;color:#1a2a3a;font-family:Georgia,'Times New Roman',serif">
+  <div style="max-width:600px;margin:0 auto;padding:32px 22px 40px">
+    <p style="margin:0;letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:#b87333">Field Letter · ${escapeHtml(edition)}</p>
+    <p style="margin:6px 0 0;font-size:13px;color:#6a7580">${escapeHtml(issue.rangeLabel)}</p>
+    <h1 style="margin:14px 0 0;font-size:28px;line-height:1.25">${escapeHtml(issue.monthName)} on your water</h1>
+    <p style="margin:16px 0 0;font-size:16px;line-height:1.45;color:#3d4d5c">${escapeHtml(issue.letter)}</p>
+    ${sectionTitle("This week")}
+    ${desks}
+    ${peaks}
+    ${closures}
+    <p style="margin:28px 0 0">
+      <a href="${ORIGIN}/newsletter${qs}" style="display:inline-block;background:#1c6b6b;color:#ffffff;text-decoration:none;padding:10px 16px;border-radius:6px;font-size:14px">Open the letter</a>
+    </p>
+    <p style="margin:28px 0 0;font-size:12px;color:#6a7580;line-height:1.45">
+      This edition is the water you elected. A Texas list does not carry Andros or Seychelles. Scores are 1–10, not a bite.
     </p>
   </div>
 </body></html>`;

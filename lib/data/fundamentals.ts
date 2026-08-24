@@ -417,46 +417,61 @@ export function peaksThisMonth(month: number, theater?: TheaterId | "all") {
   });
 }
 
-export function closuresThisMonth(month: number, date = new Date()) {
-  const notes: { title: string; body: string }[] = [];
+export type ClosureNote = { title: string; body: string; theaters: TheaterId[] };
+
+export function closuresThisMonth(month: number, date = new Date()): ClosureNote[] {
+  const notes: ClosureNote[] = [];
   if (flounderClosed(date, "America/Chicago")) {
     notes.push({
       title: "Texas flounder",
       body: "Closed Nov 1–Dec 14. The fall run is real in October. This week the correct fish is a red or a trout.",
+      theaters: ["texas"],
     });
   } else if (month === 10) {
     notes.push({
       title: "Texas flounder — last call",
       body: "The run to the Gulf is on. Measure every fish. The season shuts Nov 1 through Dec 14.",
+      theaters: ["texas"],
     });
   }
   if (louisianaFlounderClosed(date, "America/Chicago")) {
     notes.push({
       title: "Louisiana flounder",
       body: "Typically closed Oct 15–Nov 30. LDWF, not TPWD. Verify the week you keep one.",
+      theaters: ["louisiana"],
     });
   } else if (month === 10) {
     notes.push({
       title: "Louisiana flounder — last call",
       body: "The run is on. Typical close is Oct 15. Measure everything.",
+      theaters: ["louisiana"],
     });
   }
   if (seFloridaSnookClosed(date, "America/New_York")) {
     notes.push({
       title: "SE Florida snook (Jupiter, Keys, Biscayne)",
       body: "Typically closed Dec 15–Jan 31 and June 1–Aug 31. Catch-and-release is still fishing. Do not harvest a snook because a desk scored an 8.",
+      theaters: ["florida"],
     });
   } else if (month === 5) {
     notes.push({
       title: "SE Florida snook — spawn window ahead",
       body: "The typical June–August closure is next. Verify FWC the morning you keep one.",
+      theaters: ["florida"],
     });
   }
   if (charlotteHarborSnookClosed(date, "America/New_York")) {
     notes.push({
       title: "Charlotte Harbor / Boca Grande snook",
       body: "Typically closed Dec 1–end of Feb and May 1–Sep 30. Gulf region, not Atlantic. Verify FWC.",
+      theaters: ["florida"],
     });
   }
   return notes;
+}
+
+export function closuresForCoasts(month: number, coasts: TheaterId[] | null, date = new Date()) {
+  const notes = closuresThisMonth(month, date);
+  if (!coasts || coasts.length === 0) return notes;
+  return notes.filter((n) => n.theaters.some((t) => coasts.includes(t)));
 }

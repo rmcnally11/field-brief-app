@@ -3,6 +3,13 @@ import { GATE_COOKIE, GATE_PATH, isValidGateToken, safeNextPath } from "@/lib/ga
 import { AREA_BY_ID } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
 import { encodeWaterPref, WATER_COOKIE, waterCookieOptions } from "@/lib/prefs";
+import {
+  COASTS_COOKIE,
+  coastsCookieOptions,
+  encodeCoasts,
+  parseCoasts,
+} from "@/lib/coasts";
+import { THEATER_IDS } from "@/lib/data/theaters";
 
 function rememberWater(request: NextRequest, res: NextResponse) {
   const areaId = request.nextUrl.searchParams.get("area") ?? request.nextUrl.searchParams.get("a");
@@ -18,6 +25,22 @@ function rememberWater(request: NextRequest, res: NextResponse) {
     waterCookieOptions(),
   );
   return res;
+}
+
+function rememberCoasts(request: NextRequest, res: NextResponse) {
+  const raw = request.nextUrl.searchParams.get("coasts");
+  if (!raw) return res;
+  if (raw === "all") {
+    res.cookies.set(COASTS_COOKIE, encodeCoasts([...THEATER_IDS]), coastsCookieOptions());
+    return res;
+  }
+  const coasts = parseCoasts(raw);
+  if (coasts.length) res.cookies.set(COASTS_COOKIE, encodeCoasts(coasts), coastsCookieOptions());
+  return res;
+}
+
+function remember(request: NextRequest, res: NextResponse) {
+  return rememberCoasts(request, rememberWater(request, res));
 }
 
 export function proxy(request: NextRequest) {
@@ -38,9 +61,9 @@ export function proxy(request: NextRequest) {
     pathname === "/map" ||
     pathname.startsWith("/map/");
 
-  if (open) return rememberWater(request, NextResponse.next());
+  if (open) return remember(request, NextResponse.next());
   if (isValidGateToken(request.cookies.get(GATE_COOKIE)?.value)) {
-    return rememberWater(request, NextResponse.next());
+    return remember(request, NextResponse.next());
   }
 
   const url = request.nextUrl.clone();

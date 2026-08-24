@@ -1,9 +1,11 @@
 import { cookies } from "next/headers";
 import { AREAS, getArea } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
-import type { ActivityId } from "@/lib/types";
+import type { ActivityId, TheaterId } from "@/lib/types";
+import { COASTS_COOKIE, parseCoasts } from "@/lib/coasts";
 
 export const WATER_COOKIE = "fb_water";
+export { COASTS_COOKIE };
 
 export type WaterPref = {
   areaId: string;
@@ -38,6 +40,12 @@ export function waterCookieOptions() {
 export async function readWaterPref() {
   const jar = await cookies();
   return parseWaterPref(jar.get(WATER_COOKIE)?.value);
+}
+
+export async function readCoastsPref(): Promise<TheaterId[] | null> {
+  const jar = await cookies();
+  const coasts = parseCoasts(jar.get(COASTS_COOKIE)?.value);
+  return coasts.length ? coasts : null;
 }
 
 export function resolveDesk(

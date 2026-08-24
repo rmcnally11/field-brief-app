@@ -3,9 +3,18 @@ import path from "node:path";
 import { getBriefing } from "@/lib/briefing";
 import { getYoloDay } from "@/lib/calendar";
 import { AREA_BY_ID } from "@/lib/data/areas";
-import { morningEmailHtml, morningEmailText, morningSubject } from "@/lib/mail";
+import {
+  letterEmailHtml,
+  letterEmailText,
+  letterSubject,
+  morningEmailHtml,
+  morningEmailText,
+  morningSubject,
+} from "@/lib/mail";
 import { DESKS } from "@/lib/desks";
 import { listSubscribers, subscribersForDesk } from "@/lib/subscribers";
+import { coastsForDesks } from "@/lib/coasts";
+import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
 
 export function localHour(timeZone: string, at = new Date()) {
   const hour = new Intl.DateTimeFormat("en-US", {
@@ -68,7 +77,7 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
   for (const desk of due) {
     const area = AREA_BY_ID[desk.areaId];
     if (!area) continue;
-    const recipients = subscribersForDesk(subscribers, desk.areaId);
+    const recipients = subscribersForDesk(subscribers, desk.areaId, "daily");
     try {
       const [briefing, yolo] = await Promise.all([getBriefing(area.id), getYoloDay(area, "all")]);
       const subject = morningSubject(briefing);
@@ -118,4 +127,77 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
     },
     results,
   };
+}
+
+export function isChicagoSaturday(at = new Date()) {
+  return (
+    new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: "America/Chicago" }).format(at) ===
+    "Sat"
+  );
+}
+
+export async function dispatchWeekly(opts?: { force?: boolean; at?: Date }) {
+  const at = opts?.at ?? new Date();
+  if (!opts?.force && !isChicagoSaturday(at)) {
+    return { skipped: true as const, reason: "not Saturday in Chicago", results: [] as const };
+  }
+  const subscribers = await listSubscribers();
+  const weekly = subscribers.filter((s) => s.cadence.includes("weekly") && s.desks.length);
+  if (!weekly.length) {
+    return { skipped: false as const, reason: "no weekly addresses", results: [] as const };
+  }
+  const issue = await getNewsletter();
+  const groups = new Map<string, string[]>();
+  for (const sub of weekly) {
+    const key = [...sub.desks].sort().join(",");
+    groups.set(key, [...(groups.get(key) ?? []), sub.email]);
+  }
+  const results: Array<{
+    desks: string[];
+    subject: string;
+    recipients: number;
+    sent: boolean;
+    outbox?: string;
+    error?: string;
+    why?: string;
+  }> = [];
+  for (const [key, emails] of groups) {
+    const desks = key.split(",");
+    const coasts = coastsForDesks(desks);
+    const filtered = filterNewsletter(issue, coasts);
+    const subject = letterSubject(filtered, coasts);
+    const html = letterEmailHtml(filtered, coasts);
+    const text = letterEmailText(filtered, coasts);
+    try {
+      const remote = await sendResend(emails, subject, html, text);
+      const outbox = remote.sent
+        ? undefined
+        : await writeOutbox(`letter-${desks.join("-")}`, { subject, text, recipients: emails, html }).catch(
+            () => undefined,
+          );
+      results.push({
+        desks,
+        subject,
+        recipients: emails.length,
+        sent: remote.sent,
+        outbox,
+        why: remote.why ?? undefined,
+      });
+    } catch (error) {
+      results.push({
+        desks,
+        subject,
+        recipients: emails.length,
+        sent: false,
+        error: error instanceof Error ? error.message : "Weekly letter failed",
+      });
+    }
+  }
+  return { skipped: false as const, reason: null, results };
+}
+
+export async function runDispatch(opts?: { forceAll?: boolean; desk?: string; weekly?: boolean; at?: Date }) {
+  const morning = await dispatchMorning(opts);
+  const weekly = await dispatchWeekly({ force: opts?.weekly, at: opts?.at });
+  return { ...morning, weekly };
 }

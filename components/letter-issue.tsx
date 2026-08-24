@@ -6,6 +6,9 @@ import { Waterline } from "@/components/viz/waterline";
 import { Badge } from "@/components/ui/badge";
 import { RegsStamp } from "@/components/regs-stamp";
 import type { DeskIssue } from "@/lib/newsletter";
+import type { TheaterId } from "@/lib/types";
+import { THEATER_IDS, THEATER_META } from "@/lib/data/theaters";
+import { coastEditionLabel, isAllCoasts } from "@/lib/coasts";
 
 function tideLabel(desk: DeskIssue) {
   const tides = desk.briefing?.conditions.tides;
@@ -123,10 +126,28 @@ function DeskCard({ desk }: { desk: DeskIssue }) {
   );
 }
 
-export function LetterIssue({ issue }: { issue: NewsletterIssue }) {
-  const noise = incidentalNoise(issue.month);
+function letterHref(weekId: string | null, coasts: string) {
+  const base = weekId ? `/newsletter/${weekId}` : "/newsletter";
+  return `${base}?coasts=${coasts}`;
+}
+
+export function LetterIssue({
+  issue,
+  coasts = null,
+  weekPath = false,
+}: {
+  issue: NewsletterIssue;
+  coasts?: TheaterId[] | null;
+  weekPath?: boolean;
+}) {
+  const noise = incidentalNoise(issue.month, coasts);
   const liveDesks = issue.desks.filter((d) => d.briefing).length;
   const weeks = recentLetterWeeks();
+  const edition = coastEditionLabel(coasts);
+  const all = isAllCoasts(coasts);
+  const weekBase = weekPath ? issue.weekId : null;
+  const seasonHref = all || !coasts?.length ? "/fundamentals" : `/fundamentals?theater=${coasts[0]}`;
+  const deskNames = issue.desks.map((d) => d.desk.replace(" desk", "")).join(", ");
 
   return (
     <div className="space-y-10">
@@ -136,12 +157,16 @@ export function LetterIssue({ issue }: { issue: NewsletterIssue }) {
         </p>
         <h1 className="mt-2 font-heading text-4xl text-[color:var(--cream)] md:text-6xl">Week of the water</h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/55">
-          {issue.rangeLabel} · {issue.monthName} fundamentals · {liveDesks} of 7 desks
+          {issue.rangeLabel} · {issue.monthName} fundamentals · {edition} · {liveDesks} of{" "}
+          {issue.desks.length} {issue.desks.length === 1 ? "desk" : "desks"}
           {issue.frozen ? " · frozen Saturday issue" : " · this week’s desks"}
         </p>
         <p className="mt-2 text-xs text-[color:var(--cream)]/45">
           Permalink:{" "}
-          <a className="underline decoration-[color:var(--copper)]/40" href={`/newsletter/${issue.weekId}`}>
+          <a
+            className="underline decoration-[color:var(--copper)]/40"
+            href={letterHref(issue.weekId, all ? "all" : (coasts ?? THEATER_IDS).join(","))}
+          >
             /newsletter/{issue.weekId}
           </a>
         </p>
@@ -149,10 +174,39 @@ export function LetterIssue({ issue }: { issue: NewsletterIssue }) {
       </header>
 
       <nav className="flex flex-wrap justify-center gap-2 text-xs">
+        <a
+          href={letterHref(weekBase, "all")}
+          className={`rounded-full border px-3 py-1 ${
+            all
+              ? "border-[color:var(--cream)] text-[color:var(--cream)]"
+              : "border-[color:var(--line)] text-[color:var(--cream)]/55"
+          }`}
+        >
+          All coasts
+        </a>
+        {THEATER_META.map((t) => {
+          const on = !all && Boolean(coasts?.includes(t.id));
+          return (
+            <a
+              key={t.id}
+              href={letterHref(weekBase, t.id)}
+              className={`rounded-full border px-3 py-1 ${
+                on
+                  ? "border-[color:var(--cream)] text-[color:var(--cream)]"
+                  : "border-[color:var(--line)] text-[color:var(--cream)]/55"
+              }`}
+            >
+              {t.short}
+            </a>
+          );
+        })}
+      </nav>
+
+      <nav className="flex flex-wrap justify-center gap-2 text-xs">
         {weeks.map((week) => (
           <a
             key={week}
-            href={`/newsletter/${week}`}
+            href={letterHref(week, all ? "all" : (coasts ?? THEATER_IDS).join(","))}
             className={`rounded-full border px-3 py-1 ${
               week === issue.weekId
                 ? "border-[color:var(--cream)] text-[color:var(--cream)]"
@@ -167,9 +221,11 @@ export function LetterIssue({ issue }: { issue: NewsletterIssue }) {
       <article className="mx-auto max-w-3xl">
         <p className="font-heading text-2xl leading-snug text-[color:var(--cream)] md:text-3xl">{issue.letter}</p>
         <p className="mt-4 text-sm text-[color:var(--cream)]/50">
-          Drawn from Galveston, Venice, Islamorada, Andros, Ascension, San Juan, and Alphonse — one
-          desk per theater, not every micro-area. Scores are 1–10. They are not bite guarantees.{" "}
-          <a href="/fundamentals" className="text-[color:var(--sea)] underline underline-offset-4">
+          {all
+            ? "Drawn from Galveston, Venice, Islamorada, Andros, Ascension, San Juan, and Alphonse — one desk per theater, not every micro-area."
+            : `This edition is ${edition} only — ${deskNames}. Andros and Seychelles stay off a Texas list.`}{" "}
+          Scores are 1–10. They are not bite guarantees.{" "}
+          <a href={seasonHref} className="text-[color:var(--sea)] underline underline-offset-4">
             Read this month’s seasonal fundamentals
           </a>
           .
@@ -179,17 +235,25 @@ export function LetterIssue({ issue }: { issue: NewsletterIssue }) {
       <section>
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Seven desks</p>
+            <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+              {all ? "Seven desks" : edition}
+            </p>
             <h2 className="font-heading text-3xl text-[color:var(--cream)]">
               {issue.frozen ? "That Saturday" : "This week"}
             </h2>
           </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {issue.desks.map((desk) => (
-            <DeskCard key={desk.areaId} desk={desk} />
-          ))}
-        </div>
+        {issue.desks.length === 0 ? (
+          <p className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5 text-sm text-[color:var(--cream)]/65">
+            No desk is on for that coast this week.
+          </p>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {issue.desks.map((desk) => (
+              <DeskCard key={desk.areaId} desk={desk} />
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
@@ -239,14 +303,14 @@ export function LetterIssue({ issue }: { issue: NewsletterIssue }) {
             </ul>
           )}
           <a
-            href={`/fundamentals?month=${issue.month}`}
+            href={`${seasonHref}${seasonHref.includes("?") ? "&" : "?"}month=${issue.month}`}
             className="mt-5 inline-block text-sm text-[color:var(--sea)] underline underline-offset-4"
           >
             {issue.monthName} by region, type, and species
           </a>
         </article>
       </section>
-      <RegsStamp theater="texas" />
+      <RegsStamp theater={coasts?.[0] ?? "texas"} />
     </div>
   );
 }

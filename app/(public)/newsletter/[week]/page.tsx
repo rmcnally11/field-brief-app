@@ -1,19 +1,30 @@
-import { getNewsletter } from "@/lib/newsletter";
+import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
 import { LetterIssue } from "@/components/letter-issue";
 import { isYmd } from "@/lib/time";
+import { readCoastsPref } from "@/lib/prefs";
+import { resolveElectedCoasts } from "@/lib/coasts";
 
 export const dynamic = "force-dynamic";
 
 export default async function WeekLetterPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ week: string }>;
+  searchParams: Promise<{ coasts?: string; desks?: string }>;
 }) {
-  const { week } = await params;
+  const [{ week }, q] = await Promise.all([params, searchParams]);
+  const cookie = await readCoastsPref();
+  const coasts = resolveElectedCoasts({
+    coastsQuery: q.coasts,
+    desksQuery: q.desks,
+    cookie: cookie?.join(",") ?? null,
+  });
+
   let issue;
   let error: string | null = null;
   try {
-    issue = await getNewsletter(isYmd(week) ? week : null);
+    issue = filterNewsletter(await getNewsletter(isYmd(week) ? week : null), coasts);
   } catch (e) {
     error = e instanceof Error ? e.message : "The letter did not set.";
   }
@@ -27,5 +38,5 @@ export default async function WeekLetterPage({
     );
   }
 
-  return <LetterIssue issue={issue} />;
+  return <LetterIssue issue={issue} coasts={coasts} weekPath />;
 }

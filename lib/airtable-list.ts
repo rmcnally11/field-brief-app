@@ -10,6 +10,7 @@ export const AIRTABLE_FIELDS = {
   source: "fldCrpEUBV2t9a5oh",
   joined: "fldTQcD4XDpVsdy6f",
   notes: "fldYDuwwxmogAbDvl",
+  cadence: "fldedcanNXcoKuOnM",
 } as const;
 
 export type ListSource = "Brief" | "Letter" | "Morning" | "Operator";
@@ -49,6 +50,7 @@ type AirtableRecord = {
     Status?: string;
     Source?: string;
     Joined?: string;
+    Cadence?: string[];
   };
 };
 
@@ -56,6 +58,7 @@ export async function upsertAirtableSubscriber(input: {
   email: string;
   desks: string[];
   source: ListSource;
+  cadence?: string[];
 }) {
   const found = await airtable<{ records: AirtableRecord[] }>(
     `?${new URLSearchParams({
@@ -70,6 +73,7 @@ export async function upsertAirtableSubscriber(input: {
     Status: existing?.fields.Status === "Unsubscribed" ? "Active" : (existing?.fields.Status ?? "Active"),
     Source: existing?.fields.Source ?? input.source,
     Joined: existing?.fields.Joined ?? new Date().toISOString().slice(0, 10),
+    Cadence: input.cadence?.length ? input.cadence : (existing?.fields.Cadence ?? ["Daily", "Weekly", "Seasonal"]),
   };
   if (existing) {
     await airtable(`/${existing.id}`, { method: "PATCH", body: JSON.stringify({ fields }) });
@@ -83,7 +87,14 @@ export async function upsertAirtableSubscriber(input: {
 }
 
 export async function listAirtableSubscribers() {
-  const out: Array<{ email: string; desks: string[]; status: string; source: string; joined: string }> = [];
+  const out: Array<{
+    email: string;
+    desks: string[];
+    cadence: string[];
+    status: string;
+    source: string;
+    joined: string;
+  }> = [];
   let offset: string | undefined;
   do {
     const qs = new URLSearchParams({
@@ -98,6 +109,7 @@ export async function listAirtableSubscribers() {
       out.push({
         email,
         desks: rec.fields.Desks ?? [],
+        cadence: rec.fields.Cadence ?? ["Daily", "Weekly", "Seasonal"],
         status: rec.fields.Status ?? "Active",
         source: rec.fields.Source ?? "",
         joined: rec.fields.Joined ?? "",

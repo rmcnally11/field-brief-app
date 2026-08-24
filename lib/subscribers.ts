@@ -2,6 +2,12 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { DESKS } from "@/lib/desks";
 import {
+  cadenceLabels,
+  parseCadence,
+  type Cadence,
+  CADENCES,
+} from "@/lib/coasts";
+import {
   airtableConfigured,
   listAirtableSubscribers,
   upsertAirtableSubscriber,
@@ -13,6 +19,7 @@ export const DESK_IDS: string[] = DESKS.map((d) => d.areaId);
 export type Subscriber = {
   email: string;
   desks: string[];
+  cadence: Cadence[];
   createdAt: string;
 };
 
@@ -28,16 +35,17 @@ export function validEmail(raw: string) {
 
 export function parseDesks(raw: unknown): string[] {
   const wanted = new Set(DESK_IDS);
-  const list = Array.isArray(raw) ? raw : typeof raw === "string" ? raw.split(",") : DESK_IDS;
-  const desks = [...new Set(list.map((d) => String(d).trim()).filter((d) => wanted.has(d)))];
-  return desks.length ? desks : [...DESK_IDS];
+  const list = Array.isArray(raw) ? raw : typeof raw === "string" ? raw.split(",") : [];
+  return [...new Set(list.map((d) => String(d).trim()).filter((d) => wanted.has(d)))];
 }
 
 async function readLocal(): Promise<Subscriber[]> {
   try {
     const raw = await readFile(FILE, "utf8");
-    const parsed = JSON.parse(raw) as Subscriber[];
-    return Array.isArray(parsed) ? parsed : [];
+    const parsed = JSON.parse(raw) as Array<Subscriber & { cadence?: Cadence[] }>;
+    return Array.isArray(parsed)
+      ? parsed.map((s) => ({ ...s, cadence: parseCadence(s.cadence) }))
+      : [];
   } catch {
     return [];
   }
@@ -58,8 +66,22 @@ function envSubscribers(): Subscriber[] {
     .map((email) => ({
       email: normalizeEmail(email),
       desks: [...DESK_IDS],
+      cadence: [...CADENCES],
       createdAt: "env",
     }));
+}
+
+function encodeResendMeta(sub: Subscriber) {
+  return `fb:${sub.desks.join(",")}|${sub.cadence.join(",")}`;
+}
+
+function parseResendMeta(lastName?: string): Pick<Subscriber, "desks" | "cadence"> {
+  if (!lastName?.startsWith("fb:")) return { desks: [], cadence: [...CADENCES] };
+  const [deskPart, cadencePart] = lastName.slice(3).split("|");
+  return {
+    desks: parseDesks(deskPart),
+    cadence: parseCadence(cadencePart),
+  };
 }
 
 async function addResendContact(sub: Subscriber) {
@@ -75,7 +97,7 @@ async function addResendContact(sub: Subscriber) {
     body: JSON.stringify({
       email: sub.email,
       first_name: "Field Brief",
-      last_name: `fb:${sub.desks.join(",")}`,
+      last_name: encodeResendMeta(sub),
       unsubscribed: false,
     }),
   });
@@ -99,20 +121,31 @@ async function listResendContacts(): Promise<Subscriber[]> {
   };
   return (json.data ?? [])
     .filter((c) => c.email && !c.unsubscribed)
-    .map((c) => ({
-      email: normalizeEmail(c.email!),
-      desks: c.last_name?.startsWith("fb:") ? parseDesks(c.last_name.slice(3)) : [...DESK_IDS],
-      createdAt: "resend",
-    }));
+    .map((c) => {
+      const meta = parseResendMeta(c.last_name);
+      return {
+        email: normalizeEmail(c.email!),
+        desks: meta.desks,
+        cadence: meta.cadence,
+        createdAt: "resend",
+      };
+    });
 }
 
-export async function addSubscriber(email: string, desks: string[], source: ListSource = "Brief") {
+export async function addSubscriber(
+  email: string,
+  desks: string[],
+  source: ListSource = "Brief",
+  cadence: Cadence[] = [...CADENCES],
+) {
   const sub: Subscriber = {
     email: normalizeEmail(email),
     desks: parseDesks(desks),
+    cadence: parseCadence(cadence),
     createdAt: new Date().toISOString(),
   };
   if (!validEmail(sub.email)) throw new Error("That is not an email.");
+  if (!sub.desks.length) throw new Error("Pick at least one coast.");
   const local = await readLocal();
   const next = [...local.filter((s) => s.email !== sub.email), sub];
   try {
@@ -123,7 +156,12 @@ export async function addSubscriber(email: string, desks: string[], source: List
   let via: "airtable" | "resend" | "local" = "local";
   if (airtableConfigured()) {
     try {
-      await upsertAirtableSubscriber({ email: sub.email, desks: sub.desks, source });
+      await upsertAirtableSubscriber({
+        email: sub.email,
+        desks: sub.desks,
+        source,
+        cadence: cadenceLabels(sub.cadence),
+      });
       via = "airtable";
     } catch {
       via = "local";
@@ -143,6 +181,15 @@ export async function addSubscriber(email: string, desks: string[], source: List
   };
 }
 
+function mergeSubscriber(prev: Subscriber | undefined, next: Subscriber): Subscriber {
+  return {
+    email: next.email,
+    desks: [...new Set([...(prev?.desks ?? []), ...next.desks])],
+    cadence: [...new Set([...(prev?.cadence ?? []), ...next.cadence])],
+    createdAt: prev?.createdAt ?? next.createdAt,
+  };
+}
+
 export async function listSubscribers(): Promise<Subscriber[]> {
   const byEmail = new Map<string, Subscriber>();
   let airtable: Subscriber[] = [];
@@ -151,6 +198,7 @@ export async function listSubscribers(): Promise<Subscriber[]> {
       airtable = (await listAirtableSubscribers()).map((s) => ({
         email: s.email,
         desks: parseDesks(s.desks),
+        cadence: parseCadence(s.cadence),
         createdAt: s.joined || "airtable",
       }));
     } catch {
@@ -158,16 +206,13 @@ export async function listSubscribers(): Promise<Subscriber[]> {
     }
   }
   for (const sub of [...envSubscribers(), ...airtable, ...(await listResendContacts()), ...(await readLocal())]) {
-    const prev = byEmail.get(sub.email);
-    byEmail.set(sub.email, {
-      email: sub.email,
-      desks: [...new Set([...(prev?.desks ?? []), ...sub.desks])],
-      createdAt: prev?.createdAt ?? sub.createdAt,
-    });
+    byEmail.set(sub.email, mergeSubscriber(byEmail.get(sub.email), sub));
   }
   return [...byEmail.values()];
 }
 
-export function subscribersForDesk(list: Subscriber[], areaId: string) {
-  return list.filter((s) => s.desks.includes(areaId)).map((s) => s.email);
+export function subscribersForDesk(list: Subscriber[], areaId: string, cadence?: Cadence) {
+  return list
+    .filter((s) => s.desks.includes(areaId) && (!cadence || s.cadence.includes(cadence)))
+    .map((s) => s.email);
 }

@@ -16,8 +16,8 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - **Wind versus the table**: observed minus predicted water. On the Texas coast the wind often *is* the tide.
 - **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas, Mexico, Seychelles) — wind **and rain / thunderstorms**.
 - Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**.
-- **Weekly Field Letter** (`/newsletter`) — one live desk per theater (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse), this month’s peaks, and harvest closures, in the Field Manual voice.
-- **Seasonal fundamentals** (`/fundamentals`) — doctrine by region, water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
+- **Weekly Field Letter** (`/newsletter`) — one live desk per theater you elect (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse). A Texas-only reader does not see Andros or Seychelles. Peaks and harvest closures follow the same coasts.
+- **Seasonal fundamentals** (`/fundamentals`) — doctrine by the coasts you elected, then water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next. Tap a day for that date’s brief. Copper outline = amazing day. The monthly **YOLO** day is the best remaining **dry** day with a real wind forecast. Rain and thunderstorms tax the score; a soaker cannot be a copper day.
 - **Stay or drive** (`/compare`) — two desks, one morning.
 - **Morning line** (`/morning`) — one sentence you can copy or mail. No SMS on Hobby.
@@ -76,13 +76,15 @@ The page stays live. Texas wind versus the table changes inside a morning. The 5
 
 Others can subscribe. The form is public on the brief and the letter (`/newsletter`). `/morning` still sits behind the hobby door.
 
-There **is** a managed table: [Field Brief → Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) in the Costal Cavaliers workspace. Columns: Email, Desks, Status (`Active` / `Paid` / `Unsubscribed`), Source, Joined, Notes. `Paid` is the monetize hook — same list, later a charge. A gated `/subscribers` page in the app shows the same rows.
+There **is** a managed table: [Field Brief → Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) in the Costal Cavaliers workspace. Columns: Email, Desks, Cadence (`Daily` / `Weekly` / `Seasonal`), Status (`Active` / `Paid` / `Unsubscribed`), Source, Joined, Notes. `Paid` is the monetize hook — same list, later a charge. A gated `/subscribers` page in the app shows the same rows.
 
-**How you get the email.** You are a row on that table (operator). Nothing lands in your inbox until sending is on. Fastest path: add `RESEND_API_KEY` + a verified `RESEND_FROM` on Vercel, and `AIRTABLE_API_KEY` (an Airtable PAT scoped to this base) so the cron can read the table. You can also put your address in `SUBSCRIBER_EMAILS` as a belt-and-suspenders.
+Signup elects **coasts** and **cadence**. Default is the water on the page (Texas / Galveston on a cold letter visit), not all seven desks. A Texas-only fisherman does not get Andros or Seychelles in the 5am line, the Saturday letter, or the season page. `fb_coasts` remembers that election the same way `fb_water` remembers the last desk. Letter chips (`/newsletter?coasts=texas`) and `?theater=` on `/fundamentals` write the cookie.
 
-**How others get the email.** They submit the public form. With `AIRTABLE_API_KEY` on Vercel, the row is upserted in Airtable. At 10:00 UTC the cron generates the live morning line and Resend sends it to every Active/Paid address that picked that desk. Without the Airtable token, a production signup only lives on that one Vercel instance and is lost. Without Resend, the cron writes `data/outbox/` and nobody’s inbox moves.
+**How you get the email.** You are a row on that table (operator). Nothing lands in your inbox until sending is on. Fastest path: add `RESEND_API_KEY` + a verified `RESEND_FROM` on Vercel, and `AIRTABLE_API_KEY` (an Airtable PAT scoped to this base) so the cron can read the table. You can also put your address in `SUBSCRIBER_EMAILS` as a belt-and-suspenders (that env list still receives every desk).
 
-There is no nightly rebuild of the gauges. The mailer asks the same `getBriefing()` + `morningLine()` the `/morning` page does. Hobby cron is daily (`0 10 * * *` = 5:00 a.m. Galveston CDT) and sends all seven desks. `CRON_HOURLY=1` plus an hourly ping sends each desk only at local 05:00. `?force=1` and `?desk=galveston` are for tests. No SMS on Hobby. Do not commit addresses.
+**How others get the email.** They submit the public form. With `AIRTABLE_API_KEY` on Vercel, the row is upserted in Airtable with the desks and cadence they picked. At 10:00 UTC the cron generates the live morning line and Resend sends **Daily** addresses the desks they elected. On Saturday (Chicago) the same Hobby cron sends **Weekly** addresses a letter that only includes those desks. **Seasonal** is the fundamentals page (and the month block inside the Saturday letter). Without the Airtable token, a production signup only lives on that one Vercel instance and is lost. Without Resend, the cron writes `data/outbox/` and nobody’s inbox moves.
+
+There is no nightly rebuild of the gauges. The mailer asks the same `getBriefing()` + `morningLine()` the `/morning` page does. Hobby cron is daily (`0 10 * * *` = 5:00 a.m. Galveston CDT). `CRON_HOURLY=1` plus an hourly ping sends each desk only at local 05:00. `?force=1` and `?desk=galveston` are daily tests. `?weekly=1` forces the Saturday letter. No SMS on Hobby. Do not commit addresses.
 
 ## Theaters and micro-areas
 

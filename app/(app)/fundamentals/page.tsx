@@ -3,6 +3,7 @@ import { AREAS } from "@/lib/data/areas";
 import { SPECIES, regulationFor } from "@/lib/data/species";
 import type { SpeciesId, TheaterId } from "@/lib/types";
 import { THEATER_IDS, THEATER_META } from "@/lib/data/theaters";
+import { readCoastsPref } from "@/lib/prefs";
 import {
   MONTH_NAMES,
   MONTH_THEATER,
@@ -34,7 +35,7 @@ function href(next: {
   month?: string;
 }) {
   const p = new URLSearchParams();
-  if (next.theater && next.theater !== "all") p.set("theater", next.theater);
+  if (next.theater) p.set("theater", next.theater);
   if (next.type && next.type !== "all") p.set("type", next.type);
   if (next.species && next.species !== "all") p.set("species", next.species);
   if (next.month) p.set("month", next.month);
@@ -73,18 +74,39 @@ export default async function FundamentalsPage({
 }) {
   const q = await searchParams;
   const nowMonth = new Date().getUTCMonth() + 1;
-  const theater = (THEATERS.some((t) => t.id === q.theater) ? q.theater : "all") as TheaterId | "all";
+  const prefCoasts = await readCoastsPref();
+  const hasTheaterParam = q.theater != null && q.theater !== "";
+  const theater = (
+    hasTheaterParam && THEATERS.some((t) => t.id === q.theater)
+      ? q.theater
+      : prefCoasts?.length === 1
+        ? prefCoasts[0]
+        : "all"
+  ) as TheaterId | "all";
   const type = (WATER_TYPES.some((t) => t.id === q.type) ? q.type : "all") as WaterTypeId | "all";
   const parsedMonth = Number(q.month);
   const month = parsedMonth >= 1 && parsedMonth <= 12 ? parsedMonth : nowMonth;
   const speciesId = (SPECIES.some((s) => s.id === q.species) ? q.species : "all") as SpeciesId | "all";
 
+  const regionIds: TheaterId[] =
+    theater !== "all"
+      ? [theater]
+      : hasTheaterParam
+        ? [...THEATER_IDS]
+        : prefCoasts?.length
+          ? prefCoasts
+          : [...THEATER_IDS];
+
   const typeDef = type === "all" ? null : waterTypeById(type);
-  const rows = speciesForFilters({ theater, type, speciesId, month });
-  const peaks = peaksThisMonth(month, theater);
-  const closures = closuresThisMonth(month);
+  const rows = speciesForFilters({ theater, type, speciesId, month }).filter(
+    (s) => theater !== "all" || s.theaters.some((t) => regionIds.includes(t)),
+  );
+  const peaks =
+    theater !== "all"
+      ? peaksThisMonth(month, theater)
+      : peaksThisMonth(month).filter((s) => s.theaters.some((t) => regionIds.includes(t)));
+  const closures = closuresThisMonth(month).filter((c) => c.theaters.some((t) => regionIds.includes(t)));
   const typeAreas = type === "all" ? [] : areasForType(type, theater);
-  const regionIds: TheaterId[] = theater === "all" ? [...THEATER_IDS] : [theater];
 
   const primaryChoices = SPECIES.filter(
     (s) => s.role === "primary" || s.role === "incidental" || s.role === "pacific" || s.role === "bluewater",
@@ -100,9 +122,10 @@ export default async function FundamentalsPage({
           Seasonal fundamentals
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
-          When a coast, a type of water, and a fish actually line up. Filter by region, method or
-          habitat, and species. The year bar is peak versus present. Limits cite TPWD and FWC —
-          verify before you keep one.
+          When a coast, a type of water, and a fish actually line up. If you elected Texas on the
+          list, this page opens on Texas — Seychelles stays off the board until you ask for it.
+          Filter by region, method or habitat, and species. The year bar is peak versus present.
+          Limits cite TPWD and FWC — verify before you keep one.
         </p>
         <Waterline className="mt-3" />
       </header>
@@ -287,7 +310,7 @@ export default async function FundamentalsPage({
       ) : (
         <div className="grid gap-4">
           {rows.map((s) => {
-            const coasts = (theater === "all" ? s.theaters : s.theaters.filter((t) => t === theater)) as TheaterId[];
+            const coasts = s.theaters.filter((t) => regionIds.includes(t)) as TheaterId[];
             const localAreas = AREAS.filter(
               (a) => coasts.includes(a.theater) && a.leadSpecies.includes(s.id),
             );

@@ -6,11 +6,14 @@ import { SPECIES } from "@/lib/data/species";
 import {
   MONTH_NAMES,
   MONTH_THEATER,
+  closuresForCoasts,
   closuresThisMonth,
   peaksThisMonth,
   theaterLabel,
+  type ClosureNote,
 } from "@/lib/data/fundamentals";
 import { DESKS } from "@/lib/desks";
+import { isAllCoasts } from "@/lib/coasts";
 
 export { DESKS };
 
@@ -50,7 +53,7 @@ export type NewsletterIssue = {
   letter: string;
   desks: DeskIssue[];
   peaks: { name: string; theaters: string; why: string }[];
-  closures: { title: string; body: string }[];
+  closures: ClosureNote[];
   generatedAt: string;
   frozen: boolean;
 };
@@ -166,6 +169,33 @@ export async function getNewsletter(weekRaw?: string | null): Promise<Newsletter
   return cachedNewsletter(weekId);
 }
 
-export function incidentalNoise(month: number) {
-  return SPECIES.filter((s) => s.role === "incidental" && s.peakMonths.includes(month)).map((s) => s.commonName);
+export function filterNewsletter(issue: NewsletterIssue, coasts: TheaterId[] | null): NewsletterIssue {
+  if (isAllCoasts(coasts) || !coasts) return issue;
+  const desks = issue.desks.filter((d) => coasts.includes(d.theater));
+  const letter = coasts
+    .map((t) => MONTH_THEATER[issue.month][t])
+    .filter(Boolean)
+    .join(" ");
+  const peaks = peaksThisMonth(issue.month)
+    .filter((s) => s.theaters.some((t) => coasts.includes(t)))
+    .map((s) => ({
+      name: s.commonName,
+      theaters: s.theaters.filter((t) => coasts.includes(t)).map(theaterLabel).join(" · "),
+      why: s.why,
+    }));
+  return {
+    ...issue,
+    letter: letter || issue.letter,
+    desks,
+    peaks,
+    closures: closuresForCoasts(issue.month, coasts),
+  };
+}
+
+export function incidentalNoise(month: number, coasts?: TheaterId[] | null) {
+  return SPECIES.filter((s) => {
+    if (s.role !== "incidental" || !s.peakMonths.includes(month)) return false;
+    if (coasts && !isAllCoasts(coasts) && !s.theaters.some((t) => coasts.includes(t))) return false;
+    return true;
+  }).map((s) => s.commonName);
 }

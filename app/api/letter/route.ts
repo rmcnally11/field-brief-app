@@ -1,15 +1,21 @@
 import { NextResponse } from "next/server";
-import { getNewsletter } from "@/lib/newsletter";
+import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
 import { isYmd } from "@/lib/time";
+import { resolveElectedCoasts } from "@/lib/coasts";
 
 export const dynamic = "force-dynamic";
 
 const ORIGIN = "https://field-brief-app.vercel.app";
 
 export async function GET(request: Request) {
-  const week = new URL(request.url).searchParams.get("week");
+  const url = new URL(request.url);
+  const week = url.searchParams.get("week");
+  const coasts = resolveElectedCoasts({
+    coastsQuery: url.searchParams.get("coasts"),
+    desksQuery: url.searchParams.get("desks"),
+  });
   try {
-    const issue = await getNewsletter(isYmd(week) ? week : null);
+    const issue = filterNewsletter(await getNewsletter(isYmd(week) ? week : null), coasts);
     return NextResponse.json({
       source: `${ORIGIN}/newsletter`,
       permalink: `${ORIGIN}/newsletter/${issue.weekId}`,

@@ -38,6 +38,32 @@ Open [http://127.0.0.1:43217](http://127.0.0.1:43217).
 
 No API keys. NOAA, NWS, USGS, and Open-Meteo are public. NWS requires a User-Agent, which the app sends.
 
+## A real URL (Vercel)
+
+This repo does **not** auto-deploy. The Preview you see in Cursor is this cloud VM. To get an `https://….vercel.app` link:
+
+1. Import `rmcnally11/field-brief` in [vercel.com](https://vercel.com) (private GitHub is fine).
+2. Framework: Next.js. No environment variables.
+3. After the first deploy, every `git push` to the connected branch rebuilds the site.
+
+There is no nightly site rebuild. Code updates when someone pushes. Conditions update when someone opens a page (see below).
+
+## How the water updates
+
+Not a nightly batch. Each Brief / Calendar / Map load hits live gauges, then caches for a few minutes so a refresh is not a stampede:
+
+| Feed | Freshness |
+| --- | --- |
+| NOAA CO-OPS tides, observed water, station wind, water temp | ~5 minutes |
+| NWS hourly forecast (U.S.) | ~10 minutes |
+| NWS point metadata | ~30 minutes |
+| Open-Meteo (Bahamas wind) | ~10 minutes |
+| USGS GNIS / NOAA ENC / FKNMS polygons | ~1 hour |
+| Moon phase | computed from the clock, every load |
+| Calendar days past the wind forecast | tide + moon + season only (labeled astronomical) |
+
+A nightly cron would only make sense later for a morning text/email (“Galveston is a 8.2, copper day”). The page itself should stay live — Texas wind versus the table changes inside a morning.
+
 ## Theaters and micro-areas
 
 **Texas:** Sabine · Galveston · Matagorda · Rockport / Aransas · Corpus · Baffin / Upper Laguna · Lower Laguna Madre

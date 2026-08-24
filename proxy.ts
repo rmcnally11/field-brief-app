@@ -59,7 +59,9 @@ export function proxy(request: NextRequest) {
     pathname === "/calendar" ||
     pathname.startsWith("/calendar/") ||
     pathname === "/map" ||
-    pathname.startsWith("/map/");
+    pathname.startsWith("/map/") ||
+    pathname === "/join" ||
+    pathname.startsWith("/join/");
 
   if (open) return remember(request, NextResponse.next());
   if (isValidGateToken(request.cookies.get(GATE_COOKIE)?.value)) {

@@ -23,6 +23,7 @@ const LINKS = [
   { href: "/species", label: "Species", dek: "Who is in play" },
   { href: "/method", label: "Method", dek: "How the score is built" },
   { href: "/newsletter", label: "Letter", dek: "Seven live desks" },
+  { href: "/join", label: "Join", dek: "Get tonight’s water" },
   { href: "/fundamentals", label: "Season", dek: "Month and coast" },
   { href: "/subscribers", label: "List", dek: "Who gets the 5am mail" },
 ];

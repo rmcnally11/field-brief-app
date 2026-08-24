@@ -74,7 +74,7 @@ The page stays live. Texas wind versus the table changes inside a morning. The 5
 
 ## The list — signup, the table, and the 5am email
 
-Others can subscribe. The form is public on the brief and the letter (`/newsletter`). `/morning` still sits behind the hobby door.
+Others can subscribe. The family door is [`/join`](https://field-brief-app.vercel.app/join?coasts=texas). The same form is on the brief and the letter (`/newsletter`). `/morning` still sits behind the hobby door. Join writes the address to the Resend list (and Airtable when that token is on Vercel) and sends tonight’s pack immediately.
 
 There **is** a managed table: [Field Brief → Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) in the Costal Cavaliers workspace. Columns: Email, Desks, Cadence (`Daily` / `Weekly` / `Calendar` / `Seasonal`), Status (`Active` / `Paid` / `Unsubscribed`), Source, Joined, Notes. `Paid` is the monetize hook — same list, later a charge. A gated `/subscribers` page in the app shows the same rows.
 

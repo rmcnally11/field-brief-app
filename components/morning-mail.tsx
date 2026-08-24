@@ -11,11 +11,13 @@ export function MorningMail({
   defaultDesk,
   defaultDesks,
   compact = false,
+  join = false,
   source = "Brief",
 }: {
   defaultDesk?: string;
   defaultDesks?: string[];
   compact?: boolean;
+  join?: boolean;
   source?: "Brief" | "Letter" | "Morning";
 }) {
   const homeDesk = letterDeskForArea(defaultDesk) ?? "galveston";
@@ -69,12 +71,12 @@ export function MorningMail({
     >
       <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">The list</p>
       <h2 className={`mt-1 font-heading text-[color:var(--cream)] ${compact ? "text-xl" : "text-2xl"}`}>
-        Your water, your mail
+        {join ? "Your email, your coast" : "Your water, your mail"}
       </h2>
       <p className="mt-2 text-sm text-[color:var(--cream)]/65">
-        Pick the coasts you fish. A Texas-only list does not get Andros or Seychelles — not in the
-        5am line, not in Saturday’s letter, not in Sunday’s calendar, not on the season page.
-        Default is the water you are looking at, not the whole book.
+        {join
+          ? "Texas is selected. Change it if you fish somewhere else. Daily, weekly, calendar, and seasonal stay on unless you turn one off. Join and tonight’s pack goes out."
+          : "Pick the coasts you fish. A Texas-only list does not get Andros or Seychelles — not in the 5am line, not in Saturday’s letter, not in Sunday’s calendar, not on the season page. Default is the water you are looking at, not the whole book."}
       </p>
       <div className="mt-4 space-y-2">
         <Label htmlFor="morning-email" className="text-[color:var(--cream)]/70">
@@ -152,7 +154,7 @@ export function MorningMail({
         disabled={status === "loading" || desks.length === 0 || cadence.length === 0}
         className="mt-4 bg-[color:var(--sea)] text-white hover:bg-[color:var(--sea)]/90"
       >
-        {status === "loading" ? "Saving…" : "Join the list"}
+        {status === "loading" ? "Saving…" : join ? "Send tonight’s brief" : "Join the list"}
       </Button>
       {note ? (
         <p className={`mt-3 text-sm ${status === "err" ? "text-[color:var(--copper)]" : "text-[color:var(--cream)]/70"}`} role="status">

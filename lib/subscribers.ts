@@ -13,6 +13,7 @@ import {
   upsertAirtableSubscriber,
   type ListSource,
 } from "@/lib/airtable-list";
+import { resendAudienceId } from "@/lib/resend-list";
 
 export const DESK_IDS: string[] = DESKS.map((d) => d.areaId);
 
@@ -86,7 +87,7 @@ function parseResendMeta(lastName?: string): Pick<Subscriber, "desks" | "cadence
 
 async function addResendContact(sub: Subscriber) {
   const key = process.env.RESEND_API_KEY?.trim();
-  const audience = process.env.RESEND_AUDIENCE_ID?.trim();
+  const audience = await resendAudienceId();
   if (!key || !audience) return false;
   const res = await fetch(`https://api.resend.com/audiences/${audience}/contacts`, {
     method: "POST",
@@ -110,7 +111,7 @@ async function addResendContact(sub: Subscriber) {
 
 async function listResendContacts(): Promise<Subscriber[]> {
   const key = process.env.RESEND_API_KEY?.trim();
-  const audience = process.env.RESEND_AUDIENCE_ID?.trim();
+  const audience = key ? await resendAudienceId() : "";
   if (!key || !audience) return [];
   const res = await fetch(`https://api.resend.com/audiences/${audience}/contacts`, {
     headers: { Authorization: `Bearer ${key}` },
@@ -167,12 +168,10 @@ export async function addSubscriber(
       via = "local";
     }
   }
-  if (via !== "airtable") {
-    try {
-      if (await addResendContact(sub)) via = "resend";
-    } catch {
-      // keep via
-    }
+  try {
+    if (await addResendContact(sub) && via !== "airtable") via = "resend";
+  } catch {
+    // keep via
   }
   return {
     subscriber: sub,

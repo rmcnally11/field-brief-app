@@ -20,6 +20,8 @@ import {
 } from "@/lib/mail";
 import { sendResend } from "@/lib/send";
 import type { TheaterId } from "@/lib/types";
+import type { Cadence } from "@/lib/coasts";
+import { coastsForDesks } from "@/lib/coasts";
 
 export type SampleMail = {
   kind: "daily" | "weekly" | "calendar" | "seasonal";
@@ -82,6 +84,28 @@ export async function sendSampleEmails(to: string, opts?: { areaId?: string; coa
     results.push({
       kind: sample.kind,
       subject,
+      sent: remote.sent,
+      id: remote.id,
+      why: remote.why,
+    });
+  }
+  return { to, results };
+}
+
+export async function sendWelcomeEmails(
+  to: string,
+  opts: { desks: string[]; cadence: Cadence[] },
+) {
+  const areaId = opts.desks[0] ?? "galveston";
+  const coasts = coastsForDesks(opts.desks);
+  const wanted = new Set(opts.cadence);
+  const samples = (await buildSampleEmails({ areaId, coasts })).filter((s) => wanted.has(s.kind));
+  const results = [];
+  for (const sample of samples) {
+    const remote = await sendResend([to], sample.subject, sample.html, sample.text);
+    results.push({
+      kind: sample.kind,
+      subject: sample.subject,
       sent: remote.sent,
       id: remote.id,
       why: remote.why,

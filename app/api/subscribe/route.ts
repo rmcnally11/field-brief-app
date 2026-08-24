@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { ListSource } from "@/lib/airtable-list";
 import { addSubscriber, parseDesks, validEmail } from "@/lib/subscribers";
+import { sendWelcomeEmails } from "@/lib/samples";
 import {
   COASTS_COOKIE,
   coastsCookieOptions,
@@ -31,18 +32,29 @@ export async function POST(request: NextRequest) {
   try {
     const result = await addSubscriber(email, desks, source, cadence);
     const coasts = coastsForDesks(result.subscriber.desks);
+    let welcome: Awaited<ReturnType<typeof sendWelcomeEmails>> | null = null;
+    try {
+      welcome = await sendWelcomeEmails(result.subscriber.email, {
+        desks: result.subscriber.desks,
+        cadence: result.subscriber.cadence,
+      });
+    } catch {
+      welcome = null;
+    }
+    const sentNow = welcome?.results.some((r) => r.sent) ?? false;
     const note =
-      result.via === "airtable"
-        ? `You're on the Field Brief list for ${coasts.join(", ")}.`
-        : result.via === "resend"
-          ? "You're on the 5am list for the water you picked."
-          : "Saved on this machine. Public signups need AIRTABLE_API_KEY on Vercel so they land in the Airtable table.";
+      result.via === "local" && !sentNow
+        ? "Saved on this machine only. The operator still needs the list wired for tomorrow’s 5am."
+        : sentNow
+          ? `You're on the list for ${coasts.join(", ")}. Tonight’s water is on the way.`
+          : `You're on the Field Brief list for ${coasts.join(", ")}.`;
     const res = NextResponse.json({
       ok: true,
       desks: result.subscriber.desks,
       cadence: result.subscriber.cadence,
       coasts,
       via: result.via,
+      sentNow,
       note,
     });
     res.cookies.set(COASTS_COOKIE, encodeCoasts(coasts), coastsCookieOptions());

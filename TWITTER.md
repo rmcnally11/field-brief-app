@@ -44,7 +44,7 @@ Post seven separate morning tweets (not one dump), in this order, using `morning
 
 For each desk:
 
-- Tweet text = JSON `text` **verbatim**. Do not rewrite. Do not add hashtags, emoji, or “thread 1/7.”
+- Tweet text = JSON `text` **verbatim**. That line is already the dispatch — fishing weather, location, wind, sky. Do not rewrite it. Do not add hashtags, emoji, or “thread 1/7.”
 - Attach the screenshot of JSON `image` (the `/card` page).
 - Alt text = JSON `alt`.
 - The only link is the one already in `text` (`field-brief-app.vercel.app`).

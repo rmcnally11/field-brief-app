@@ -32,7 +32,7 @@ export async function GET() {
         areaId: desk.areaId,
         shortName: briefing.area.shortName,
         score: briefing.overall,
-        text: morningTweetText(briefing, yolo),
+        text: morningTweetText(briefing, yolo, desk.kicker),
         image: morningCardUrl(area.id, area.theater),
         alt: morningAlt(briefing),
         href: morningCardUrl(area.id, area.theater),
@@ -66,7 +66,7 @@ export async function GET() {
         shortName: area.shortName,
         text: calendarTweetText(area.shortName, area.id, area.theater, days),
         image: calendarCardUrl(area.id, area.theater),
-        alt: calendarAlt(area.shortName, days),
+        alt: calendarAlt(area.shortName, days, area.id),
         href: calendarCardUrl(area.id, area.theater),
         skip: false,
       });

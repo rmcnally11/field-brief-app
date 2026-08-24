@@ -22,6 +22,12 @@ function centroid(rings?: number[][][]) {
   return { lon: x, lat: y };
 }
 
+function deskPad(area: Area) {
+  if (area.id === "florida-bay" || area.id === "key-largo") return 0.18;
+  if (area.theater === "florida" || area.theater === "louisiana") return 0.22;
+  return 0.35;
+}
+
 function bbox(area: Area, pad = 0.35) {
   return {
     xmin: area.lon - pad,
@@ -32,7 +38,7 @@ function bbox(area: Area, pad = 0.35) {
 }
 
 export async function fetchGnisNear(area: Area): Promise<OfficialPoint[]> {
-  const { xmin, ymin, xmax, ymax } = bbox(area, 0.45);
+  const { xmin, ymin, xmax, ymax } = bbox(area, deskPad(area));
   const names = [
     "Pass",
     "Channel",
@@ -84,7 +90,7 @@ export async function fetchGnisNear(area: Area): Promise<OfficialPoint[]> {
 
 export async function fetchEncWrecks(area: Area): Promise<OfficialPoint[]> {
   if (area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles") return [];
-  const { xmin, ymin, xmax, ymax } = bbox(area, 0.28);
+  const { xmin, ymin, xmax, ymax } = bbox(area, Math.min(0.28, deskPad(area) + 0.04));
   const url =
     `https://gis.charttools.noaa.gov/arcgis/rest/services/encdirect/enc_harbour/MapServer/36/query` +
     `?geometry=${xmin},${ymin},${xmax},${ymax}&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326` +
@@ -129,7 +135,7 @@ const ZONE_LABEL: Record<number, string> = {
 
 export async function fetchFknmsZones(area: Area): Promise<OfficialPoint[]> {
   if (!isKeysFlorida(area.id)) return [];
-  const pad = area.id === "florida-bay" ? 0.2 : 0.32;
+  const pad = area.id === "florida-bay" ? 0.16 : area.id === "key-largo" ? 0.2 : 0.28;
   const { xmin, ymin, xmax, ymax } = bbox(area, pad);
   const url =
     `https://gis.ngdc.noaa.gov/arcgis/rest/services/nccos/BenthicMapping_FKNMS_Dataviewer/MapServer/52/query` +
@@ -152,6 +158,11 @@ export async function fetchFknmsZones(area: Area): Promise<OfficialPoint[]> {
           detail: ZONE_LABEL[zone] ?? `Zone type ${zone}`,
           legal: true,
         };
+      })
+      .filter((z) => {
+        const dlat = z.lat - area.lat;
+        const dlon = (z.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180);
+        return Math.hypot(dlat, dlon) <= pad;
       })
       .sort((a, b) => {
         const da = Math.hypot(a.lat - area.lat, (a.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180));
@@ -699,7 +710,7 @@ const ACCESS: OfficialPoint[] = [
 
 export function accessNear(area: Area): OfficialPoint[] {
   const maxDeg =
-    area.id === "key-largo"
+    area.id === "florida-bay" || area.id === "key-largo"
       ? 0.18
       : area.theater === "florida" || area.theater === "louisiana"
       ? 0.28

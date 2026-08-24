@@ -1766,25 +1766,27 @@ function speciesFor(pin: SavedPin, area: Area): SpeciesId[] {
   return area.leadSpecies.length ? [...area.leadSpecies] : ["redfish", "speckled-trout"];
 }
 
+/** How far a desk’s chart and saved pins may reach. Tight on purpose so Flamingo ≠ Islamorada. */
+export function deskAtlasMiles(area: Area) {
+  if (area.id === "florida-bay" || area.id === "calcasieu" || area.id === "key-largo") return 16;
+  if (area.id === "boca-grande" || area.id === "jupiter" || area.id === "venice" || area.id === "grand-isle") return 18;
+  if (area.theater === "florida") return 22;
+  if (area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles") return 40;
+  if (area.theater === "puerto-rico") return 28;
+  return 42;
+}
+
+export function withinDesk(area: Area, lat: number, lon: number, maxMiles?: number) {
+  return miles(area.lat, area.lon, lat, lon) <= (maxMiles ?? deskAtlasMiles(area));
+}
+
 /** Fishing / access marks from your My Maps, near this micro-area. Closed polygons stay off the brief. */
 export function savedSpotsNear(
   area: Area,
   maxMiles?: number,
   opts?: { includeOffshore?: boolean },
 ): Spot[] {
-  const radius =
-    maxMiles ??
-    (area.id === "florida-bay" || area.id === "calcasieu" || area.id === "key-largo"
-      ? 16
-      : area.id === "boca-grande" || area.id === "jupiter" || area.id === "venice" || area.id === "grand-isle"
-        ? 18
-        : area.theater === "florida"
-          ? 22
-          : area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles"
-            ? 40
-            : area.theater === "puerto-rico"
-              ? 28
-              : 42);
+  const radius = maxMiles ?? deskAtlasMiles(area);
   return SAVED_PINS.filter((p) => p.kind === "fish" || p.kind === "access")
     .filter((p) => {
       const n = `${p.name} ${p.folder}`.toLowerCase();
@@ -1818,10 +1820,11 @@ function nDepth(p: SavedPin): "skinny" | "mid" | "deep" {
 
 export function savedMarksNear(
   area: Area,
-  maxMiles = 55,
+  maxMiles?: number,
   opts?: { includeOffshore?: boolean },
 ): OfficialMark[] {
-  return SAVED_PINS.filter((p) => miles(area.lat, area.lon, p.lat, p.lon) <= maxMiles)
+  const radius = maxMiles ?? deskAtlasMiles(area);
+  return SAVED_PINS.filter((p) => miles(area.lat, area.lon, p.lat, p.lon) <= radius)
     .filter((p) => p.kind !== "route")
     .filter((p) => {
       const n = `${p.name} ${p.folder}`.toLowerCase();

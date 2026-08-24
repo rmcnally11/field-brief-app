@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
 import { SPOTS } from "@/lib/data/spots";
 import { AREA_BY_ID } from "@/lib/data/areas";
@@ -20,21 +20,35 @@ function isOffshoreMark(spot: { name: string; note: string; habitat: string; act
   );
 }
 
-function Fit({ spots, extras }: { spots: Spot[]; extras: OfficialPoint[] }) {
+function Fit({
+  spots,
+  extras,
+  lat,
+  lon,
+}: {
+  spots: Spot[];
+  extras: OfficialPoint[];
+  lat: number;
+  lon: number;
+}) {
   const map = useMap();
-  useMemo(() => {
-    const pts = [...spots, ...extras];
-    if (!pts.length) return;
-    const lats = pts.map((s) => s.lat);
-    const lons = pts.map((s) => s.lon);
+  useEffect(() => {
+    const camera = [...spots, ...extras.filter((e) => e.kind === "access")];
+    if (!camera.length) {
+      map.setView([lat, lon], 11);
+      return;
+    }
+    const lats = camera.map((s) => s.lat);
+    const lons = camera.map((s) => s.lon);
+    const pad = 0.03;
     map.fitBounds(
       [
-        [Math.min(...lats) - 0.15, Math.min(...lons) - 0.15],
-        [Math.max(...lats) + 0.15, Math.max(...lons) + 0.15],
+        [Math.min(...lats) - pad, Math.min(...lons) - pad],
+        [Math.max(...lats) + pad, Math.max(...lons) + pad],
       ],
-      { padding: [24, 24] },
+      { padding: [40, 40], maxZoom: 13, animate: false },
     );
-  }, [map, spots, extras]);
+  }, [map, spots, extras, lat, lon]);
   return null;
 }
 
@@ -80,12 +94,17 @@ export function CoastMap({
   const spots = briefed.length ? briefed.map((p) => p.spot) : catalog;
   const scoreById = new Map(briefed.map((p) => [p.spot.id, p]));
 
-  const center = spots[0] ? ([spots[0].lat, spots[0].lon] as [number, number]) : ([26.5, -82] as [number, number]);
+  const desk = areaId ? AREA_BY_ID[areaId] : undefined;
+  const center = (desk
+    ? [desk.lat, desk.lon]
+    : spots[0]
+      ? [spots[0].lat, spots[0].lon]
+      : [26.5, -82]) as [number, number];
 
   return (
     <MapContainer
       center={center}
-      zoom={6}
+      zoom={11}
       className="h-[min(62dvh,560px)] w-full rounded-2xl ring-1 ring-[color:var(--line)] md:h-[min(80vh,860px)]"
       scrollWheelZoom
     >
@@ -98,7 +117,7 @@ export function CoastMap({
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png"
         opacity={0.85}
       />
-      <Fit spots={spots} extras={extras} />
+      <Fit spots={spots} extras={extras} lat={center[0]} lon={center[1]} />
       {spots.map((s) => {
         const pick = scoreById.get(s.id);
         const color = pick ? scoreHex(pick.score) : SOURCE_COLOR[s.source];

@@ -501,7 +501,7 @@ const ACCESS: OfficialPoint[] = [
 ];
 
 export function accessNear(area: Area): OfficialPoint[] {
-  const maxDeg = area.theater === "florida" ? 0.36 : area.theater === "texas" ? 0.55 : 0.9;
+  const maxDeg = area.theater === "florida" ? 0.32 : area.theater === "texas" ? 0.55 : 0.9;
   return ACCESS.filter((p) => {
     const dlat = p.lat - area.lat;
     const dlon = (p.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180);

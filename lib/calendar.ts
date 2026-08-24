@@ -143,20 +143,27 @@ async function loadCalendarInputs(area: Area, start: Date, dayCount: number): Pr
   const resolvedHiLo = hilo.length ? hilo : deriveHiLo(hourly);
 
   const windByDay = new Map<string, number>();
-  if (windSettled.status === "fulfilled") {
-    const wind = windSettled.value;
+  const ingestWind = (wind: Awaited<ReturnType<typeof fetchOpenMeteo>> | Awaited<ReturnType<typeof fetchNwsDayWinds>>) => {
     if ("hourly" in wind) {
       wind.hourly.time.forEach((t, i) => {
         const ymd = ymdInZone(new Date(t), area.timezone);
         windByDay.set(ymd, Math.max(windByDay.get(ymd) ?? 0, wind.hourly.wind_speed_10m[i] ?? 0));
       });
-    } else {
-      for (const p of wind.periods) {
-        const ymd = ymdInZone(new Date(p.startTime), area.timezone);
-        const nums = [...(p.windSpeed ?? "").matchAll(/(\d+)/g)].map((m) => Number(m[1]));
-        const mph = nums.length ? Math.max(...nums) : 0;
-        windByDay.set(ymd, Math.max(windByDay.get(ymd) ?? 0, mph));
-      }
+      return;
+    }
+    for (const p of wind.periods) {
+      const ymd = ymdInZone(new Date(p.startTime), area.timezone);
+      const nums = [...(p.windSpeed ?? "").matchAll(/(\d+)/g)].map((m) => Number(m[1]));
+      const mph = nums.length ? Math.max(...nums) : 0;
+      windByDay.set(ymd, Math.max(windByDay.get(ymd) ?? 0, mph));
+    }
+  };
+  if (windSettled.status === "fulfilled") ingestWind(windSettled.value);
+  if (!windByDay.size) {
+    try {
+      ingestWind(await withBudget(fetchOpenMeteo(area.lat, area.lon), 2500, "Open-Meteo fallback"));
+    } catch {
+      // astronomical days stay unlabeled
     }
   }
 
@@ -323,7 +330,7 @@ async function computeUpcoming(areaId: string, activity: ActivityId | "all", fro
   return markYolo(days, fromYmd);
 }
 
-const cachedUpcoming = unstable_cache(computeUpcoming, ["field-calendar-upcoming-v1"], {
+const cachedUpcoming = unstable_cache(computeUpcoming, ["field-calendar-upcoming-v2"], {
   revalidate: 180,
 });
 
@@ -349,7 +356,7 @@ async function computeCalendarRange(
   return monthsFromInputs(area, activity, year, month, count, inputs);
 }
 
-const cachedCalendarRange = unstable_cache(computeCalendarRange, ["field-calendar-v2"], {
+const cachedCalendarRange = unstable_cache(computeCalendarRange, ["field-calendar-v3"], {
   revalidate: 300,
 });
 

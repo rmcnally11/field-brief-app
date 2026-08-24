@@ -8,7 +8,8 @@ export async function GET(request: NextRequest) {
   const area = request.nextUrl.searchParams.get("area");
   const activity = request.nextUrl.searchParams.get("activity");
   try {
-    const briefing = await getBriefing(area, activity);
+    const date = request.nextUrl.searchParams.get("date");
+    const briefing = await getBriefing(area, activity, date);
     return NextResponse.json(briefing);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Briefing failed";

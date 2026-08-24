@@ -1816,9 +1816,20 @@ function nDepth(p: SavedPin): "skinny" | "mid" | "deep" {
   return "mid";
 }
 
-export function savedMarksNear(area: Area, maxMiles = 55): OfficialMark[] {
+export function savedMarksNear(
+  area: Area,
+  maxMiles = 55,
+  opts?: { includeOffshore?: boolean },
+): OfficialMark[] {
   return SAVED_PINS.filter((p) => miles(area.lat, area.lon, p.lat, p.lon) <= maxMiles)
     .filter((p) => p.kind !== "route")
+    .filter((p) => {
+      const n = `${p.name} ${p.folder}`.toLowerCase();
+      const offshorePin =
+        n.includes("troll") || n.includes("color change") || n.includes("offshore run") || n.includes("hump");
+      if (offshorePin) return Boolean(opts?.includeOffshore);
+      return true;
+    })
     .map((p) => {
       const n = `${p.name} ${p.folder}`.toLowerCase();
       const troll = n.includes("troll") || n.includes("color change");

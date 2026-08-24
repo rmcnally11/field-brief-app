@@ -2,6 +2,7 @@ import type { CalendarDay } from "@/lib/types";
 import { MoonDisk } from "@/components/viz/moon-disk";
 import { scoreHex, scoreInk } from "@/lib/viz";
 import { cn } from "@/lib/utils";
+import { briefHref } from "@/lib/hrefs";
 
 function weekday(ymd: string, timezone: string) {
   const d = new Date(`${ymd}T12:00:00`);
@@ -12,10 +13,16 @@ export function UpcomingStrip({
   days,
   timezone,
   hrefBase = "/calendar",
+  areaId,
+  theater,
+  activity,
 }: {
   days: CalendarDay[];
   timezone: string;
   hrefBase?: string;
+  areaId?: string;
+  theater?: string;
+  activity?: string;
 }) {
   if (!days.length) {
     return (
@@ -40,14 +47,19 @@ export function UpcomingStrip({
         {days.map((day) => {
           const hex = scoreHex(day.score);
           const ink = scoreInk(day.score);
+          const Tag = areaId && theater ? "a" : "article";
+          const href = areaId && theater ? briefHref({ areaId, theater, activity, date: day.date }) : undefined;
           return (
-            <article
+            <Tag
               key={day.date}
+              href={href}
               className={cn(
                 "w-[5.6rem] shrink-0 rounded-2xl border p-2 text-center",
-                day.amazing
-                  ? "border-[color:var(--gold)] bg-[color:var(--gold)]/15"
-                  : "border-[color:var(--line)] bg-[color:var(--panel)]",
+                day.yolo
+                  ? "border-[color:var(--copper)] bg-[color:var(--copper)]/12"
+                  : day.amazing
+                    ? "border-[color:var(--gold)] bg-[color:var(--gold)]/15"
+                    : "border-[color:var(--line)] bg-[color:var(--panel)]",
               )}
               title={day.drivers.join(" · ")}
             >
@@ -67,10 +79,12 @@ export function UpcomingStrip({
               {day.tideRangeFt != null ? (
                 <p className="mt-1 font-mono text-[9px] text-[color:var(--cream)]/45">Δ{day.tideRangeFt.toFixed(1)}ft</p>
               ) : null}
-              {day.amazing ? (
+              {day.yolo ? (
+                <p className="mt-1 text-[9px] font-bold uppercase tracking-wide text-[color:var(--copper)]">YOLO</p>
+              ) : day.amazing ? (
                 <p className="mt-1 text-[9px] font-bold uppercase tracking-wide text-[color:var(--gold)]">Go</p>
               ) : null}
-            </article>
+            </Tag>
           );
         })}
       </div>

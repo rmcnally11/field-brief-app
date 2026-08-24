@@ -19,7 +19,7 @@ import {
   louisianaFlounderClosed,
   snookClosedOn,
 } from "@/lib/data/species";
-import { clockParts, hourInZone } from "@/lib/time";
+import { clockParts, hourInZone, ymdInZone } from "@/lib/time";
 import { composeHeadline, pickHeadlineSpecies } from "@/lib/headline";
 
 function clamp(n: number, lo: number, hi: number) {
@@ -200,6 +200,7 @@ export function pickSpots(
   activity: ActivityId | "all",
   species: SpeciesPick[],
   wrecks: OfficialMark[] = [],
+  now = new Date(),
 ): SpotPick[] {
   const inPlay = new Set(species.filter((s) => s.inPlay).map((s) => s.species.id));
   const wind = conditions.weather.windMph;
@@ -256,7 +257,7 @@ export function pickSpots(
         score += 1.2;
         why.push("Water is hot — deeper guts, passes, and shade hold oxygen and fish.");
       }
-      if (hot && spot.depth === "skinny" && clockParts(new Date(), area.timezone).hour > 10 && clockParts(new Date(), area.timezone).hour < 16) {
+      if (hot && spot.depth === "skinny" && clockParts(now, area.timezone).hour > 10 && clockParts(now, area.timezone).hour < 16) {
         score -= 1.4;
         why.push("Skinny water at midday in this heat is a walk, not a hunt.");
       }
@@ -408,7 +409,7 @@ export function buildBriefing(
       }
       return b.score - a.score;
     });
-  const where = pickSpots(area, conditions, activity, species, official?.wrecks ?? []).slice(0, 6);
+  const where = pickSpots(area, conditions, activity, species, official?.wrecks ?? [], now).slice(0, 6);
   const when = pickWindows(area, conditions, activity, now);
   const month = clockParts(now, area.timezone).month;
   const water = conditions.waterTempF;
@@ -531,15 +532,38 @@ export function buildBriefing(
 
   const headline = composeHeadline(area, top, conditions);
 
+  const forDate = ymdInZone(now, area.timezone);
+  const todayYmd = ymdInZone(new Date(), area.timezone);
+  const kind: Briefing["kind"] =
+    forDate === todayYmd
+      ? "today"
+      : wind != null
+        ? "forecast"
+        : "astronomical";
+
+  if (kind === "forecast") {
+    warnings.unshift(
+      `This brief is for ${forDate}, not this morning. Wind is a forecast. Observed water versus the table is a today-only instrument.`,
+    );
+  }
+  if (kind === "astronomical") {
+    warnings.unshift(
+      `This brief is for ${forDate}. No wind forecast that far out — score is tide, moon, and season. Not a copper day.`,
+    );
+  }
+
   let confidence: Briefing["confidence"] = "medium";
-  if (conditions.tides.source === "noaa" && water != null && wind != null) confidence = "high";
-  if (conditions.tides.source === "modeled") confidence = "medium";
-  if (water == null && conditions.tides.source === "modeled") confidence = "low";
+  if (kind === "today" && conditions.tides.source === "noaa" && water != null && wind != null) confidence = "high";
+  if (kind === "forecast") confidence = "medium";
+  if (kind === "astronomical" || (water == null && conditions.tides.source === "modeled")) confidence = "low";
+  if (kind === "today" && conditions.tides.source === "modeled") confidence = "medium";
 
   void month;
   return {
     area,
     activity,
+    forDate,
+    kind,
     confidence,
     overall: Number(overall.toFixed(1)),
     headline,

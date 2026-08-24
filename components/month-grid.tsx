@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { scoreColor } from "@/components/score-pip";
 import { MoonDisk } from "@/components/viz/moon-disk";
 import { scoreHex } from "@/lib/viz";
+import { briefHref } from "@/lib/hrefs";
 
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -36,12 +37,18 @@ export function MonthGrid({
   days,
   timezone,
   title,
+  areaId,
+  theater,
+  activity,
 }: {
   year: number;
   month: number;
   days: CalendarDay[];
   timezone: string;
   title?: string;
+  areaId: string;
+  theater: string;
+  activity: string;
 }) {
   const localFirst = new Date(`${year}-${String(month).padStart(2, "0")}-01T12:00:00`);
   const pad = localFirst.getDay();
@@ -64,14 +71,16 @@ export function MonthGrid({
         {days.map((day) => {
           const n = Number(day.date.slice(-2));
           return (
-            <div
+            <a
               key={day.date}
+              href={briefHref({ areaId, theater, activity, date: day.date })}
               title={`${day.date} · ${day.score} · ${day.moon.name} · ${day.drivers.join(" · ")}`}
               className={cn(
                 "min-h-[6.4rem] rounded-xl p-1 text-left sm:min-h-[7.6rem] sm:p-1.5",
                 scoreColor(day.score),
                 day.date === today && "ring-2 ring-[color:var(--cream)]",
                 day.amazing && "outline outline-2 outline-offset-1 outline-[color:var(--gold)]",
+                day.yolo && "outline outline-2 outline-offset-1 outline-[color:var(--copper)]",
               )}
             >
               <div className="flex items-start justify-between gap-0.5">
@@ -92,10 +101,12 @@ export function MonthGrid({
                 ) : null}
               </div>
               <TideSpark day={day} />
-              {day.amazing ? (
+              {day.yolo ? (
+                <p className="mt-1 text-[9px] font-bold uppercase tracking-wide">YOLO</p>
+              ) : day.amazing ? (
                 <p className="mt-1 text-[9px] font-bold uppercase tracking-wide">Go</p>
               ) : null}
-            </div>
+            </a>
           );
         })}
       </div>
@@ -103,10 +114,27 @@ export function MonthGrid({
   );
 }
 
-export function AmazingChip({ day }: { day: CalendarDay }) {
+export function AmazingChip({
+  day,
+  areaId,
+  theater,
+  activity,
+}: {
+  day: CalendarDay;
+  areaId: string;
+  theater: string;
+  activity: string;
+}) {
   return (
-    <li
-      className="flex items-center gap-3 rounded-2xl border border-[color:var(--gold)]/40 bg-[color:var(--gold)]/10 p-2"
+    <li>
+    <a
+      href={briefHref({ areaId, theater, activity, date: day.date })}
+      className={cn(
+        "flex items-center gap-3 rounded-2xl border p-2",
+        day.yolo
+          ? "border-[color:var(--copper)]/50 bg-[color:var(--copper)]/10"
+          : "border-[color:var(--gold)]/40 bg-[color:var(--gold)]/10",
+      )}
       style={{ boxShadow: `inset 3px 0 0 ${scoreHex(day.score)}` }}
     >
       <MoonDisk phase={day.moon.phase} illumination={day.moon.illumination} size={40} />
@@ -115,11 +143,13 @@ export function AmazingChip({ day }: { day: CalendarDay }) {
           {day.date.slice(5)} · {day.score.toFixed(1)}
         </p>
         <p className="truncate text-xs text-[color:var(--cream)]/65">
+          {day.yolo ? "YOLO · " : ""}
           {day.moon.name.toLowerCase()} · {day.moon.springNeap}
           {day.tides.length ? ` · ${day.tides.map((t) => `${t.type} ${t.time}`).join(", ")}` : ""}
           {day.tideRangeFt != null ? ` · Δ ${day.tideRangeFt.toFixed(1)} ft` : ""}
         </p>
       </div>
+    </a>
     </li>
   );
 }

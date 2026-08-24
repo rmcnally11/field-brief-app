@@ -239,7 +239,23 @@ function scoreDay(area: Area, activity: ActivityId | "all", ymd: string, inputs:
     tides,
     tideRangeFt: Number(rangeFromHiLo.toFixed(2)),
     windMph: wind,
+    yolo: false,
   };
+}
+
+export function pickYolo(days: CalendarDay[], fromYmd: string): CalendarDay | null {
+  const pool = days.filter((d) => d.date >= fromYmd && d.windMph != null);
+  if (!pool.length) return null;
+  return [...pool].sort((a, b) => {
+    if (a.amazing !== b.amazing) return a.amazing ? -1 : 1;
+    if (b.score !== a.score) return b.score - a.score;
+    return (a.windMph ?? 99) - (b.windMph ?? 99);
+  })[0];
+}
+
+function markYolo(days: CalendarDay[], fromYmd: string) {
+  const winner = pickYolo(days, fromYmd);
+  return days.map((d) => ({ ...d, yolo: winner?.date === d.date }));
 }
 
 function daysInMonth(year: number, month: number) {
@@ -263,11 +279,12 @@ function monthsFromInputs(
     for (let day = 1; day <= daysInMonth(y, m); day++) {
       days.push(scoreDay(area, activity, `${y}-${String(m).padStart(2, "0")}-${String(day).padStart(2, "0")}`, inputs));
     }
+    const fromYmd = ymdInZone(new Date(), area.timezone);
     months.push({
       year: y,
       month: m,
       label: d.toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" }),
-      days,
+      days: markYolo(days, fromYmd),
     });
   }
   return months;
@@ -303,7 +320,7 @@ async function computeUpcoming(areaId: string, activity: ActivityId | "all", fro
     days.push(scoreDay(area, activity, `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`, inputs));
     cursor.setUTCDate(cursor.getUTCDate() + 1);
   }
-  return days;
+  return markYolo(days, fromYmd);
 }
 
 const cachedUpcoming = unstable_cache(computeUpcoming, ["field-calendar-upcoming-v1"], {
@@ -332,7 +349,7 @@ async function computeCalendarRange(
   return monthsFromInputs(area, activity, year, month, count, inputs);
 }
 
-const cachedCalendarRange = unstable_cache(computeCalendarRange, ["field-calendar-v1"], {
+const cachedCalendarRange = unstable_cache(computeCalendarRange, ["field-calendar-v2"], {
   revalidate: 300,
 });
 
@@ -344,4 +361,10 @@ export async function buildCalendarRange(
   count = 2,
 ) {
   return cachedCalendarRange(area.id, year, month, activity, count);
+}
+
+export async function getYoloDay(area: Area, activity: ActivityId | "all") {
+  const now = clockParts(new Date(), area.timezone);
+  const months = await buildCalendarRange(area, now.year, now.month, activity, 1);
+  return months[0]?.days.find((d) => d.yolo) ?? pickYolo(months[0]?.days ?? [], ymdInZone(new Date(), area.timezone));
 }

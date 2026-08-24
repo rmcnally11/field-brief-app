@@ -11,8 +11,15 @@ import { TideCurve } from "@/components/viz/tide-curve";
 import { TempBar } from "@/components/viz/temp-bar";
 import { UpcomingStrip } from "@/components/viz/upcoming-strip";
 import { Waterline } from "@/components/viz/waterline";
-import { formatInZone, parseNoaaGmt } from "@/lib/time";
+import { WindTable } from "@/components/wind-table";
+import { RegsStamp } from "@/components/regs-stamp";
+import { CopyLine } from "@/components/copy-line";
+import { YoloBanner } from "@/components/yolo-banner";
+import { formatInZone, formatYmdLong, parseNoaaGmt } from "@/lib/time";
 import { Badge } from "@/components/ui/badge";
+import { morningLine } from "@/lib/morning";
+import { briefHref, compareHref } from "@/lib/hrefs";
+import { neighborArea } from "@/lib/data/areas";
 
 function tideClock(stamp: string, tz: string) {
   const d = stamp.includes("T") ? new Date(stamp) : parseNoaaGmt(stamp);
@@ -23,13 +30,20 @@ export function BriefingPanel({
   briefing,
   upcoming,
   upcomingSlot,
+  yolo,
 }: {
   briefing: Briefing;
   upcoming?: CalendarDay[];
   upcomingSlot?: ReactNode;
+  yolo?: CalendarDay | null;
 }) {
   const { area, conditions } = briefing;
   const calHref = `/calendar?area=${area.id}&theater=${area.theater}${briefing.activity !== "all" ? `&activity=${briefing.activity}` : ""}`;
+  const neighbor = neighborArea(area);
+  const line = morningLine(briefing, yolo);
+  const gulf = area.theater === "texas" || area.theater === "louisiana";
+  const showTable =
+    gulf || (conditions.tides.anomalyFt != null && Math.abs(conditions.tides.anomalyFt) >= 0.25);
 
   return (
     <div className="space-y-10">
@@ -53,12 +67,27 @@ export function BriefingPanel({
               </ul>
             )}
           </div>
-          <ScoreRing
+            <ScoreRing
             score={briefing.overall}
             size={148}
-            label="Today"
+            label={briefing.kind === "today" ? "Today" : briefing.kind === "forecast" ? "Forecast" : "Tide + moon"}
             sub={`${briefing.confidence} confidence`}
           />
+        </div>
+        {briefing.kind !== "today" && (
+          <div className="border-t border-[color:var(--line)] px-5 py-3 text-sm text-[color:var(--cream)]/70 md:px-7">
+            Forecast brief for {formatYmdLong(briefing.forDate, area.timezone)}.{" "}
+            <a className="underline decoration-[color:var(--copper)]/40" href={briefHref({ areaId: area.id, theater: area.theater, activity: briefing.activity })}>
+              Back to this morning
+            </a>
+          </div>
+        )}
+        <div className="border-t border-[color:var(--line)] px-5 py-4 md:px-7">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">Morning line</p>
+          <p className="mt-2 font-heading text-xl leading-snug text-[color:var(--cream)]">{line}</p>
+          <div className="mt-3">
+            <CopyLine text={line} />
+          </div>
         </div>
         <div className="border-t border-[color:var(--line)] px-3 py-4 md:px-6">
           <TideCurve
@@ -114,6 +143,15 @@ export function BriefingPanel({
               : conditions.tides.source}
           </p>
         </Instrument>
+        {showTable ? (
+          <Instrument label="Wind vs table" source={conditions.tides.source === "noaa" ? "Observed − predicted" : "No live gauge"}>
+            <WindTable
+              anomalyFt={conditions.tides.anomalyFt}
+              series={conditions.tides.anomalySeries}
+              theater={area.theater}
+            />
+          </Instrument>
+        ) : null}
         <Instrument label="Clock" source={area.noaaStation ? `NOAA ${area.noaaStation}` : "Modeled M2"}>
           <ul className="space-y-2 text-sm">
             {conditions.tides.nextHiLo.slice(0, 5).map((t) => (
@@ -142,21 +180,47 @@ export function BriefingPanel({
         </Instrument>
       </section>
 
-      {conditions.tides.anomalyFt != null && Math.abs(conditions.tides.anomalyFt) >= 0.25 && (
+      {conditions.tides.anomalyFt != null && Math.abs(conditions.tides.anomalyFt) >= 0.25 && !showTable && (
         <p className="rounded-2xl border border-[color:var(--copper)]/40 bg-[color:var(--copper)]/10 px-4 py-3 text-sm text-[color:var(--cream)]/85">
           Wind versus the table: observed water is{" "}
           <strong>
             {conditions.tides.anomalyFt > 0 ? "+" : ""}
             {conditions.tides.anomalyFt.toFixed(2)} ft
           </strong>{" "}
-          from the NOAA prediction.{" "}
-          {area.theater === "texas" || area.theater === "louisiana"
-            ? "On this coast this is often the real tide."
-            : area.theater === "florida"
-              ? "Read the water, not just the printout."
-              : "Bahamas tides are modeled — treat a miss as setup, not a guarantee."}
+          from the NOAA prediction. Read the water, not just the printout.
         </p>
       )}
+
+      {yolo ? (
+        <YoloBanner
+          day={yolo}
+          areaId={area.id}
+          theater={area.theater}
+          activity={briefing.activity}
+          timezone={area.timezone}
+        />
+      ) : null}
+
+      <div className="flex flex-wrap gap-3 text-sm">
+        <a
+          href={compareHref({ a: area.id, b: neighbor.id, activity: briefing.activity, date: briefing.kind === "today" ? null : briefing.forDate })}
+          className="rounded-full border border-[color:var(--line)] px-3 py-1.5 text-[color:var(--cream)]/75 hover:text-[color:var(--cream)]"
+        >
+          Stay or drive · {area.shortName} vs {neighbor.shortName}
+        </a>
+        <a
+          href={calHref}
+          className="rounded-full border border-[color:var(--line)] px-3 py-1.5 text-[color:var(--cream)]/75 hover:text-[color:var(--cream)]"
+        >
+          Open the calendar
+        </a>
+        <a
+          href="/morning"
+          className="rounded-full border border-[color:var(--line)] px-3 py-1.5 text-[color:var(--cream)]/75 hover:text-[color:var(--cream)]"
+        >
+          Morning dispatch
+        </a>
+      </div>
 
       {upcomingSlot}
       {upcoming && upcoming.length > 0 ? (
@@ -337,6 +401,9 @@ export function BriefingPanel({
               <p className="mt-2 text-xs text-[color:var(--cream)]/45">{regulationFor(s.species, area.theater)}</p>
             </article>
           ))}
+        </div>
+        <div className="mt-5">
+          <RegsStamp theater={area.theater} />
         </div>
       </section>
     </div>

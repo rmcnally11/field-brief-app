@@ -4,6 +4,7 @@ import { getArea } from "@/lib/data/areas";
 import { loadConditions } from "@/lib/conditions";
 import { buildBriefing } from "@/lib/engine";
 import { loadOfficialLayers } from "@/lib/layers";
+import { briefInstant, isYmd, ymdInZone } from "@/lib/time";
 
 const ACTIVITIES = new Set(["wade", "skiff", "kayak", "fly", "spin", "structure", "offshore", "all"]);
 
@@ -12,13 +13,22 @@ export function parseActivity(raw?: string | null): ActivityId | "all" {
   return raw as ActivityId | "all";
 }
 
-async function computeBriefing(areaId: string, activity: ActivityId | "all"): Promise<Briefing> {
+export function parseBriefDate(raw?: string | null) {
+  return isYmd(raw) ? raw : null;
+}
+
+async function computeBriefing(
+  areaId: string,
+  activity: ActivityId | "all",
+  dateYmd: string,
+): Promise<Briefing> {
   const area = getArea(areaId);
+  const at = briefInstant(dateYmd, area.timezone);
   const [conditions, official] = await Promise.all([
-    loadConditions(area),
+    loadConditions(area, at),
     loadOfficialLayers(area, { includeGnis: false, timeoutMs: 1600 }),
   ]);
-  const built = buildBriefing(area, conditions, activity, new Date(), {
+  const built = buildBriefing(area, conditions, activity, at, {
     wrecks: official.wrecks,
     zones: official.zones,
     access: official.access,
@@ -29,12 +39,17 @@ async function computeBriefing(areaId: string, activity: ActivityId | "all"): Pr
   };
 }
 
-const cachedBriefing = unstable_cache(computeBriefing, ["field-briefing-v4"], {
+const cachedBriefing = unstable_cache(computeBriefing, ["field-briefing-v5"], {
   revalidate: 180,
 });
 
-export async function getBriefing(areaId?: string | null, activityRaw?: string | null): Promise<Briefing> {
+export async function getBriefing(
+  areaId?: string | null,
+  activityRaw?: string | null,
+  dateRaw?: string | null,
+): Promise<Briefing> {
   const area = getArea(areaId);
   const activity = parseActivity(activityRaw);
-  return cachedBriefing(area.id, activity);
+  const dateYmd = parseBriefDate(dateRaw) ?? ymdInZone(new Date(), area.timezone);
+  return cachedBriefing(area.id, activity, dateYmd);
 }

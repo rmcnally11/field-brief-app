@@ -17,7 +17,9 @@ import { cn } from "@/lib/utils";
 const LINKS = [
   { href: "/", label: "Brief", dek: "Today’s water" },
   { href: "/calendar", label: "Calendar", dek: "Amazing days" },
+  { href: "/compare", label: "Compare", dek: "Stay or drive" },
   { href: "/map", label: "Map", dek: "Marks and legal water" },
+  { href: "/morning", label: "Morning", dek: "The one-line dispatch" },
   { href: "/species", label: "Species", dek: "Who is in play" },
   { href: "/method", label: "Method", dek: "How the score is built" },
   { href: "/newsletter", label: "Letter", dek: "Seven live desks" },

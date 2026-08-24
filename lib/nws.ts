@@ -55,6 +55,34 @@ function parseWindMph(text: string | undefined) {
   return Math.max(...nums);
 }
 
+export function nwsWindAt(
+  periods: { startTime: string; windSpeed: string; windDirection: string; temperature: number }[],
+  at: Date,
+) {
+  if (!periods.length) return null;
+  let best = periods[0];
+  let bestDelta = Math.abs(new Date(best.startTime).getTime() - at.getTime());
+  for (const p of periods) {
+    const delta = Math.abs(new Date(p.startTime).getTime() - at.getTime());
+    if (delta < bestDelta) {
+      best = p;
+      bestDelta = delta;
+    }
+  }
+  if (bestDelta > 18 * 3600000) return null;
+  const dirMap: Record<string, number> = {
+    N: 0, NNE: 22, NE: 45, ENE: 67, E: 90, ESE: 112, SE: 135, SSE: 157,
+    S: 180, SSW: 202, SW: 225, WSW: 247, W: 270, WNW: 292, NW: 315, NNW: 337,
+  };
+  const deg = dirMap[best.windDirection] ?? null;
+  return {
+    airF: best.temperature,
+    windMph: parseWindMph(best.windSpeed),
+    windDirDeg: deg,
+    windCardinal: best.windDirection || cardinalFromDeg(deg),
+  };
+}
+
 export function nwsWindNow(
   periods: { startTime: string; windSpeed: string; windDirection: string; temperature: number }[],
 ) {

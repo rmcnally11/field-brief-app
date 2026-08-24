@@ -5,10 +5,22 @@ import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaf
 import { SPOTS } from "@/lib/data/spots";
 import { AREA_BY_ID } from "@/lib/data/areas";
 import type { OfficialPoint } from "@/lib/layers";
-import type { ActivityId, TheaterId } from "@/lib/types";
+import type { ActivityId, Spot, SpotPick, TheaterId } from "@/lib/types";
+import { scoreHex } from "@/lib/viz";
 import "leaflet/dist/leaflet.css";
 
-function Fit({ spots, extras }: { spots: typeof SPOTS; extras: OfficialPoint[] }) {
+function isOffshoreMark(spot: { name: string; note: string; habitat: string; activities: string[] }) {
+  const n = `${spot.name} ${spot.note}`.toLowerCase();
+  return (
+    n.includes("troll") ||
+    n.includes("color change") ||
+    n.includes("blue water") ||
+    n.includes("hump") ||
+    spot.habitat === "blue-water"
+  );
+}
+
+function Fit({ spots, extras }: { spots: Spot[]; extras: OfficialPoint[] }) {
   const map = useMap();
   useMemo(() => {
     const pts = [...spots, ...extras];
@@ -46,20 +58,27 @@ export function CoastMap({
   activity,
   areaId,
   extras = [],
+  briefed = [],
 }: {
   theater?: TheaterId | "all";
   activity?: ActivityId | "all";
   areaId?: string;
   extras?: OfficialPoint[];
+  briefed?: SpotPick[];
 }) {
-  const spots = SPOTS.filter((s) => {
+  const catalog = SPOTS.filter((s) => {
     const area = AREA_BY_ID[s.areaId];
     if (!area) return false;
     if (areaId && s.areaId !== areaId) return false;
     if (theater && theater !== "all" && area.theater !== theater) return false;
     if (activity && activity !== "all" && !s.activities.includes(activity)) return false;
+    const offshore = isOffshoreMark(s);
+    if (activity === "offshore") return offshore || s.activities.includes("offshore");
+    if (offshore) return false;
     return true;
   });
+  const spots = briefed.length ? briefed.map((p) => p.spot) : catalog;
+  const scoreById = new Map(briefed.map((p) => [p.spot.id, p]));
 
   const center = spots[0] ? ([spots[0].lat, spots[0].lon] as [number, number]) : ([26.5, -82] as [number, number]);
 
@@ -80,16 +99,19 @@ export function CoastMap({
         opacity={0.85}
       />
       <Fit spots={spots} extras={extras} />
-      {spots.map((s) => (
+      {spots.map((s) => {
+        const pick = scoreById.get(s.id);
+        const color = pick ? scoreHex(pick.score) : SOURCE_COLOR[s.source];
+        return (
         <CircleMarker
           key={s.id}
           center={[s.lat, s.lon]}
-          radius={8}
+          radius={pick ? 11 : 8}
           pathOptions={{
-            color: SOURCE_COLOR[s.source],
-            fillColor: SOURCE_COLOR[s.source],
-            fillOpacity: 0.85,
-            weight: 1,
+            color,
+            fillColor: color,
+            fillOpacity: 0.88,
+            weight: pick ? 2 : 1,
           }}
         >
           <Popup>
@@ -97,14 +119,17 @@ export function CoastMap({
               <p className="font-semibold">{s.name}</p>
               <p className="text-xs uppercase tracking-wide opacity-60">
                 {AREA_BY_ID[s.areaId]?.name} · {s.source.replace("-", " ")}
+                {pick ? ` · ${pick.score.toFixed(1)}` : ""}
               </p>
               <p className="mt-1">{s.note}</p>
+              {pick?.why[0] ? <p className="mt-1 text-xs opacity-70">{pick.why[0]}</p> : null}
               {s.gnisId ? <p className="mt-1 text-xs opacity-60">USGS GNIS {s.gnisId}</p> : null}
               <p className="mt-1 text-xs opacity-70">{s.activities.join(" · ")}</p>
             </div>
           </Popup>
         </CircleMarker>
-      ))}
+        );
+      })}
       {extras
         .filter((p, i, all) => all.findIndex((x) => x.id === p.id) === i)
         .map((p) => (

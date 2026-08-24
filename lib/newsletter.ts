@@ -1,6 +1,7 @@
+import { unstable_cache } from "next/cache";
 import type { Briefing, TheaterId } from "@/lib/types";
 import { getBriefing } from "@/lib/briefing";
-import { clockParts } from "@/lib/time";
+import { addDaysYmd, clockParts, isYmd, mostRecentSaturday } from "@/lib/time";
 import { SPECIES } from "@/lib/data/species";
 import {
   MONTH_NAMES,
@@ -81,6 +82,7 @@ export type DeskIssue = {
 };
 
 export type NewsletterIssue = {
+  weekId: string;
   weekLabel: string;
   weekNumber: number;
   year: number;
@@ -92,6 +94,7 @@ export type NewsletterIssue = {
   peaks: { name: string; theaters: string; why: string }[];
   closures: { title: string; body: string }[];
   generatedAt: string;
+  frozen: boolean;
 };
 
 function mondayOffset(weekday: string) {
@@ -106,6 +109,15 @@ function isoWeek(date: Date) {
   d.setUTCDate(d.getUTCDate() + 4 - day);
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
   return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+}
+
+export function letterWeekId(now = new Date(), timeZone = "America/Chicago") {
+  return mostRecentSaturday(now, timeZone);
+}
+
+export function recentLetterWeeks(now = new Date(), count = 8) {
+  const current = letterWeekId(now);
+  return Array.from({ length: count }, (_, i) => addDaysYmd(current, -7 * i));
 }
 
 export function weekWindow(now = new Date(), timeZone = "America/Chicago") {
@@ -134,7 +146,8 @@ export function weekWindow(now = new Date(), timeZone = "America/Chicago") {
   };
 }
 
-export async function getNewsletter(now = new Date()): Promise<NewsletterIssue> {
+async function computeNewsletter(weekId: string): Promise<NewsletterIssue> {
+  const now = isYmd(weekId) ? new Date(`${weekId}T16:00:00Z`) : new Date();
   const week = weekWindow(now);
   const settled = await Promise.allSettled(DESKS.map((desk) => getBriefing(desk.areaId)));
 
@@ -170,6 +183,7 @@ export async function getNewsletter(now = new Date()): Promise<NewsletterIssue> 
   }));
 
   return {
+    weekId,
     weekLabel: week.weekLabel,
     weekNumber: week.weekNumber,
     year: week.year,
@@ -180,8 +194,18 @@ export async function getNewsletter(now = new Date()): Promise<NewsletterIssue> 
     desks,
     peaks,
     closures: closuresThisMonth(week.month, now),
-    generatedAt: now.toISOString(),
+    generatedAt: new Date().toISOString(),
+    frozen: weekId !== letterWeekId(),
   };
+}
+
+const cachedNewsletter = unstable_cache(computeNewsletter, ["field-letter-v1"], {
+  revalidate: 60 * 60 * 24 * 7,
+});
+
+export async function getNewsletter(weekRaw?: string | null): Promise<NewsletterIssue> {
+  const weekId = isYmd(weekRaw) ? weekRaw : letterWeekId();
+  return cachedNewsletter(weekId);
 }
 
 export function incidentalNoise(month: number) {

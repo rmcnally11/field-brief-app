@@ -1,21 +1,30 @@
 import { Suspense } from "react";
-import { getBriefing, parseActivity } from "@/lib/briefing";
+import { getBriefing, parseActivity, parseBriefDate } from "@/lib/briefing";
 import { FilterBar } from "@/components/filters";
 import { BriefingPanel } from "@/components/briefing-panel";
 import { UpcomingLoader, UpcomingSkeleton } from "@/components/upcoming-loader";
+import { readWaterPref, resolveDesk } from "@/lib/prefs";
+import { getYoloDay } from "@/lib/calendar";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ area?: string; activity?: string; theater?: string }>;
+  searchParams: Promise<{ area?: string; activity?: string; theater?: string; date?: string }>;
 }) {
   const q = await searchParams;
+  const pref = await readWaterPref();
+  const desk = resolveDesk(q, pref);
+  const date = parseBriefDate(q.date);
   let briefing;
+  let yolo = null;
   let error: string | null = null;
   try {
-    briefing = await getBriefing(q.area, q.activity);
+    [briefing, yolo] = await Promise.all([
+      getBriefing(desk.area.id, desk.activity, date),
+      getYoloDay(desk.area, desk.activity),
+    ]);
   } catch (e) {
     error = e instanceof Error ? e.message : "Could not build the briefing.";
   }
@@ -24,9 +33,9 @@ export default async function Home({
     <div className="space-y-6">
       <Suspense>
         <FilterBar
-          areaId={briefing?.area.id ?? q.area ?? "galveston"}
-          activity={q.activity ?? "all"}
-          theater={q.theater ?? briefing?.area.theater}
+          areaId={briefing?.area.id ?? desk.area.id}
+          activity={q.activity ?? desk.activity}
+          theater={q.theater ?? desk.theater}
         />
       </Suspense>
       {error || !briefing ? (
@@ -37,9 +46,10 @@ export default async function Home({
       ) : (
         <BriefingPanel
           briefing={briefing}
+          yolo={yolo}
           upcomingSlot={
             <Suspense fallback={<UpcomingSkeleton />}>
-              <UpcomingLoader area={briefing.area} activity={parseActivity(q.activity)} />
+              <UpcomingLoader area={briefing.area} activity={parseActivity(q.activity ?? desk.activity)} />
             </Suspense>
           }
         />

@@ -68,6 +68,32 @@ export async function fetchHourly(station: string, start: Date, days = 3) {
   }));
 }
 
+export async function fetchHourlyObserved(station: string, start: Date, days = 1) {
+  const { begin, end } = noaaDateSpan(new Date(start.getTime() - 6 * 3600000), days);
+  const json = await getJson(
+    qs({
+      product: "water_level",
+      application: APP,
+      begin_date: begin,
+      end_date: end,
+      datum: "MLLW",
+      station,
+      time_zone: "gmt",
+      units: "english",
+      interval: "h",
+      format: "json",
+    }),
+  );
+  const rows = (json.data ?? []) as { t: string; v: string }[];
+  return rows
+    .map((r) => ({
+      time: r.t,
+      height: Number(r.v),
+      at: parseNoaaGmt(r.t),
+    }))
+    .filter((r) => Number.isFinite(r.height));
+}
+
 export async function fetchLatest(station: string, product: string) {
   try {
     const json = await getJson(

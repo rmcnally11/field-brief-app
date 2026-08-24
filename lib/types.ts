@@ -138,12 +138,20 @@ export type HourlyTide = {
   height: number;
 };
 
+export type AnomalyPoint = {
+  time: string;
+  predicted: number;
+  observed: number;
+  anomaly: number;
+};
+
 export type TideAnalysis = {
   stage: TideStage;
   rising: boolean;
   predictedNow: number | null;
   observedNow: number | null;
   anomalyFt: number | null;
+  anomalySeries: AnomalyPoint[];
   rangeTodayFt: number | null;
   nextHiLo: HiLo[];
   hourly: HourlyTide[];
@@ -197,10 +205,15 @@ export type SpeciesPick = {
   why: string;
 };
 
+export type BriefKind = "today" | "forecast" | "astronomical";
+
 export type Briefing = {
   area: Area;
   activity: ActivityId | "all";
   generatedAt: string;
+  /** Local Y-M-D this brief is built for. */
+  forDate: string;
+  kind: BriefKind;
   confidence: "high" | "medium" | "low";
   overall: number;
   headline: string;
@@ -232,6 +245,8 @@ export type CalendarDay = {
   bestWindow: string | null;
   /** Score high enough that this is a book-the-day window for this micro-area. */
   amazing: boolean;
+  /** Best remaining day this month with a real wind forecast. */
+  yolo: boolean;
   moon: {
     name: string;
     glyph: string;

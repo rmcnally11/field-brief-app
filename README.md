@@ -18,7 +18,11 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**.
 - **Weekly Field Letter** (`/newsletter`) — one live desk per theater (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse), this month’s peaks, and harvest closures, in the Field Manual voice.
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by region, water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
-- Two-month **1–10 calendar** by micro-area: this month and next, with a drawn moon and tide range on every day. Copper outline = amazing day.
+- Two-month **1–10 calendar** by micro-area: this month and next. Tap a day for that date’s brief. Copper outline = amazing day. The monthly **YOLO** day is the best remaining day with a real wind forecast.
+- **Stay or drive** (`/compare`) — two desks, one morning.
+- **Morning line** (`/morning`) — one sentence you can copy or mail. No SMS on Hobby.
+- Last theater / area / method is remembered in a cookie.
+- Weekly Field Letter has a Saturday permalink (`/newsletter/YYYY-MM-DD`) and a short archive.
 - Satellite chart (Esri imagery) with official layers and your My Maps.
 - Filters for **wade / skiff / kayak / fly / spin / jetty / offshore** (troll, edge, deep jig).
 - Official map layers:

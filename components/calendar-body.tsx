@@ -1,5 +1,6 @@
 import { buildCalendarRange } from "@/lib/calendar";
 import { AmazingChip, MonthGrid } from "@/components/month-grid";
+import { YoloBanner } from "@/components/yolo-banner";
 import type { ActivityId, Area } from "@/lib/types";
 
 export function CalendarSkeleton() {
@@ -45,10 +46,20 @@ export async function CalendarBody({
     return <p className="text-rose-800">{message}</p>;
   }
 
-  const amazing = months.flatMap((m) => m.days.filter((d) => d.amazing));
+  const amazing = months.flatMap((m) => m.days.filter((d) => d.amazing || d.yolo));
+  const yolo = months.flatMap((m) => m.days).find((d) => d.yolo) ?? null;
 
   return (
     <>
+      {yolo ? (
+        <YoloBanner
+          day={yolo}
+          areaId={area.id}
+          theater={area.theater}
+          activity={activity}
+          timezone={area.timezone}
+        />
+      ) : null}
       {amazing.length > 0 && (
         <section>
           <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">
@@ -56,7 +67,13 @@ export async function CalendarBody({
           </p>
           <ul className="mt-3 grid gap-2 sm:grid-cols-2">
             {amazing.map((d) => (
-              <AmazingChip key={d.date} day={d} />
+              <AmazingChip
+                key={d.date}
+                day={d}
+                areaId={area.id}
+                theater={area.theater}
+                activity={activity}
+              />
             ))}
           </ul>
         </section>
@@ -70,6 +87,9 @@ export async function CalendarBody({
             days={m.days}
             timezone={area.timezone}
             title={m.label}
+            areaId={area.id}
+            theater={area.theater}
+            activity={activity}
           />
         ))}
       </div>

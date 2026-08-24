@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GATE_COOKIE, GATE_PATH, isValidGateToken, safeNextPath } from "@/lib/gate";
+import { AREA_BY_ID } from "@/lib/data/areas";
+import { parseActivity } from "@/lib/briefing";
+import { encodeWaterPref, WATER_COOKIE, waterCookieOptions } from "@/lib/prefs";
 
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
@@ -11,7 +14,21 @@ export function proxy(request: NextRequest) {
 
   if (open) return NextResponse.next();
   if (isValidGateToken(request.cookies.get(GATE_COOKIE)?.value)) {
-    return NextResponse.next();
+    const res = NextResponse.next();
+    const areaId = request.nextUrl.searchParams.get("area") ?? request.nextUrl.searchParams.get("a");
+    const area = areaId ? AREA_BY_ID[areaId] : null;
+    if (area) {
+      res.cookies.set(
+        WATER_COOKIE,
+        encodeWaterPref({
+          areaId: area.id,
+          theater: request.nextUrl.searchParams.get("theater") ?? area.theater,
+          activity: parseActivity(request.nextUrl.searchParams.get("activity")),
+        }),
+        waterCookieOptions(),
+      );
+    }
+    return res;
   }
 
   const url = request.nextUrl.clone();

@@ -26,5 +26,14 @@ export async function UpcomingLoader({
 }) {
   const days = await buildUpcoming(area, activity, ymdInZone(new Date(), area.timezone), 14);
   const hrefBase = `/calendar?area=${area.id}&theater=${area.theater}${activity !== "all" ? `&activity=${activity}` : ""}`;
-  return <UpcomingStrip days={days} timezone={area.timezone} hrefBase={hrefBase} />;
+  return (
+    <UpcomingStrip
+      days={days}
+      timezone={area.timezone}
+      hrefBase={hrefBase}
+      areaId={area.id}
+      theater={area.theater}
+      activity={activity}
+    />
+  );
 }

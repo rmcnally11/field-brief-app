@@ -94,6 +94,41 @@ export function noaaDateSpan(start: Date, days: number) {
   return { begin: fmt(start), end: fmt(end) };
 }
 
+export function isYmd(raw?: string | null): raw is string {
+  return Boolean(raw && /^\d{4}-\d{2}-\d{2}$/.test(raw));
+}
+
+/** Now if the date is today in-zone; otherwise 8 a.m. local on that date. */
+export function briefInstant(ymd: string | null | undefined, timeZone: string): Date {
+  if (!isYmd(ymd)) return new Date();
+  const today = ymdInZone(new Date(), timeZone);
+  if (ymd === today) return new Date();
+  return new Date(startOfDayInZone(ymd, timeZone).getTime() + 8 * 3600000);
+}
+
+export function mostRecentSaturday(now = new Date(), timeZone = "America/Chicago") {
+  const parts = clockParts(now, timeZone);
+  const dow: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  const daysSince = ((dow[parts.weekday] ?? 6) + 1) % 7;
+  const sat = new Date(now.getTime() - daysSince * 86400000);
+  return ymdInZone(sat, timeZone);
+}
+
+export function addDaysYmd(ymd: string, days: number) {
+  const [y, m, d] = ymd.split("-").map(Number);
+  const next = new Date(Date.UTC(y, m - 1, d + days));
+  return `${next.getUTCFullYear()}-${String(next.getUTCMonth() + 1).padStart(2, "0")}-${String(next.getUTCDate()).padStart(2, "0")}`;
+}
+
+export function formatYmdLong(ymd: string, timeZone: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  }).format(new Date(`${ymd}T16:00:00Z`));
+}
+
 export function cardinalFromDeg(deg: number | null) {
   if (deg == null || Number.isNaN(deg)) return null;
   const dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];

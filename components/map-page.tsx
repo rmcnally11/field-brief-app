@@ -18,6 +18,7 @@ const CoastMap = dynamic(() => import("@/components/coast-map").then((m) => m.Co
 });
 
 const LEGEND = [
+  { color: "#1d7ec4", label: "Briefed Where (scored today)" },
   { color: "#e23b3b", label: "Field Manual / public structure" },
   { color: "#f0c14b", label: "Your My Maps" },
   { color: "#2f8fd6", label: "USGS GNIS hydro" },
@@ -30,10 +31,12 @@ export function MapPageClient({
   areaId,
   activity,
   theater,
+  briefed = [],
 }: {
   areaId: string;
   activity: string;
   theater?: string;
+  briefed?: import("@/lib/types").SpotPick[];
 }) {
   const [layers, setLayers] = useState<{
     gnis: OfficialPoint[];
@@ -57,7 +60,7 @@ export function MapPageClient({
     };
   }, [areaId]);
 
-  const atlas = savedMarksNear(getArea(areaId));
+  const atlas = savedMarksNear(getArea(areaId), 55, { includeOffshore: activity === "offshore" });
   const extras = layers
     ? [...layers.zones, ...layers.wrecks, ...layers.access, ...layers.gnis, ...atlas]
     : atlas;
@@ -76,10 +79,9 @@ export function MapPageClient({
         <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Chart</p>
         <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Marks and legal water</h1>
         <p className="mt-2 max-w-3xl text-sm text-[color:var(--cream)]/65">
-          Satellite first. Copper pins are Field Manual / public structure — named passes snapped to
-          USGS GNIS where the gazetteer has them. Red rings are FKNMS no-take zones. Green are NOAA
-          ENC wrecks. Sand are public ramps and beach access. Teal are live GNIS hydro features. Cream pins
-          are your My Maps:{" "}
+          The larger pins are the brief’s Where list for this method — scored for today, not a dump of
+          every saved mark. Troll, hump, and color-change stay off the inshore chart. Red rings are
+          FKNMS no-take. Green are NOAA ENC wrecks. Sand are public ramps. Cream pins are your My Maps:{" "}
           {SAVED_MAPS.map((m, i) => (
             <span key={m.id}>
               {i > 0 ? " · " : ""}
@@ -99,6 +101,7 @@ export function MapPageClient({
           activity={activity === "all" ? "all" : (activity as "fly")}
           areaId={areaId}
           extras={extras}
+          briefed={briefed}
         />
         <ul className="mt-3 flex flex-wrap gap-2">
           {LEGEND.map((l) => (

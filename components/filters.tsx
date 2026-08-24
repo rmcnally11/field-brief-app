@@ -46,6 +46,7 @@ export function FilterBar({
   theater?: string;
 }) {
   const href = useFilterHref();
+  const params = useSearchParams();
   const visibleAreas = AREAS.filter((a) => !theater || theater === "all" || a.theater === theater);
 
   return (
@@ -86,6 +87,14 @@ export function FilterBar({
             </a>
           ))}
         </div>
+        {params.get("date") ? (
+          <a
+            href={href({ date: undefined })}
+            className="inline-flex cursor-pointer rounded-md border border-[color:var(--copper)] bg-[color:var(--copper)]/10 px-2.5 py-1 text-xs text-[color:var(--cream)]"
+          >
+            Forecast {params.get("date")} · back to this morning
+          </a>
+        ) : null}
         <div className="flex flex-wrap gap-1.5">
           <a
             href={href({ activity: undefined })}
@@ -130,6 +139,7 @@ function MobileFilterSheet({
   theater?: string;
 }) {
   const href = useFilterHref();
+  const params = useSearchParams();
   const area = getArea(areaId);
   const theaterId = theater ?? area.theater;
   const theaterLabel = THEATERS.find((t) => t.id === theaterId)?.label ?? "All water";
@@ -172,6 +182,14 @@ function MobileFilterSheet({
           <SheetDescription className="text-[color:var(--cream)]/50">
             Theater, micro-area, then the method. Same brief. Bigger taps.
           </SheetDescription>
+          {params.get("date") ? (
+            <a
+              href={href({ date: undefined })}
+              className="mx-4 mb-2 touch-manipulation rounded-xl border border-[color:var(--copper)] bg-[color:var(--copper)]/10 px-3 py-3 text-sm"
+            >
+              Forecast {params.get("date")} · back to this morning
+            </a>
+          ) : null}
         </SheetHeader>
         <div className="flex-1 space-y-5 overflow-y-auto px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
           <section>

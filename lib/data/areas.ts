@@ -518,6 +518,14 @@ export function getArea(id?: string | null) {
   return AREA_BY_ID[id ?? ""] ?? AREA_BY_ID.galveston;
 }
 
+export function neighborArea(area: Area): Area {
+  const same = AREAS.filter((a) => a.theater === area.theater);
+  const i = same.findIndex((a) => a.id === area.id);
+  const next = same[i + 1] ?? same[i - 1];
+  if (next && next.id !== area.id) return next;
+  return AREAS.find((a) => a.id !== area.id) ?? area;
+}
+
 export function defaultOffshoreLeads(area: Area): SpeciesId[] {
   return SPECIES.filter(
     (s) =>

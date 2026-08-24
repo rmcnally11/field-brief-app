@@ -55,16 +55,17 @@ async function weatherFor(area: Area): Promise<WeatherNow> {
 }
 
 export async function loadConditions(area: Area, now = new Date()): Promise<Conditions> {
-  const [tides, weather] = await Promise.all([loadTides(area, now), weatherFor(area)]);
+  const tempStation = area.noaaTempStation ?? area.noaaStation;
+  const [tides, weather, wt] = await Promise.all([
+    loadTides(area, now),
+    weatherFor(area),
+    tempStation ? fetchLatest(tempStation, "water_temperature") : Promise.resolve(null),
+  ]);
   let waterTempF: number | null = null;
   let waterTempSource: string | null = null;
-  const tempStation = area.noaaTempStation ?? area.noaaStation;
-  if (tempStation) {
-    const wt = await fetchLatest(tempStation, "water_temperature");
-    if (wt?.value != null) {
-      waterTempF = wt.value;
-      waterTempSource = `NOAA ${tempStation}`;
-    }
+  if (wt?.value != null && tempStation) {
+    waterTempF = wt.value;
+    waterTempSource = `NOAA ${tempStation}`;
   }
   return {
     areaId: area.id,

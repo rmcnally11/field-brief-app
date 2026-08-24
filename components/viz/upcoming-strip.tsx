@@ -46,7 +46,7 @@ export function UpcomingStrip({
               className={cn(
                 "w-[5.6rem] shrink-0 rounded-2xl border p-2 text-center",
                 day.amazing
-                  ? "border-[color:var(--copper)] bg-[color:var(--copper)]/15"
+                  ? "border-[color:var(--gold)] bg-[color:var(--gold)]/15"
                   : "border-[color:var(--line)] bg-[color:var(--panel)]",
               )}
               title={day.drivers.join(" · ")}
@@ -68,7 +68,7 @@ export function UpcomingStrip({
                 <p className="mt-1 font-mono text-[9px] text-[color:var(--cream)]/45">Δ{day.tideRangeFt.toFixed(1)}ft</p>
               ) : null}
               {day.amazing ? (
-                <p className="mt-1 text-[9px] font-bold uppercase tracking-wide text-[color:var(--copper)]">Go</p>
+                <p className="mt-1 text-[9px] font-bold uppercase tracking-wide text-[color:var(--gold)]">Go</p>
               ) : null}
             </article>
           );

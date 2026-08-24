@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
 
 export function scoreColor(score: number) {
-  if (score >= 8) return "bg-emerald-400 text-emerald-950";
-  if (score >= 6.5) return "bg-teal-400 text-teal-950";
-  if (score >= 5) return "bg-amber-300 text-amber-950";
-  if (score >= 3.5) return "bg-orange-400 text-orange-950";
-  return "bg-rose-400/90 text-rose-950";
+  if (score >= 8) return "bg-teal-300 text-teal-950";
+  if (score >= 6.5) return "bg-[color:var(--sea)] text-white";
+  if (score >= 5) return "bg-[color:var(--gold)] text-slate-950";
+  if (score >= 3.5) return "bg-[color:var(--coral)] text-white";
+  return "bg-[color:var(--copper)] text-white";
 }
 
 export function ScorePip({ score, className }: { score: number; className?: string }) {

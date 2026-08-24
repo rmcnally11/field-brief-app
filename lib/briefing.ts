@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import type { ActivityId, Briefing } from "@/lib/types";
 import { getArea } from "@/lib/data/areas";
 import { loadConditions } from "@/lib/conditions";
@@ -11,10 +12,12 @@ export function parseActivity(raw?: string | null): ActivityId | "all" {
   return raw as ActivityId | "all";
 }
 
-export async function getBriefing(areaId?: string | null, activityRaw?: string | null): Promise<Briefing> {
+async function computeBriefing(areaId: string, activity: ActivityId | "all"): Promise<Briefing> {
   const area = getArea(areaId);
-  const activity = parseActivity(activityRaw);
-  const [conditions, official] = await Promise.all([loadConditions(area), loadOfficialLayers(area)]);
+  const [conditions, official] = await Promise.all([
+    loadConditions(area),
+    loadOfficialLayers(area, { includeGnis: false, timeoutMs: 1600 }),
+  ]);
   const built = buildBriefing(area, conditions, activity, new Date(), {
     wrecks: official.wrecks,
     zones: official.zones,
@@ -24,4 +27,14 @@ export async function getBriefing(areaId?: string | null, activityRaw?: string |
     ...built,
     generatedAt: new Date().toISOString(),
   };
+}
+
+const cachedBriefing = unstable_cache(computeBriefing, ["field-briefing"], {
+  revalidate: 180,
+});
+
+export async function getBriefing(areaId?: string | null, activityRaw?: string | null): Promise<Briefing> {
+  const area = getArea(areaId);
+  const activity = parseActivity(activityRaw);
+  return cachedBriefing(area.id, activity);
 }

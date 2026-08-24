@@ -14,7 +14,7 @@ export function SiteHeader() {
           <span className="font-heading text-lg tracking-tight text-[color:var(--cream)]">
             Field Brief
           </span>
-          <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[color:var(--copper)] sm:inline">
+          <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[color:var(--sea)] sm:inline">
             Three theaters
           </span>
         </a>

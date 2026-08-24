@@ -20,9 +20,11 @@ function tideClock(stamp: string, tz: string) {
 export function BriefingPanel({
   briefing,
   upcoming,
+  upcomingSlot,
 }: {
   briefing: Briefing;
   upcoming?: CalendarDay[];
+  upcomingSlot?: ReactNode;
 }) {
   const { area, conditions } = briefing;
   const calHref = `/calendar?area=${area.id}&theater=${area.theater}${briefing.activity !== "all" ? `&activity=${briefing.activity}` : ""}`;
@@ -150,6 +152,7 @@ export function BriefingPanel({
         </p>
       )}
 
+      {upcomingSlot}
       {upcoming && upcoming.length > 0 ? (
         <UpcomingStrip days={upcoming} timezone={area.timezone} hrefBase={calHref} />
       ) : null}

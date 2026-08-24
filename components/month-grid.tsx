@@ -16,7 +16,7 @@ function TideSpark({ day }: { day: CalendarDay }) {
           className="h-full rounded-full"
           style={{
             width: `${Math.min(100, ((day.tideRangeFt ?? 0) / max) * 100)}%`,
-            background: "rgba(18,32,44,0.45)",
+            background: "rgba(47,143,214,0.55)",
           }}
         />
       </div>
@@ -71,7 +71,7 @@ export function MonthGrid({
                 "min-h-[6.4rem] rounded-xl p-1 text-left sm:min-h-[7.6rem] sm:p-1.5",
                 scoreColor(day.score),
                 day.date === today && "ring-2 ring-[color:var(--cream)]",
-                day.amazing && "outline outline-2 outline-offset-1 outline-[color:var(--copper)]",
+                day.amazing && "outline outline-2 outline-offset-1 outline-[color:var(--gold)]",
               )}
             >
               <div className="flex items-start justify-between gap-0.5">
@@ -104,7 +104,7 @@ export function MonthGrid({
 export function AmazingChip({ day }: { day: CalendarDay }) {
   return (
     <li
-      className="flex items-center gap-3 rounded-2xl border border-[color:var(--copper)]/40 bg-[color:var(--copper)]/10 p-2"
+      className="flex items-center gap-3 rounded-2xl border border-[color:var(--gold)]/40 bg-[color:var(--gold)]/10 p-2"
       style={{ boxShadow: `inset 3px 0 0 ${scoreHex(day.score)}` }}
     >
       <MoonDisk phase={day.moon.phase} illumination={day.moon.illumination} size={40} />

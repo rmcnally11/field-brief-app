@@ -49,13 +49,16 @@
 }
 
 :root {
-  --ink: #12202c;
-  --cream: #f4efe4;
-  --copper: #c2542a;
-  --line: rgba(244, 239, 228, 0.12);
-  --panel: rgba(18, 32, 44, 0.55);
-  --background: #12202c;
-  --foreground: #f4efe4;
+  --ink: #071a2b;
+  --cream: #f4f8fc;
+  --copper: #e23b3b;
+  --coral: #ff6b4a;
+  --gold: #f0c14b;
+  --sea: #2f8fd6;
+  --line: rgba(244, 248, 252, 0.16);
+  --panel: rgba(8, 42, 72, 0.72);
+  --background: #071a2b;
+  --foreground: #f4f8fc;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -131,21 +134,21 @@
   }
   body {
     background:
-      radial-gradient(1200px 700px at 8% -12%, rgba(194, 84, 42, 0.22), transparent 52%),
-      radial-gradient(900px 520px at 108% 8%, rgba(40, 92, 102, 0.42), transparent 46%),
-      radial-gradient(700px 420px at 50% 110%, rgba(46, 120, 122, 0.18), transparent 50%),
-      var(--ink);
+      radial-gradient(1100px 640px at 6% -16%, rgba(47, 143, 214, 0.28), transparent 54%),
+      radial-gradient(820px 480px at 110% 0%, rgba(255, 107, 74, 0.16), transparent 48%),
+      radial-gradient(720px 420px at 50% 112%, rgba(240, 193, 75, 0.1), transparent 52%),
+      linear-gradient(180deg, #0a2744 0%, var(--ink) 42%, #041018 100%);
     color: var(--cream);
   }
   .leaflet-container {
-    background: #0b1620;
+    background: #071a2b;
     font-family: var(--font-geist-sans), system-ui, sans-serif;
   }
   .leaflet-popup-content-wrapper,
   .leaflet-popup-tip {
-    background: #12202c;
-    color: #f4efe4;
-    border: 1px solid rgba(244, 239, 228, 0.12);
+    background: #0b2744;
+    color: #f4f8fc;
+    border: 1px solid rgba(244, 248, 252, 0.16);
   }
 }
 

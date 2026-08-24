@@ -1,23 +1,26 @@
 /** Shared paints for SVG instruments. Keep hex — SVG cannot see CSS variables. */
 
-export const ink = "#12202c";
-export const cream = "#f4efe4";
-export const copper = "#c2542a";
-export const teal = "#2a7a7a";
-export const water = "#1c4d5c";
+export const ink = "#071a2b";
+export const cream = "#f4f8fc";
+export const copper = "#e23b3b";
+export const coral = "#ff6b4a";
+export const gold = "#f0c14b";
+export const sea = "#2f8fd6";
+export const teal = "#1ea7a0";
+export const water = "#0e4a6e";
 
 export function scoreHex(score: number) {
   if (score >= 8) return "#2dd4bf";
   if (score >= 6.5) return "#5eead4";
-  if (score >= 5) return "#fcd34d";
-  if (score >= 3.5) return "#fb923c";
-  return "#fb7185";
+  if (score >= 5) return "#f0c14b";
+  if (score >= 3.5) return "#ff6b4a";
+  return "#e23b3b";
 }
 
 export function scoreInk(score: number) {
   if (score >= 6.5) return "#042f2e";
-  if (score >= 5) return "#422006";
-  return "#4c0519";
+  if (score >= 5) return "#3a2a00";
+  return "#3b0a0a";
 }
 
 export function parseTideStamp(stamp: string) {

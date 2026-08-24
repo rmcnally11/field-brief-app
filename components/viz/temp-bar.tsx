@@ -37,7 +37,7 @@ export function TempBar({
             <stop offset="0%" stopColor="#3b82f6" />
             <stop offset="35%" stopColor="#2dd4bf" />
             <stop offset="70%" stopColor="#fbbf24" />
-            <stop offset="100%" stopColor="#c2542a" />
+            <stop offset="100%" stopColor="#e23b3b" />
           </linearGradient>
         </defs>
         <rect x="2" y="8" width="196" height="6" rx="3" fill="url(#tempScale)" opacity="0.85" />

@@ -27,18 +27,18 @@ function Fit({ spots, extras }: { spots: typeof SPOTS; extras: OfficialPoint[] }
 }
 
 const SOURCE_COLOR: Record<string, string> = {
-  "field-manual": "#c2542a",
-  "public-structure": "#7eb8c9",
-  "saved-map": "#e8d5a3",
+  "field-manual": "#e23b3b",
+  "public-structure": "#2f8fd6",
+  "saved-map": "#f0c14b",
 };
 
 const KIND_COLOR: Record<string, string> = {
-  gnis: "#7eb8c9",
-  "enc-wreck": "#3f7a4e",
-  "fknms-zone": "#c43c32",
-  access: "#e8d5a3",
-  pins: "#e8d5a3",
-  "saved-map": "#e8d5a3",
+  gnis: "#2f8fd6",
+  "enc-wreck": "#1ea7a0",
+  "fknms-zone": "#e23b3b",
+  access: "#ff6b4a",
+  pins: "#f0c14b",
+  "saved-map": "#f0c14b",
 };
 
 export function CoastMap({

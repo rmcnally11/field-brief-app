@@ -516,11 +516,27 @@ export function accessNear(area: Area): OfficialPoint[] {
   });
 }
 
-export async function loadOfficialLayers(area: Area) {
+async function firstOrEmpty<T>(promise: Promise<T[]>, timeoutMs?: number): Promise<T[]> {
+  const safe = promise.catch(() => [] as T[]);
+  if (!timeoutMs) return safe;
+  return Promise.race([
+    safe,
+    new Promise<T[]>((resolve) => {
+      setTimeout(() => resolve([]), timeoutMs);
+    }),
+  ]);
+}
+
+export async function loadOfficialLayers(
+  area: Area,
+  opts?: { includeGnis?: boolean; timeoutMs?: number },
+) {
+  const includeGnis = opts?.includeGnis !== false;
+  const timeoutMs = opts?.timeoutMs;
   const [gnis, wrecks, zones] = await Promise.all([
-    fetchGnisNear(area),
-    fetchEncWrecks(area),
-    fetchFknmsZones(area),
+    includeGnis ? firstOrEmpty(fetchGnisNear(area), timeoutMs) : Promise.resolve([]),
+    firstOrEmpty(fetchEncWrecks(area), timeoutMs),
+    firstOrEmpty(fetchFknmsZones(area), timeoutMs),
   ]);
   return {
     gnis,

@@ -11,19 +11,19 @@ import { Waterline } from "@/components/viz/waterline";
 const CoastMap = dynamic(() => import("@/components/coast-map").then((m) => m.CoastMap), {
   ssr: false,
   loading: () => (
-    <div className="flex h-[min(80vh,860px)] items-center justify-center rounded-2xl border border-[color:var(--line)] bg-[#0b1620] text-[color:var(--cream)]/50">
+    <div className="flex h-[min(80vh,860px)] items-center justify-center rounded-2xl border border-[color:var(--line)] bg-[#071a2b] text-[color:var(--cream)]/50">
       Loading satellite chart…
     </div>
   ),
 });
 
 const LEGEND = [
-  { color: "#c2542a", label: "Field Manual / public structure" },
-  { color: "#e8d5a3", label: "Your My Maps" },
-  { color: "#7eb8c9", label: "USGS GNIS hydro" },
-  { color: "#3f7a4e", label: "NOAA ENC wreck" },
-  { color: "#c43c32", label: "FKNMS / closed / caution" },
-  { color: "#d6b56a", label: "Public access" },
+  { color: "#e23b3b", label: "Field Manual / public structure" },
+  { color: "#f0c14b", label: "Your My Maps" },
+  { color: "#2f8fd6", label: "USGS GNIS hydro" },
+  { color: "#1ea7a0", label: "NOAA ENC wreck" },
+  { color: "#e23b3b", label: "FKNMS / closed / caution" },
+  { color: "#ff6b4a", label: "Public access" },
 ];
 
 export function MapPageClient({

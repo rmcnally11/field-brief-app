@@ -105,7 +105,9 @@ export function CoastMap({
           </Popup>
         </CircleMarker>
       ))}
-      {extras.map((p) => (
+      {extras
+        .filter((p, i, all) => all.findIndex((x) => x.id === p.id) === i)
+        .map((p) => (
         <CircleMarker
           key={p.id}
           center={[p.lat, p.lon]}

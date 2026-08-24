@@ -44,7 +44,7 @@ export function BriefingPanel({
             </h1>
             <p className="mt-4 max-w-2xl text-[color:var(--cream)]/70">{area.summary}</p>
             {briefing.warnings.length > 0 && (
-              <ul className="mt-4 space-y-1.5 text-sm text-amber-200/90">
+              <ul className="mt-4 space-y-1.5 text-sm text-amber-800">
                 {briefing.warnings.map((w) => (
                   <li key={w}>⚠ {w}</li>
                 ))}
@@ -129,7 +129,7 @@ export function BriefingPanel({
             ))}
           </ul>
           {conditions.tides.source === "modeled" && (
-            <p className="mt-3 text-xs text-amber-200/80">
+            <p className="mt-3 text-xs text-amber-800">
               Bahamas tides are modeled from lunar M2. Use them for windows, not a bar crossing.
             </p>
           )}
@@ -194,7 +194,7 @@ export function BriefingPanel({
                   </ul>
                   <div className="mt-3 flex flex-wrap gap-1">
                     {pick.spot.activities.map((a) => (
-                      <Badge key={a} variant="secondary" className="bg-white/5 text-[color:var(--cream)]/70">
+                      <Badge key={a} variant="secondary" className="bg-[color:var(--cream)]/5 text-[color:var(--cream)]/70">
                         {a}
                       </Badge>
                     ))}
@@ -271,9 +271,9 @@ export function BriefingPanel({
             ) : (
               <ul className="mt-3 space-y-2">
                 {briefing.legal.map((p) => (
-                  <li key={p.id} className="rounded-2xl border border-rose-400/30 bg-rose-950/20 p-3">
+                  <li key={p.id} className="rounded-2xl border border-rose-400/40 bg-rose-50 p-3">
                     <p className="font-medium text-[color:var(--cream)]">{p.name}</p>
-                    <p className="mt-1 text-sm text-rose-100/80">{p.detail}</p>
+                    <p className="mt-1 text-sm text-rose-900/80">{p.detail}</p>
                     <a className="mt-2 inline-block text-xs text-[color:var(--copper)] underline" href={p.sourceUrl}>
                       FKNMS GIS
                     </a>

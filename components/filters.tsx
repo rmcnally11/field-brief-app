@@ -66,7 +66,7 @@ export function FilterBar({
               "shrink-0 cursor-pointer rounded-md px-2.5 py-1 text-sm",
               areaId === a.id
                 ? "bg-[color:var(--cream)] text-[color:var(--ink)]"
-                : "bg-white/5 text-[color:var(--cream)]/70 hover:bg-white/10",
+                : "bg-[color:var(--cream)]/5 text-[color:var(--cream)]/70 hover:bg-[color:var(--cream)]/10",
             )}
           >
             {a.shortName}

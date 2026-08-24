@@ -30,7 +30,7 @@ export default async function Home({
         />
       </Suspense>
       {error || !briefing ? (
-        <div className="rounded-2xl border border-rose-400/40 bg-rose-950/30 p-6 text-rose-100">
+        <div className="rounded-2xl border border-rose-400/40 bg-rose-50 p-6 text-rose-900">
           <p className="font-heading text-xl">The gauges did not answer.</p>
           <p className="mt-2 text-sm opacity-80">{error}</p>
         </div>

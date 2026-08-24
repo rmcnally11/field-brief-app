@@ -23,7 +23,7 @@ export function SiteHeader() {
             <a
               key={l.href}
               href={l.href}
-              className="cursor-pointer rounded-md px-2.5 py-1.5 text-[color:var(--cream)]/75 transition hover:bg-white/5 hover:text-[color:var(--cream)]"
+              className="cursor-pointer rounded-md px-2.5 py-1.5 text-[color:var(--cream)]/75 transition hover:bg-[color:var(--cream)]/6 hover:text-[color:var(--cream)]"
             >
               {l.label}
             </a>

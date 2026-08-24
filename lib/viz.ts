@@ -1,13 +1,13 @@
 /** Shared paints for SVG instruments. Keep hex — SVG cannot see CSS variables. */
 
-export const ink = "#071a2b";
-export const cream = "#f4f8fc";
+export const ink = "#ffffff";
+export const cream = "#0b1f33";
 export const copper = "#e23b3b";
 export const coral = "#ff6b4a";
-export const gold = "#f0c14b";
-export const sea = "#2f8fd6";
+export const gold = "#e3b01c";
+export const sea = "#1d7ec4";
 export const teal = "#1ea7a0";
-export const water = "#0e4a6e";
+export const water = "#1d7ec4";
 
 export function scoreHex(score: number) {
   if (score >= 8) return "#2dd4bf";

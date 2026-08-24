@@ -83,7 +83,7 @@ export default async function CalendarPage({
         </section>
       )}
       {error || !months ? (
-        <p className="text-rose-200">{error}</p>
+        <p className="text-rose-800">{error}</p>
       ) : (
         <div className="grid gap-10 xl:grid-cols-2">
           {months.map((m) => (

@@ -40,12 +40,12 @@ export default function SpeciesPage() {
                         : "Pacific only"}
                 </Badge>
                 {s.theaters.length === 0 ? (
-                  <Badge variant="secondary" className="bg-white/5 text-[color:var(--cream)]/70">
+                  <Badge variant="secondary" className="bg-[color:var(--cream)]/5 text-[color:var(--cream)]/70">
                     Not on this water
                   </Badge>
                 ) : (
                   s.theaters.map((t) => (
-                    <Badge key={t} variant="secondary" className="bg-white/5 capitalize text-[color:var(--cream)]/70">
+                    <Badge key={t} variant="secondary" className="bg-[color:var(--cream)]/5 capitalize text-[color:var(--cream)]/70">
                       {t === "florida" ? "Miami & Keys" : t}
                     </Badge>
                   ))

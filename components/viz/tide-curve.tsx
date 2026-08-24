@@ -126,7 +126,7 @@ export function TideCurve({
         )}
         {yTicks.map((t) => (
           <g key={t.v}>
-            <line x1={padL} x2={width - padR} y1={t.y} y2={t.y} stroke={cream} strokeOpacity="0.06" />
+            <line x1={padL} x2={width - padR} y1={t.y} y2={t.y} stroke={cream} strokeOpacity="0.12" />
             <text x={padL - 6} y={t.y + 3} textAnchor="end" fill={cream} fillOpacity="0.4" fontSize="8" fontFamily="ui-monospace, monospace">
               {t.v.toFixed(1)}
             </text>

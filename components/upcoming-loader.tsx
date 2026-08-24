@@ -10,7 +10,7 @@ export function UpcomingSkeleton() {
       <p className="mt-2 text-sm text-[color:var(--cream)]/50">Pulling the 14-day strip…</p>
       <div className="mt-3 flex gap-2 overflow-hidden">
         {Array.from({ length: 7 }).map((_, i) => (
-          <div key={i} className="h-36 w-[5.6rem] shrink-0 animate-pulse rounded-2xl bg-white/5" />
+          <div key={i} className="h-36 w-[5.6rem] shrink-0 animate-pulse rounded-2xl bg-[color:var(--cream)]/5" />
         ))}
       </div>
     </div>

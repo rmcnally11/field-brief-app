@@ -11,7 +11,7 @@ import { Waterline } from "@/components/viz/waterline";
 const CoastMap = dynamic(() => import("@/components/coast-map").then((m) => m.CoastMap), {
   ssr: false,
   loading: () => (
-    <div className="flex h-[min(80vh,860px)] items-center justify-center rounded-2xl border border-[color:var(--line)] bg-[#071a2b] text-[color:var(--cream)]/50">
+    <div className="flex h-[min(80vh,860px)] items-center justify-center rounded-2xl border border-[color:var(--line)] bg-[#f4f8fc] text-[color:var(--cream)]/50">
       Loading satellite chart…
     </div>
   ),

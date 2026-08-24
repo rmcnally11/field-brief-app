@@ -49,16 +49,16 @@
 }
 
 :root {
-  --ink: #071a2b;
-  --cream: #f4f8fc;
+  --ink: #ffffff;
+  --cream: #0b1f33;
   --copper: #e23b3b;
   --coral: #ff6b4a;
-  --gold: #f0c14b;
-  --sea: #2f8fd6;
-  --line: rgba(244, 248, 252, 0.16);
-  --panel: rgba(8, 42, 72, 0.72);
-  --background: #071a2b;
-  --foreground: #f4f8fc;
+  --gold: #e3b01c;
+  --sea: #1d7ec4;
+  --line: rgba(11, 31, 51, 0.12);
+  --panel: #f4f8fc;
+  --background: #ffffff;
+  --foreground: #0b1f33;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -134,21 +134,20 @@
   }
   body {
     background:
-      radial-gradient(1100px 640px at 6% -16%, rgba(47, 143, 214, 0.28), transparent 54%),
-      radial-gradient(820px 480px at 110% 0%, rgba(255, 107, 74, 0.16), transparent 48%),
-      radial-gradient(720px 420px at 50% 112%, rgba(240, 193, 75, 0.1), transparent 52%),
-      linear-gradient(180deg, #0a2744 0%, var(--ink) 42%, #041018 100%);
+      radial-gradient(900px 520px at 8% -10%, rgba(29, 126, 196, 0.1), transparent 55%),
+      radial-gradient(720px 420px at 108% 0%, rgba(255, 107, 74, 0.07), transparent 50%),
+      #ffffff;
     color: var(--cream);
   }
   .leaflet-container {
-    background: #071a2b;
+    background: #e8f2f8;
     font-family: var(--font-geist-sans), system-ui, sans-serif;
   }
   .leaflet-popup-content-wrapper,
   .leaflet-popup-tip {
-    background: #0b2744;
-    color: #f4f8fc;
-    border: 1px solid rgba(244, 248, 252, 0.16);
+    background: #ffffff;
+    color: #0b1f33;
+    border: 1px solid rgba(11, 31, 51, 0.12);
   }
 }
 

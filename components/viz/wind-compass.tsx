@@ -23,7 +23,7 @@ export function WindCompass({
   return (
     <div className={cn("flex flex-col items-center", className)}>
       <svg width={size} height={size} viewBox="0 0 120 120" aria-label={has ? `Wind from ${cardinal ?? `${Math.round(dir)}°`}` : "No wind"}>
-        <circle cx="60" cy="60" r="52" fill="rgba(7,26,43,0.7)" stroke="rgba(244,248,252,0.16)" />
+        <circle cx="60" cy="60" r="52" fill="#eef6fc" stroke="rgba(11,31,51,0.14)" />
         {ticks.map((deg) => {
           const rad = ((deg - 90) * Math.PI) / 180;
           const inner = deg % 90 === 0 ? 40 : 44;
@@ -62,11 +62,11 @@ export function WindCompass({
             <polygon points="60,104 66,62 60,68 54,62" fill={cream} fillOpacity="0.35" />
           </g>
         ) : null}
-        <circle cx="60" cy="60" r="18" fill="#071a2b" stroke="rgba(244,248,252,0.2)" />
+        <circle cx="60" cy="60" r="18" fill="#ffffff" stroke="rgba(11,31,51,0.16)" />
         <text x="60" y="58" textAnchor="middle" fill={cream} fontSize="13" fontWeight="600" fontFamily="ui-monospace, monospace">
           {mph != null ? Math.round(mph) : "—"}
         </text>
-        <text x="60" y="70" textAnchor="middle" fill="rgba(244,248,252,0.5)" fontSize="7" letterSpacing="0.8">
+        <text x="60" y="70" textAnchor="middle" fill="rgba(11,31,51,0.5)" fontSize="7" letterSpacing="0.8">
           MPH
         </text>
       </svg>

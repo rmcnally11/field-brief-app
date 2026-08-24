@@ -44,9 +44,17 @@ export async function fetchGnisNear(area: Area): Promise<OfficialPoint[]> {
     "Point",
     "Key",
   ];
-  if (area.theater === "mexico" || area.theater === "bahamas") return [];
+  if (area.theater === "mexico" || area.theater === "bahamas" || area.theater === "seychelles") return [];
   const state =
-    area.theater === "texas" ? "TX" : area.theater === "florida" ? "FL" : area.theater === "louisiana" ? "LA" : "";
+    area.theater === "texas"
+      ? "TX"
+      : area.theater === "florida"
+        ? "FL"
+        : area.theater === "louisiana"
+          ? "LA"
+          : area.theater === "puerto-rico"
+            ? "PR"
+            : "";
   const nameClause = names.map((n) => `gaz_name LIKE '%${n}%'`).join(" OR ");
   const where = state ? `state_alpha='${state}' AND (${nameClause})` : nameClause;
   const geom = `${xmin},${ymin},${xmax},${ymax}`;
@@ -75,7 +83,7 @@ export async function fetchGnisNear(area: Area): Promise<OfficialPoint[]> {
 }
 
 export async function fetchEncWrecks(area: Area): Promise<OfficialPoint[]> {
-  if (area.theater === "bahamas" || area.theater === "mexico") return [];
+  if (area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles") return [];
   const { xmin, ymin, xmax, ymax } = bbox(area, 0.28);
   const url =
     `https://gis.charttools.noaa.gov/arcgis/rest/services/encdirect/enc_harbour/MapServer/36/query` +
@@ -617,6 +625,66 @@ const ACCESS: OfficialPoint[] = [
     sourceUrl: "https://www.gob.mx/conapesca",
     detail: "Town water. Espíritu Santo is the run north. Park rules on the island.",
   },
+  {
+    id: "acc-condado",
+    name: "Condado / San Juan launches",
+    lat: 18.457,
+    lon: -66.08,
+    kind: "access",
+    source: "DNER / Municipio de San Juan",
+    sourceUrl: "https://www.drna.pr.gov/",
+    detail: "Urban door into the lagoon and the bay. NOAA 9755371 is on this harbor.",
+  },
+  {
+    id: "acc-esperanza",
+    name: "Esperanza / Vieques",
+    lat: 18.093,
+    lon: -65.47,
+    kind: "access",
+    source: "DNER",
+    sourceUrl: "https://www.drna.pr.gov/",
+    detail: "South-side village. Mosquito Bay is a reserve — not this ramp’s job.",
+  },
+  {
+    id: "acc-parguera",
+    name: "La Parguera village",
+    lat: 17.974,
+    lon: -67.046,
+    kind: "access",
+    source: "DNER",
+    sourceUrl: "https://www.drna.pr.gov/",
+    detail: "Southwest mangrove door. Magueyes 9759110 is the clock.",
+  },
+  {
+    id: "acc-victoria",
+    name: "Victoria / Mahé",
+    lat: -4.62,
+    lon: 55.45,
+    kind: "access",
+    source: "Seychelles Fishing Authority",
+    sourceUrl: "https://www.sfa.sc/",
+    detail: "The public inner-island door. Outer atolls are a plane, not a skiff ride.",
+  },
+  {
+    id: "acc-alphonse",
+    name: "Alphonse lodge",
+    lat: -7.028,
+    lon: 52.737,
+    kind: "access",
+    source: "SFA / Alphonse Island",
+    sourceUrl: "https://www.sfa.sc/",
+    detail: "Lodge water. St François is the neighbor atoll. Not a freelance wade.",
+  },
+  {
+    id: "acc-farquhar",
+    name: "Farquhar lodge",
+    lat: -10.176,
+    lon: 51.134,
+    kind: "access",
+    source: "SFA / Farquhar",
+    sourceUrl: "https://www.sfa.sc/",
+    detail: "Southern atoll door. Lodge and SFA rules.",
+  },
 ];
 
 export function accessNear(area: Area): OfficialPoint[] {
@@ -625,8 +693,8 @@ export function accessNear(area: Area): OfficialPoint[] {
       ? 0.28
       : area.theater === "texas"
         ? 0.55
-        : area.theater === "mexico"
-          ? 0.45
+        : area.theater === "mexico" || area.theater === "seychelles" || area.theater === "puerto-rico"
+          ? 0.4
           : 0.9;
   return ACCESS.filter((p) => {
     const dlat = p.lat - area.lat;

@@ -180,6 +180,42 @@ const PLACE: Record<
     "high-slack": "the town run is legal; the seamount wants moving bait",
     "low-slack": "hold for the next push around the island",
   },
+  "san-juan": {
+    incoming: "Condado and the bay — urban tarpon, then the north drop if you switched to Offshore",
+    outgoing: "the same harbor throats as they dump",
+    "high-slack": "wait; slack under the bridges is traffic",
+    "low-slack": "hold for the next push through the lagoon",
+  },
+  vieques: {
+    incoming: "the Esperanza and Culebra banks — bones and permit, not a San Juan tarpon sentence",
+    outgoing: "the same banks as they empty; the harbor holds the tarpon",
+    "high-slack": "look, do not grind a high-slack school into the reserve",
+    "low-slack": "wait for the next inch on the south side",
+  },
+  parguera: {
+    incoming: "flood the mangrove cays — snook first, a tarpon in the darker mouths",
+    outgoing: "the same trees on the dump, then the southwest drop if the method is Offshore",
+    "high-slack": "the village run is legal; the trees want current",
+    "low-slack": "sit the remaining guts until the cays breathe",
+  },
+  alphonse: {
+    incoming: "flood St François and the lagoon — bones first, then a GT on the rim",
+    outgoing: "the same sand as it empties; the GT still owns the edge",
+    "high-slack": "look, do not wade a high-slack school across lodge water",
+    "low-slack": "wait for the next inch — this atoll empties",
+  },
+  farquhar: {
+    incoming: "the lagoon sand, then the passes if the GT are up",
+    outgoing: "the throats — this is why the week is booked",
+    "high-slack": "the lagoon is a look; the pass wants water",
+    "low-slack": "hold for the next push through the rim",
+  },
+  mahe: {
+    incoming: "Ste Anne and the inner edges — a GT, not the Alphonse photograph",
+    outgoing: "the same reef edges, then the drop if you came to troll",
+    "high-slack": "the town run is legal; the park wants current",
+    "low-slack": "hold for the next push around the granitic islands",
+  },
 };
 
 export function pickHeadlineSpecies(area: Area, species: SpeciesPick[], leads?: SpeciesId[]) {

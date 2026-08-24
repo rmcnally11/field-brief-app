@@ -1,4 +1,11 @@
-export type TheaterId = "texas" | "louisiana" | "florida" | "bahamas" | "mexico";
+export type TheaterId =
+  | "texas"
+  | "louisiana"
+  | "florida"
+  | "bahamas"
+  | "mexico"
+  | "puerto-rico"
+  | "seychelles";
 
 export type ActivityId = "wade" | "skiff" | "kayak" | "fly" | "spin" | "structure" | "offshore";
 
@@ -41,7 +48,8 @@ export type SpeciesId =
   | "mahi"
   | "sailfish"
   | "tuna"
-  | "roosterfish";
+  | "roosterfish"
+  | "gt";
 
 /** Who may own a brief headline. Incidental = noise. Bluewater ≠ a flat. */
 export type SpeciesRole = "primary" | "incidental" | "bluewater" | "pacific";

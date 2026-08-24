@@ -1,13 +1,15 @@
+import type { TheaterId } from "@/lib/types";
+
 const CHICAGO = "America/Chicago";
 const NEW_YORK = "America/New_York";
 const NASSAU = "America/Nassau";
 
-export function timezoneForTheater(
-  theater: "texas" | "louisiana" | "florida" | "bahamas" | "mexico",
-) {
+export function timezoneForTheater(theater: TheaterId) {
   if (theater === "texas" || theater === "louisiana") return CHICAGO;
   if (theater === "florida") return NEW_YORK;
   if (theater === "mexico") return "America/Cancun";
+  if (theater === "puerto-rico") return "America/Puerto_Rico";
+  if (theater === "seychelles") return "Indian/Mahe";
   return NASSAU;
 }
 

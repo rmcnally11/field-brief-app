@@ -62,7 +62,7 @@ function seasonalForArea(area: Area, month: number, activity: ActivityId | "all"
   const scores = local.map((s) => {
     if (!s.presentMonths.includes(month)) return 0.15;
     let n = s.peakMonths.includes(month) ? 1 : 0.55;
-    if (activity === "fly" && (s.id === "bonefish" || s.id === "permit" || s.id === "redfish" || s.id === "roosterfish")) n += 0.08;
+    if (activity === "fly" && (s.id === "bonefish" || s.id === "permit" || s.id === "redfish" || s.id === "roosterfish" || s.id === "gt")) n += 0.08;
     if (activity === "structure" && (s.id === "sheepshead" || s.id === "black-drum")) n += 0.1;
     if (activity === "offshore" && (s.role === "bluewater" || s.id === "roosterfish")) n += 0.12;
     return n;
@@ -78,7 +78,7 @@ async function loadCalendarInputs(area: Area, start: Date, dayCount: number): Pr
     area.noaaStation
       ? fetchHiLo(area.noaaStation, new Date(start.getTime() - 86400000), dayCount + 2)
       : Promise.resolve([]),
-    area.theater === "bahamas" || area.theater === "mexico"
+    area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles"
       ? fetchOpenMeteo(area.lat, area.lon)
       : fetchNwsForecast(area.lat, area.lon),
   ]);

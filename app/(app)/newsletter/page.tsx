@@ -155,7 +155,7 @@ export default async function NewsletterPage() {
           Week of the water
         </h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/55">
-          {issue.rangeLabel} · {issue.monthName} fundamentals · {liveDesks} of 5 desks live
+          {issue.rangeLabel} · {issue.monthName} fundamentals · {liveDesks} of 7 desks live
         </p>
         <Waterline className="mx-auto mt-4 max-w-xl" />
       </header>
@@ -165,8 +165,8 @@ export default async function NewsletterPage() {
           {issue.letter}
         </p>
         <p className="mt-4 text-sm text-[color:var(--cream)]/50">
-          Drawn from Galveston, Venice, Islamorada, Andros, and Ascension — one desk per theater, not
-          every micro-area. Scores are 1–10. They are not bite guarantees.{" "}
+          Drawn from Galveston, Venice, Islamorada, Andros, Ascension, San Juan, and Alphonse — one
+          desk per theater, not every micro-area. Scores are 1–10. They are not bite guarantees.{" "}
           <a href="/fundamentals" className="text-[color:var(--sea)] underline underline-offset-4">
             Read this month’s seasonal fundamentals
           </a>
@@ -178,7 +178,7 @@ export default async function NewsletterPage() {
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
-              Five desks
+              Seven desks
             </p>
             <h2 className="font-heading text-3xl text-[color:var(--cream)]">This week, live</h2>
           </div>

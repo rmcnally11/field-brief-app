@@ -1,6 +1,6 @@
 # Field Brief
 
-Inshore and offshore conditions for five theaters: the **Texas coast**, **Louisiana**, **Florida** (Keys, Boca Grande, Jupiter), the **Bahamas**, and **Mexico** (Yucatan flats + Baja). The brief tells you **where**, **when**, and **why** fish should be on a given piece of water — and which species are actually in play.
+Inshore and offshore conditions for seven theaters: the **Texas coast**, **Louisiana**, **Florida** (Keys, Boca Grande, Jupiter), the **Bahamas**, **Mexico** (Yucatan flats + Baja), **Puerto Rico**, and the **Seychelles**. The brief tells you **where**, **when**, and **why** fish should be on a given piece of water — and which species are actually in play.
 
 GitHub: [rmcnally11/field-brief-app](https://github.com/rmcnally11/field-brief-app). Live site: [field-brief-app.vercel.app](https://field-brief-app.vercel.app). Your three My Maps are imported as cream pins:
 
@@ -16,7 +16,7 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - **Wind versus the table**: observed minus predicted water. On the Texas coast the wind often *is* the tide.
 - **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas, Mexico).
 - Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**.
-- **Weekly Field Letter** (`/newsletter`) — one live desk per theater (Galveston, Venice, Islamorada, Andros, Ascension), this month’s peaks, and harvest closures, in the Field Manual voice.
+- **Weekly Field Letter** (`/newsletter`) — one live desk per theater (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse), this month’s peaks, and harvest closures, in the Field Manual voice.
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by region, water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next, with a drawn moon and tide range on every day. Copper outline = amazing day.
 - Satellite chart (Esri imagery) with official layers and your My Maps.
@@ -59,7 +59,7 @@ Not a nightly batch. Each Brief / Calendar / Map load hits live gauges, then cac
 | NOAA CO-OPS tides, observed water, station wind, water temp | ~5 minutes |
 | NWS hourly forecast (U.S.) | ~10 minutes |
 | NWS point metadata | ~30 minutes |
-| Open-Meteo (Bahamas and Mexico wind) | ~10 minutes |
+| Open-Meteo (Bahamas, Mexico, Seychelles wind) | ~10 minutes |
 | USGS GNIS / NOAA ENC / FKNMS polygons | ~1 hour |
 | Moon phase | computed from the clock, every load |
 | Calendar days past the wind forecast | tide + moon + season only (labeled astronomical) |
@@ -78,7 +78,11 @@ A nightly cron would only make sense later for a morning text/email (“Galvesto
 
 **Mexico:** Ascension Bay / Sian Ka’an · Isla Mujeres / Cancún bank · East Cape / Los Barriles · La Paz / Espíritu Santo
 
-Bahamas and Mexico tides are a modeled lunar tide, labeled as such. There is no NOAA gauge on those coasts.
+**Puerto Rico:** San Juan / Condado · Vieques / Culebra · La Parguera / southwest
+
+**Seychelles:** Alphonse / St François · Farquhar Atoll · Inner islands / Mahé
+
+Bahamas, Mexico, and Seychelles tides are a modeled lunar tide, labeled as such. There is no NOAA gauge on those coasts. Puerto Rico uses live NOAA CO-OPS (San Juan, Vieques, Magueyes).
 
 ## Official sources we cite
 
@@ -97,6 +101,8 @@ Bahamas and Mexico tides are a modeled lunar tide, labeled as such. There is no 
 | [FWC](https://myfwc.com/fishing/saltwater/recreational/) | Florida bonefish, permit, snook, redfish |
 | [LDWF recreational saltwater](https://www.wlf.louisiana.gov/page/recreational-saltwater-finfish) | Louisiana bag, slot, and flounder season |
 | [CONAPESCA](https://www.gob.mx/conapesca) | Mexico recreational license and harvest rules |
+| [DNER Puerto Rico](https://www.drna.pr.gov/) | Puerto Rico recreational license and reserves |
+| [Seychelles Fishing Authority](https://www.sfa.sc/) | Seychelles license and harvest rules |
 
 The TPWD coastal-ramp GIS and the GLO Beach & Bay Access feature service are the right legal inventories; the public TAMU ramp layer we tested is inland only, and the GLO Hub query required a token. Those go live when the open endpoints are reachable. Drop a Google My Maps **KML** into the project to add your saved structure as a layer — no matching export was in Drive.
 

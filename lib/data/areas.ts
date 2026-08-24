@@ -408,6 +408,108 @@ export const AREAS: Area[] = [
     leadSpecies: ["roosterfish", "mahi", "tuna"],
     offshoreLead: ["mahi", "tuna", "roosterfish"],
   },
+  {
+    id: "san-juan",
+    theater: "puerto-rico",
+    name: "San Juan / Condado",
+    shortName: "San Juan",
+    lat: 18.459,
+    lon: -66.116,
+    timezone: "America/Puerto_Rico",
+    noaaStation: "9755371",
+    noaaTempStation: "9755371",
+    summary:
+      "Urban tarpon. Condado Lagoon and San Juan Bay. Snook in the mangrove edges. The north coast drops to blue water in a hurry — sail and mahi are an offshore method, not this lagoon. NOAA 9755371 La Puntilla is the clock. DNER rules, not FWC.",
+    tideCharacter: "pass-current",
+    meanRangeFt: 1.2,
+    leadSpecies: ["tarpon", "snook"],
+    offshoreLead: ["sailfish", "mahi", "tuna"],
+  },
+  {
+    id: "vieques",
+    theater: "puerto-rico",
+    name: "Vieques / Culebra",
+    shortName: "Vieques",
+    lat: 18.153,
+    lon: -65.444,
+    timezone: "America/Puerto_Rico",
+    noaaStation: "9752621",
+    noaaTempStation: "9752621",
+    summary:
+      "The Spanish Virgin Islands. More flat than San Juan — bones and permit on the east-island banks, tarpon in the harbors. Culebra is the next cay north; do not invent a secret number between them. NOAA 9752621 Isabel Segunda. Mosquito Bay is a reserve, not a freelance wade.",
+    tideCharacter: "sight-skinny",
+    meanRangeFt: 1.1,
+    leadSpecies: ["bonefish", "permit", "tarpon"],
+    offshoreLead: ["mahi", "tuna"],
+  },
+  {
+    id: "parguera",
+    theater: "puerto-rico",
+    name: "La Parguera / southwest",
+    shortName: "Parguera",
+    lat: 17.97,
+    lon: -67.046,
+    timezone: "America/Puerto_Rico",
+    noaaStation: "9759110",
+    noaaTempStation: "9759110",
+    summary:
+      "Southwest mangrove cays and the drop to the Caribbean. Snook and tarpon in the trees, reef and blue water a short run south. NOAA 9759110 Magueyes Island is the clock. Not San Juan. DNER and any reserve markers are the law.",
+    tideCharacter: "marsh-current",
+    meanRangeFt: 0.8,
+    leadSpecies: ["snook", "tarpon"],
+    offshoreLead: ["mahi", "tuna"],
+  },
+  {
+    id: "alphonse",
+    theater: "seychelles",
+    name: "Alphonse / St François",
+    shortName: "Alphonse",
+    lat: -7.028,
+    lon: 52.737,
+    timezone: "Indian/Mahe",
+    noaaStation: null,
+    summary:
+      "The Seychelles flats photograph. Giant trevally on the atoll edges, bones and Indo-Pacific permit on St François. Lodge water — this is not a freelance wade. Tide is a modeled Indian Ocean clock. There is no NOAA gauge. Not the Caribbean. Not a rooster.",
+    tideCharacter: "sight-skinny",
+    meanRangeFt: 3.6,
+    modeledTideOffsetHours: 0.3,
+    leadSpecies: ["gt", "bonefish", "permit"],
+    offshoreLead: ["tuna", "mahi"],
+  },
+  {
+    id: "farquhar",
+    theater: "seychelles",
+    name: "Farquhar Atoll",
+    shortName: "Farquhar",
+    lat: -10.176,
+    lon: 51.134,
+    timezone: "Indian/Mahe",
+    noaaStation: null,
+    summary:
+      "Southern atoll. GT in the passes, bones on the lagoon. Farther, wilder, still lodge water. Modeled tide. Do not invent a honey hole on an atoll this mapped.",
+    tideCharacter: "sight-skinny",
+    meanRangeFt: 3.4,
+    modeledTideOffsetHours: 0.15,
+    leadSpecies: ["gt", "bonefish"],
+    offshoreLead: ["tuna", "mahi"],
+  },
+  {
+    id: "mahe",
+    theater: "seychelles",
+    name: "Inner islands / Mahé",
+    shortName: "Mahé",
+    lat: -4.62,
+    lon: 55.452,
+    timezone: "Indian/Mahe",
+    noaaStation: null,
+    summary:
+      "The public door. Victoria, Ste Anne, the granitic inner islands. More reef and blue water than Alphonse sand. GT on the edges, tuna and a dorado offshore. This is not the St François photograph. Modeled tide. SFA license.",
+    tideCharacter: "pass-current",
+    meanRangeFt: 3.8,
+    modeledTideOffsetHours: 0.05,
+    leadSpecies: ["gt", "tuna"],
+    offshoreLead: ["tuna", "mahi", "sailfish"],
+  },
 ];
 
 export const AREA_BY_ID = Object.fromEntries(AREAS.map((a) => [a.id, a]));
@@ -432,5 +534,5 @@ export function leadsFor(area: Area, activity: ActivityId | "all"): SpeciesId[] 
 }
 
 export function usesModeledOcean(area: Area) {
-  return area.theater === "bahamas" || area.theater === "mexico";
+  return area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles";
 }

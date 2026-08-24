@@ -134,6 +134,8 @@ export function BriefingPanel({
             <p className="mt-3 text-xs text-amber-800">
               {area.theater === "mexico"
                 ? "Mexico tides are modeled from lunar M2. Use them for windows, not a bar crossing. There is no NOAA gauge here."
+                : area.theater === "seychelles"
+                  ? "Seychelles tides are modeled from lunar M2. Use them for windows, not a bar crossing. There is no NOAA gauge on these atolls."
                 : "Bahamas tides are modeled from lunar M2. Use them for windows, not a bar crossing."}
             </p>
           )}
@@ -246,6 +248,10 @@ export function BriefingPanel({
                   ? "County and state ramps near this water. FKNMS no-take is Keys-only, on the legal list."
                   : area.theater === "mexico"
                     ? "Lodge towns and cited marinas. CONAPESCA license. Biosphere and park water is not a freelance wade."
+                  : area.theater === "puerto-rico"
+                    ? "Cited village and harbor launches. DNER rules. Reserves are marked."
+                  : area.theater === "seychelles"
+                    ? "Lodge and Victoria doors. SFA license. Outer atolls are not a freelance wade."
                   : "Settlement and lodge launches. There is no TPWD-style ramp inventory on this island."}
             </p>
             {briefing.access.length === 0 ? (

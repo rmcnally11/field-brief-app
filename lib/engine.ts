@@ -421,7 +421,7 @@ export function buildBriefing(
       ? " from NOAA"
       : area.noaaStation
         ? " (modeled — the NOAA gauge did not answer)"
-        : area.theater === "bahamas" || area.theater === "mexico"
+        : area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles"
           ? " (modeled — no NOAA gauge on this water)"
           : " (modeled — no NOAA gauge on this water)";
   why.push(`Tide is ${conditions.tides.stage.replace("-", " ")}${modeledNote}.`);
@@ -437,9 +437,13 @@ export function buildBriefing(
         why.push(
           `The gauge is ${signed} ft off the predicted table — read the water, not just the printout.`,
         );
-      } else if (area.theater === "mexico" || area.theater === "bahamas") {
+      } else if (area.theater === "mexico" || area.theater === "bahamas" || area.theater === "seychelles") {
         why.push(
           `The model is ${signed} ft off the harmonic table. Treat it as setup, not a guarantee.`,
+        );
+      } else if (area.theater === "puerto-rico") {
+        why.push(
+          `The gauge is ${signed} ft off the predicted table — read the water, not just the printout.`,
         );
       }
     } else {
@@ -482,6 +486,12 @@ export function buildBriefing(
   }
   if (area.theater === "mexico") {
     warnings.push("Mexico requires a CONAPESCA license. Sian Ka’an, Contoy, and Espíritu Santo are park or biosphere water — verify before you fish.");
+  }
+  if (area.theater === "puerto-rico") {
+    warnings.push("Puerto Rico is DNER water, not FWC. Marine reserves (including Mosquito Bay) are not a freelance wade. Verify before you keep a fish.");
+  }
+  if (area.theater === "seychelles") {
+    warnings.push("Seychelles requires an SFA license. Outer atolls are lodge water. Ste Anne and other parks are marked — verify before you fish.");
   }
   if (flounderClosed(now, area.timezone) && area.theater === "texas") {
     warnings.push("Texas flounder season is closed Nov 1–Dec 14. Catch-and-release only if you hook one.");

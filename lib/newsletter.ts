@@ -41,6 +41,18 @@ export const DESKS = [
     desk: "Mexico desk",
     kicker: "Two oceans",
   },
+  {
+    theater: "puerto-rico" as const,
+    areaId: "san-juan",
+    desk: "Puerto Rico desk",
+    kicker: "Urban tarpon, then the drop",
+  },
+  {
+    theater: "seychelles" as const,
+    areaId: "alphonse",
+    desk: "Seychelles desk",
+    kicker: "GT country",
+  },
 ] as const;
 
 const LETTERS: Record<number, string> = {

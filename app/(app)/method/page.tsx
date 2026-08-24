@@ -6,7 +6,7 @@ const LAYERS = [
     title: "Observed",
     items: [
       "NOAA CO-OPS tides, observed water, station wind and water temp",
-      "NWS hourly (U.S.) and Open-Meteo (Bahamas, Mexico)",
+      "NWS hourly (U.S., including Puerto Rico) and Open-Meteo (Bahamas, Mexico, Seychelles)",
       "USGS GNIS names — pins snapped to Feature IDs when the hydro layer has them",
       "NOAA ENC wrecks and FKNMS legal polygons",
     ],

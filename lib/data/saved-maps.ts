@@ -1780,9 +1780,11 @@ export function savedSpotsNear(
         ? 18
         : area.theater === "florida"
           ? 22
-          : area.theater === "bahamas" || area.theater === "mexico"
+          : area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles"
             ? 40
-            : 42);
+            : area.theater === "puerto-rico"
+              ? 28
+              : 42);
   return SAVED_PINS.filter((p) => p.kind === "fish" || p.kind === "access")
     .filter((p) => {
       const n = `${p.name} ${p.folder}`.toLowerCase();

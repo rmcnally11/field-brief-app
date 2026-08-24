@@ -42,6 +42,13 @@ function DeskColumn({ briefing, error }: { briefing?: Briefing; error?: string }
         {conditions.weather.windMph != null
           ? `${Math.round(conditions.weather.windMph)} mph ${conditions.weather.windCardinal ?? ""}`.trim()
           : "Wind not in"}
+        {conditions.weather.wx === "storm"
+          ? " · thunderstorms"
+          : conditions.weather.wx === "rain"
+            ? " · rain"
+            : conditions.weather.precipChance != null
+              ? ` · ${Math.round(conditions.weather.precipChance)}% rain`
+              : ""}
         {conditions.tides.stage ? ` · ${conditions.tides.stage.replace("-", " ")}` : ""}
       </p>
       {(area.theater === "texas" || area.theater === "louisiana" || conditions.tides.anomalyFt != null) && (

@@ -14,11 +14,11 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 
 - Live **NOAA CO-OPS** tides, observed water level, water temperature, and station wind on Texas and Florida gauges.
 - **Wind versus the table**: observed minus predicted water. On the Texas coast the wind often *is* the tide.
-- **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas, Mexico).
+- **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas, Mexico, Seychelles) — wind **and rain / thunderstorms**.
 - Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**.
 - **Weekly Field Letter** (`/newsletter`) — one live desk per theater (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse), this month’s peaks, and harvest closures, in the Field Manual voice.
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by region, water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
-- Two-month **1–10 calendar** by micro-area: this month and next. Tap a day for that date’s brief. Copper outline = amazing day. The monthly **YOLO** day is the best remaining day with a real wind forecast.
+- Two-month **1–10 calendar** by micro-area: this month and next. Tap a day for that date’s brief. Copper outline = amazing day. The monthly **YOLO** day is the best remaining **dry** day with a real wind forecast. Rain and thunderstorms tax the score; a soaker cannot be a copper day.
 - **Stay or drive** (`/compare`) — two desks, one morning.
 - **Morning line** (`/morning`) — one sentence you can copy or mail. No SMS on Hobby.
 - Last theater / area / method is remembered in a cookie.
@@ -61,9 +61,9 @@ Not a nightly batch. Each Brief / Calendar / Map load hits live gauges, then cac
 | Feed | Freshness |
 | --- | --- |
 | NOAA CO-OPS tides, observed water, station wind, water temp | ~5 minutes |
-| NWS hourly forecast (U.S.) | ~10 minutes |
+| NWS hourly forecast (U.S.) — wind, sky, rain chance | ~10 minutes |
 | NWS point metadata | ~30 minutes |
-| Open-Meteo (Bahamas, Mexico, Seychelles wind) | ~10 minutes |
+| Open-Meteo (wind, precip, weather code; all theaters as fallback) | ~10 minutes |
 | USGS GNIS / NOAA ENC / FKNMS polygons | ~1 hour |
 | Moon phase | computed from the clock, every load |
 | Calendar days past the wind forecast | tide + moon + season only (labeled astronomical) |
@@ -93,7 +93,8 @@ Bahamas, Mexico, and Seychelles tides are a modeled lunar tide, labeled as such.
 | Source | Use |
 | --- | --- |
 | [NOAA CO-OPS](https://api.tidesandcurrents.noaa.gov/) | Tides, water temp, station wind |
-| [NWS API](https://www.weather.gov/documentation/services-web-api) | U.S. forecast |
+| [NWS API](https://www.weather.gov/documentation/services-web-api) | U.S. wind, sky, rain chance, thunderstorms |
+| [Open-Meteo](https://open-meteo.com/) | Wind and precip where NWS does not cover (Bahamas, Mexico, Seychelles) |
 | [USGS GNIS](https://www.usgs.gov/tools/geographic-names-information-system-gnis) | Named-feature coordinates (pins snapped where the hydro layer has a Feature ID) |
 | [TxGIO](https://data.geographic.texas.gov/) | State clearinghouse (formerly TNRIS) for TPWD coastal GIS |
 | [NOAA ENC Direct](https://gis.charttools.noaa.gov/arcgis/rest/services/encdirect) | Wrecks / obstructions |

@@ -3,6 +3,7 @@ import { MoonDisk } from "@/components/viz/moon-disk";
 import { scoreHex, scoreInk } from "@/lib/viz";
 import { cn } from "@/lib/utils";
 import { briefHref } from "@/lib/hrefs";
+import { skyWord } from "@/lib/wx";
 
 function weekday(ymd: string, timezone: string) {
   const d = new Date(`${ymd}T12:00:00`);
@@ -78,6 +79,11 @@ export function UpcomingStrip({
               </div>
               {day.tideRangeFt != null ? (
                 <p className="mt-1 font-mono text-[9px] text-[color:var(--cream)]/45">Δ{day.tideRangeFt.toFixed(1)}ft</p>
+              ) : null}
+              {skyWord(day.wx) ? (
+                <p className="mt-1 text-[9px] font-bold uppercase tracking-wide text-[color:var(--copper)]">
+                  {skyWord(day.wx)}
+                </p>
               ) : null}
               {day.yolo ? (
                 <p className="mt-1 text-[9px] font-bold uppercase tracking-wide text-[color:var(--copper)]">YOLO</p>

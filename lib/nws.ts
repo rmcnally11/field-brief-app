@@ -1,4 +1,5 @@
 import { cardinalFromDeg } from "@/lib/time";
+import { coerceSky, skyFromText } from "@/lib/wx";
 
 const UA = "FieldBrief/1.0 (inshore conditions; https://github.com)";
 
@@ -12,12 +13,13 @@ export async function fetchNwsPoint(lat: number, lon: number) {
   return res.json();
 }
 
-type NwsPeriod = {
+export type NwsPeriod = {
   startTime: string;
   temperature: number;
   windSpeed: string;
   windDirection: string;
-  shortForecast: string;
+  shortForecast?: string;
+  probabilityOfPrecipitation?: { value: number | null };
 };
 
 async function fetchNwsPeriods(url: string | undefined, label: string) {
@@ -55,10 +57,32 @@ function parseWindMph(text: string | undefined) {
   return Math.max(...nums);
 }
 
-export function nwsWindAt(
-  periods: { startTime: string; windSpeed: string; windDirection: string; temperature: number }[],
-  at: Date,
-) {
+function nwsSky(period: NwsPeriod) {
+  const precipChance = period.probabilityOfPrecipitation?.value ?? null;
+  const sky = period.shortForecast ?? null;
+  return {
+    precipChance,
+    sky,
+    wx: coerceSky(skyFromText(sky), precipChance),
+  };
+}
+
+function nwsDir(period: NwsPeriod) {
+  const dirMap: Record<string, number> = {
+    N: 0, NNE: 22, NE: 45, ENE: 67, E: 90, ESE: 112, SE: 135, SSE: 157,
+    S: 180, SSW: 202, SW: 225, WSW: 247, W: 270, WNW: 292, NW: 315, NNW: 337,
+  };
+  const deg = dirMap[period.windDirection] ?? null;
+  return {
+    windMph: parseWindMph(period.windSpeed),
+    windDirDeg: deg,
+    windCardinal: period.windDirection || cardinalFromDeg(deg),
+    airF: period.temperature,
+    ...nwsSky(period),
+  };
+}
+
+export function nwsWindAt(periods: NwsPeriod[], at: Date) {
   if (!periods.length) return null;
   let best = periods[0];
   let bestDelta = Math.abs(new Date(best.startTime).getTime() - at.getTime());
@@ -70,35 +94,13 @@ export function nwsWindAt(
     }
   }
   if (bestDelta > 18 * 3600000) return null;
-  const dirMap: Record<string, number> = {
-    N: 0, NNE: 22, NE: 45, ENE: 67, E: 90, ESE: 112, SE: 135, SSE: 157,
-    S: 180, SSW: 202, SW: 225, WSW: 247, W: 270, WNW: 292, NW: 315, NNW: 337,
-  };
-  const deg = dirMap[best.windDirection] ?? null;
-  return {
-    airF: best.temperature,
-    windMph: parseWindMph(best.windSpeed),
-    windDirDeg: deg,
-    windCardinal: best.windDirection || cardinalFromDeg(deg),
-  };
+  return nwsDir(best);
 }
 
-export function nwsWindNow(
-  periods: { startTime: string; windSpeed: string; windDirection: string; temperature: number }[],
-) {
+export function nwsWindNow(periods: NwsPeriod[]) {
   const now = Date.now();
   const p =
     periods.find((x) => new Date(x.startTime).getTime() >= now - 30 * 60000) ?? periods[0];
   if (!p) return null;
-  const dirMap: Record<string, number> = {
-    N: 0, NNE: 22, NE: 45, ENE: 67, E: 90, ESE: 112, SE: 135, SSE: 157,
-    S: 180, SSW: 202, SW: 225, WSW: 247, W: 270, WNW: 292, NW: 315, NNW: 337,
-  };
-  const deg = dirMap[p.windDirection] ?? null;
-  return {
-    airF: p.temperature,
-    windMph: parseWindMph(p.windSpeed),
-    windDirDeg: deg,
-    windCardinal: p.windDirection || cardinalFromDeg(deg),
-  };
+  return nwsDir(p);
 }

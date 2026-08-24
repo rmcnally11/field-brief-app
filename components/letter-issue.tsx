@@ -27,7 +27,17 @@ function weatherLine(desk: DeskIssue) {
       ? `${Math.round(w.windMph)} mph${w.windCardinal ? ` ${w.windCardinal}` : ""}`
       : "wind quiet";
   const temp = water != null ? `${Math.round(water)}°F water` : null;
-  return [wind, temp].filter(Boolean).join(" · ");
+  const sky =
+    w?.wx === "storm"
+      ? "thunderstorms"
+      : w?.wx === "rain"
+        ? w.precipChance != null
+          ? `${Math.round(w.precipChance)}% rain`
+          : "rain"
+        : w?.precipChance != null
+          ? `${Math.round(w.precipChance)}% rain`
+          : null;
+  return [wind, sky, temp].filter(Boolean).join(" · ");
 }
 
 function DeskCard({ desk }: { desk: DeskIssue }) {

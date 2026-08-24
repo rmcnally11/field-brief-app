@@ -158,6 +158,8 @@ export type TideAnalysis = {
   source: "noaa" | "modeled";
 };
 
+export type SkyKind = "clear" | "clouds" | "rain" | "storm";
+
 export type WeatherNow = {
   airF: number | null;
   windMph: number | null;
@@ -165,6 +167,13 @@ export type WeatherNow = {
   windDirDeg: number | null;
   windCardinal: string | null;
   pressureMb: number | null;
+  /** 0–100. NWS POP or Open-Meteo probability. */
+  precipChance: number | null;
+  /** Inches this hour when Open-Meteo answered. */
+  precipIn: number | null;
+  /** NWS shortForecast or a sky phrase. */
+  sky: string | null;
+  wx: SkyKind | null;
   source: "noaa" | "nws" | "open-meteo";
   fetchedAt: string;
 };
@@ -245,7 +254,7 @@ export type CalendarDay = {
   bestWindow: string | null;
   /** Score high enough that this is a book-the-day window for this micro-area. */
   amazing: boolean;
-  /** Best remaining day this month with a real wind forecast. */
+  /** Best remaining dry day this month with a real wind forecast. */
   yolo: boolean;
   moon: {
     name: string;
@@ -257,4 +266,6 @@ export type CalendarDay = {
   tides: CalendarTide[];
   tideRangeFt: number | null;
   windMph: number | null;
+  precipChance: number | null;
+  wx: SkyKind | null;
 };

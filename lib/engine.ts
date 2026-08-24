@@ -21,6 +21,7 @@ import {
 } from "@/lib/data/species";
 import { clockParts, hourInZone, ymdInZone } from "@/lib/time";
 import { composeHeadline, pickHeadlineSpecies } from "@/lib/headline";
+import { isSightSky, precipFishability, skyCopy } from "@/lib/wx";
 
 function clamp(n: number, lo: number, hi: number) {
   return Math.max(lo, Math.min(hi, n));
@@ -245,6 +246,19 @@ export function pickSpots(
         `${spot.habitat.replace("-", " ")} on a ${conditions.tides.stage.replace("-", " ")} tide is a ${tideFit >= 0.8 ? "classic" : tideFit >= 0.55 ? "workable" : "secondary"} match.`,
       );
 
+      const sky = precipFishability(
+        conditions.weather.wx,
+        conditions.weather.precipChance,
+        spot.habitat === "hard-flat" || spot.habitat === "grass-flat" || spot.depth === "skinny",
+      );
+      if (sky < 0.95) {
+        if (conditions.weather.wx === "storm") {
+          why.push("Thunderstorms — this mark is a stay-tied call, not a window.");
+        } else if (conditions.weather.wx === "rain" && (spot.habitat === "hard-flat" || spot.depth === "skinny")) {
+          why.push("Rain blinds skinny water. Sight dies before the fish do.");
+        }
+      }
+
       const speciesHit = spot.species.filter((id) => inPlay.has(id));
       score += Math.min(2, speciesHit.length * 0.7);
       if (speciesHit.length) {
@@ -325,6 +339,7 @@ export function pickSpots(
         }
       }
 
+      if (sky < 0.95) score *= 0.55 + 0.45 * sky;
       return { spot, score: Number(clamp(score, 0, 10).toFixed(1)), why };
     })
     .sort((a, b) => b.score - a.score);
@@ -353,7 +368,12 @@ export function pickWindows(
     const wind = conditions.weather.windMph;
     const w = windFishability(wind, activity);
     if (parsed[i].at < now) continue;
-    const score = clamp(10 * (0.45 * (moving ? 1 : 0.3) + 0.35 * tod + 0.2 * w), 1, 10);
+    const sky = precipFishability(
+      conditions.weather.wx,
+      conditions.weather.precipChance,
+      isSightSky(area.tideCharacter, activity),
+    );
+    const score = clamp(10 * (0.4 * (moving ? 1 : 0.3) + 0.3 * tod + 0.18 * w + 0.12 * sky), 1, 10);
     windows.push({
       start: parsed[i].time,
       end: parsed[Math.min(i + 2, parsed.length - 1)].time,
@@ -454,6 +474,26 @@ export function buildBriefing(
   if (water != null) {
     why.push(`Water ${water.toFixed(1)}°F. ${water >= 86 ? "Heat is the locator: early, late, deeper." : water <= 58 ? "Cold is the locator: guts, mud, midday sun." : "Temperature is in a workable band."}`);
   }
+  const sky = precipFishability(
+    conditions.weather.wx,
+    conditions.weather.precipChance,
+    isSightSky(area.tideCharacter, activity),
+  );
+  if (conditions.weather.wx || conditions.weather.precipChance != null || conditions.weather.sky) {
+    why.push(
+      `${skyCopy(conditions.weather.wx, conditions.weather.precipChance, conditions.weather.sky)}. ${
+        conditions.weather.wx === "storm"
+          ? "Lightning is a stay-tied call."
+          : conditions.weather.wx === "rain"
+            ? isSightSky(area.tideCharacter, activity)
+              ? "Sight water goes blind. Wait it out or switch to stained marsh."
+              : "Marsh still fishes in a shower. A soaker is a different day."
+            : conditions.weather.wx === "clouds" && isSightSky(area.tideCharacter, activity)
+              ? "Clouds steal the window on bones and permit."
+              : "Sky is workable."
+      }`,
+    );
+  }
   if (wind != null) {
     if (activity === "offshore") {
       why.push(
@@ -484,6 +524,15 @@ export function buildBriefing(
   if (water != null && water >= 88) warnings.push("Extreme water temperature. Fish stress quickly — keep them wet, or don't boat them.");
   if (wind != null && wind >= (activity === "offshore" ? 30 : 22)) {
     warnings.push("Small-craft wind. The score is not a safety brief.");
+  }
+  if (conditions.weather.wx === "storm") {
+    warnings.push("Thunderstorms in the forecast. Lightning is a stay-tied call. The score is not a safety brief.");
+  } else if (conditions.weather.wx === "rain" && (conditions.weather.precipChance ?? 100) >= 50) {
+    warnings.push(
+      isSightSky(area.tideCharacter, activity)
+        ? "Rain is likely. Sight-fishing goes blind — this is not a bonefish / permit day."
+        : "Rain is likely. A marsh still fishes. A soaker and lightning do not.",
+    );
   }
   if (area.theater === "mexico") {
     warnings.push("Mexico requires a CONAPESCA license. Sian Ka’an, Contoy, and Espíritu Santo are park or biosphere water — verify before you fish.");
@@ -523,9 +572,10 @@ export function buildBriefing(
 
   const top = pickHeadlineSpecies(area, species, leads);
   const overall = clamp(
-    0.4 * (where[0]?.score ?? 4) +
+    (0.4 * (where[0]?.score ?? 4) +
       0.3 * (top?.score ?? 4) +
-      0.3 * (when[0]?.score ?? 4),
+      0.3 * (when[0]?.score ?? 4)) *
+      (0.55 + 0.45 * sky),
     1,
     10,
   );

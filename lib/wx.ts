@@ -1,0 +1,72 @@
+import type { SkyKind } from "@/lib/types";
+
+export type { SkyKind };
+
+const RANK: Record<SkyKind, number> = { clear: 1, clouds: 2, rain: 3, storm: 4 };
+
+export function skyFromText(text?: string | null): SkyKind | null {
+  if (!text) return null;
+  const t = text.toLowerCase();
+  if (t.includes("thunder") || t.includes("t-storm") || t.includes("tstm")) return "storm";
+  if (t.includes("rain") || t.includes("shower") || t.includes("drizzle")) return "rain";
+  if (t.includes("fog") || t.includes("overcast") || t.includes("cloud")) return "clouds";
+  if (t.includes("sun") || t.includes("fair") || t.includes("clear")) return "clear";
+  return null;
+}
+
+export function skyFromWmo(code?: number | null): SkyKind | null {
+  if (code == null || Number.isNaN(code)) return null;
+  if (code >= 95) return "storm";
+  if (code >= 51) return "rain";
+  if (code >= 45 || (code >= 1 && code <= 3)) return "clouds";
+  if (code === 0) return "clear";
+  return null;
+}
+
+export function worseSky(a: SkyKind | null, b: SkyKind | null): SkyKind | null {
+  if (!a) return b;
+  if (!b) return a;
+  return RANK[a] >= RANK[b] ? a : b;
+}
+
+/** A 70% shower chance is rain even if the headline stayed “partly sunny.” */
+export function coerceSky(kind: SkyKind | null, chance: number | null): SkyKind | null {
+  if (kind === "storm") return "storm";
+  if ((chance ?? 0) >= 70) return "rain";
+  return kind;
+}
+
+/**
+ * How much the sky should tax a 1–10. Storms are a stay-tied call.
+ * Light rain still fishes a marsh; it blinds a bonefish flat.
+ */
+export function precipFishability(kind: SkyKind | null, chance: number | null, sight: boolean) {
+  const sky = coerceSky(kind, chance);
+  if (sky === "storm") return 0.28;
+  if (sky === "rain") {
+    if ((chance ?? 100) < 40) return sight ? 0.72 : 0.85;
+    return sight ? 0.38 : 0.58;
+  }
+  if (sky === "clouds") return sight ? 0.72 : 0.92;
+  return 1;
+}
+
+export function isSightSky(tideCharacter: string, activity?: string) {
+  return tideCharacter === "sight-skinny" || activity === "fly";
+}
+
+export function skyCopy(kind: SkyKind | null, chance: number | null, text?: string | null) {
+  const sky = coerceSky(kind, chance);
+  const pop = chance != null ? `${Math.round(chance)}%` : null;
+  if (sky === "storm") return pop ? `Thunderstorms · ${pop}` : "Thunderstorms";
+  if (sky === "rain") return pop ? `Rain · ${pop}` : text?.trim() || "Rain";
+  if (sky === "clouds") return text?.trim() || (pop ? `Clouds · ${pop}` : "Clouds");
+  if (text?.trim()) return pop ? `${text.trim()} · ${pop}` : text.trim();
+  return pop ? `${pop} chance of rain` : "Sky not in";
+}
+
+export function skyWord(kind: SkyKind | null) {
+  if (kind === "storm") return "t-storm";
+  if (kind === "rain") return "rain";
+  return null;
+}

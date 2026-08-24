@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { morningLine } from "@/lib/morning";
 import { briefHref, compareHref } from "@/lib/hrefs";
 import { neighborArea } from "@/lib/data/areas";
+import { skyCopy } from "@/lib/wx";
 
 function tideClock(stamp: string, tz: string) {
   const d = stamp.includes("T") ? new Date(stamp) : parseNoaaGmt(stamp);
@@ -112,6 +113,36 @@ export function BriefingPanel({
             cardinal={conditions.weather.windCardinal}
             size={156}
           />
+        </Instrument>
+        <Instrument
+          label="Sky"
+          source={
+            conditions.weather.precipChance != null
+              ? `${Math.round(conditions.weather.precipChance)}% rain`
+              : conditions.weather.source.toUpperCase()
+          }
+        >
+          <p className="font-heading text-3xl leading-tight text-[color:var(--cream)]">
+            {conditions.weather.wx === "storm"
+              ? "Storms"
+              : conditions.weather.wx === "rain"
+                ? "Rain"
+                : conditions.weather.wx === "clouds"
+                  ? "Clouds"
+                  : conditions.weather.wx === "clear"
+                    ? "Clear"
+                    : "Sky not in"}
+          </p>
+          <p className="mt-2 text-sm text-[color:var(--cream)]/65">
+            {skyCopy(conditions.weather.wx, conditions.weather.precipChance, conditions.weather.sky)}
+          </p>
+          <p className="mt-3 text-xs text-[color:var(--cream)]/45">
+            {conditions.weather.wx === "storm"
+              ? "Lightning is a stay-tied call."
+              : conditions.weather.wx === "rain"
+                ? "Sight water goes blind. A marsh still fishes a shower."
+                : "A 20% shower chance is not a cancel. A soaker is."}
+          </p>
         </Instrument>
         <Instrument
           label="Moon"

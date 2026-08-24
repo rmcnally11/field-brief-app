@@ -42,8 +42,9 @@ export default async function CalendarPage({
         </p>
         <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Amazing-day calendar</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
-          Two months for this micro-area. Each cell is a moon, tide range, and a 1–10. Copper
-          outline = book it. Wind is only inside the forecast; farther out is tide + moon + season.
+          Two months for this micro-area. Each cell is a moon, tide range, sky, and a 1–10. Copper
+          outline = book it. Rain and thunderstorms tax the score — a soaker cannot be a copper day.
+          Wind and sky are only inside the forecast; farther out is tide + moon + season.
           Station {area.noaaStation ?? "modeled M2"}.
         </p>
         <Waterline className="mt-3" />

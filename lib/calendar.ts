@@ -8,6 +8,8 @@ import { fetchHiLo } from "@/lib/noaa";
 import { fetchNwsDayWinds } from "@/lib/nws";
 import { fetchOpenMeteo } from "@/lib/openmeteo";
 import { activityWindPenalty, timeOfDayScore } from "@/lib/engine";
+import { coerceSky, isSightSky, precipFishability, skyFromText, skyFromWmo, skyCopy, worseSky } from "@/lib/wx";
+import type { SkyKind } from "@/lib/types";
 
 function clamp(n: number, lo: number, hi: number) {
   return Math.max(lo, Math.min(hi, n));
@@ -24,6 +26,8 @@ type CalendarInputs = {
   hourly: { time: string; height: number }[];
   hilo: HiLoRow[];
   windByDay: Map<string, number>;
+  popByDay: Map<string, number>;
+  wxByDay: Map<string, SkyKind>;
 };
 
 function rangeScoreFor(area: Area, range: number) {
@@ -143,11 +147,26 @@ async function loadCalendarInputs(area: Area, start: Date, dayCount: number): Pr
   const resolvedHiLo = hilo.length ? hilo : deriveHiLo(hourly);
 
   const windByDay = new Map<string, number>();
+  const popByDay = new Map<string, number>();
+  const wxByDay = new Map<string, SkyKind>();
   const ingestWind = (wind: Awaited<ReturnType<typeof fetchOpenMeteo>> | Awaited<ReturnType<typeof fetchNwsDayWinds>>) => {
     if ("hourly" in wind) {
       wind.hourly.time.forEach((t, i) => {
         const ymd = ymdInZone(new Date(t), area.timezone);
         windByDay.set(ymd, Math.max(windByDay.get(ymd) ?? 0, wind.hourly.wind_speed_10m[i] ?? 0));
+        const pop = wind.hourly.precipitation_probability?.[i];
+        if (pop != null) popByDay.set(ymd, Math.max(popByDay.get(ymd) ?? 0, pop));
+        const sky = coerceSky(skyFromWmo(wind.hourly.weather_code?.[i]), pop ?? popByDay.get(ymd) ?? null);
+        if (sky) wxByDay.set(ymd, worseSky(wxByDay.get(ymd) ?? null, sky) ?? sky);
+      });
+      wind.daily?.time.forEach((t, i) => {
+        const ymd = ymdInZone(new Date(`${t}T12:00:00Z`), area.timezone);
+        const dailyWind = wind.daily?.wind_speed_10m_max[i];
+        if (dailyWind != null) windByDay.set(ymd, Math.max(windByDay.get(ymd) ?? 0, dailyWind));
+        const pop = wind.daily?.precipitation_probability_max[i];
+        if (pop != null) popByDay.set(ymd, Math.max(popByDay.get(ymd) ?? 0, pop));
+        const sky = coerceSky(skyFromWmo(wind.daily?.weather_code[i]), pop ?? null);
+        if (sky) wxByDay.set(ymd, worseSky(wxByDay.get(ymd) ?? null, sky) ?? sky);
       });
       return;
     }
@@ -156,6 +175,10 @@ async function loadCalendarInputs(area: Area, start: Date, dayCount: number): Pr
       const nums = [...(p.windSpeed ?? "").matchAll(/(\d+)/g)].map((m) => Number(m[1]));
       const mph = nums.length ? Math.max(...nums) : 0;
       windByDay.set(ymd, Math.max(windByDay.get(ymd) ?? 0, mph));
+      const pop = p.probabilityOfPrecipitation?.value;
+      if (pop != null) popByDay.set(ymd, Math.max(popByDay.get(ymd) ?? 0, pop));
+      const sky = coerceSky(skyFromText(p.shortForecast), pop ?? popByDay.get(ymd) ?? null);
+      if (sky) wxByDay.set(ymd, worseSky(wxByDay.get(ymd) ?? null, sky) ?? sky);
     }
   };
   if (windSettled.status === "fulfilled") ingestWind(windSettled.value);
@@ -167,7 +190,7 @@ async function loadCalendarInputs(area: Area, start: Date, dayCount: number): Pr
     }
   }
 
-  return { hourly, hilo: resolvedHiLo, windByDay };
+  return { hourly, hilo: resolvedHiLo, windByDay, popByDay, wxByDay };
 }
 
 function scoreDay(area: Area, activity: ActivityId | "all", ymd: string, inputs: CalendarInputs): CalendarDay {
@@ -192,13 +215,17 @@ function scoreDay(area: Area, activity: ActivityId | "all", ymd: string, inputs:
           ? 0.65
           : 0.85;
   const hasWind = wind != null;
+  const pop = inputs.popByDay.get(ymd) ?? null;
+  const wx = inputs.wxByDay.get(ymd) ?? null;
+  const skyScore = precipFishability(wx, pop, isSightSky(area.tideCharacter, activity));
   const score = clamp(
     10 *
-      (0.28 * season +
-        0.32 * tide.score +
-        0.15 * spring +
+      (0.24 * season +
+        0.28 * tide.score +
+        0.13 * spring +
         0.15 * (hasWind ? windScore : 0.5) +
-        0.1 * tod),
+        0.08 * tod +
+        0.12 * skyScore),
     1,
     10,
   );
@@ -216,10 +243,12 @@ function scoreDay(area: Area, activity: ActivityId | "all", ymd: string, inputs:
     });
   const rangeFromHiLo =
     tides.length >= 2 ? Math.max(...tides.map((t) => t.height)) - Math.min(...tides.map((t) => t.height)) : tide.range;
+  const wet = wx === "storm" || wx === "rain" || (pop != null && pop >= 55);
   const amazing =
     hasWind &&
     wind != null &&
     wind <= 14 &&
+    !wet &&
     (score >= 8.2 ||
       (score >= 7.6 &&
         (area.tideCharacter === "sight-skinny" ? moon.springNeap !== "spring" : moon.springNeap === "spring")));
@@ -232,6 +261,7 @@ function scoreDay(area: Area, activity: ActivityId | "all", ymd: string, inputs:
       `${moon.name.toLowerCase()} · ${moon.springNeap}`,
       `tide range ~${tide.range.toFixed(1)} ft`,
       wind != null ? `wind to ${Math.round(wind)} mph` : "no wind forecast this far out",
+      wx || pop != null ? skyCopy(wx, pop) : "sky not in this far out",
     ],
     bestWindow:
       tide.bestHour != null ? `${((tide.bestHour + 11) % 12) + 1}${tide.bestHour >= 12 ? "p" : "a"} moving water` : null,
@@ -246,6 +276,8 @@ function scoreDay(area: Area, activity: ActivityId | "all", ymd: string, inputs:
     tides,
     tideRangeFt: Number(rangeFromHiLo.toFixed(2)),
     windMph: wind,
+    precipChance: pop,
+    wx,
     yolo: false,
   };
 }
@@ -253,7 +285,9 @@ function scoreDay(area: Area, activity: ActivityId | "all", ymd: string, inputs:
 export function pickYolo(days: CalendarDay[], fromYmd: string): CalendarDay | null {
   const pool = days.filter((d) => d.date >= fromYmd && d.windMph != null);
   if (!pool.length) return null;
+  const wetRank = (d: CalendarDay) => (d.wx === "storm" ? 3 : d.wx === "rain" ? 2 : (d.precipChance ?? 0) >= 55 ? 1 : 0);
   return [...pool].sort((a, b) => {
+    if (wetRank(a) !== wetRank(b)) return wetRank(a) - wetRank(b);
     if (a.amazing !== b.amazing) return a.amazing ? -1 : 1;
     if (b.score !== a.score) return b.score - a.score;
     return (a.windMph ?? 99) - (b.windMph ?? 99);
@@ -330,7 +364,7 @@ async function computeUpcoming(areaId: string, activity: ActivityId | "all", fro
   return markYolo(days, fromYmd);
 }
 
-const cachedUpcoming = unstable_cache(computeUpcoming, ["field-calendar-upcoming-v2"], {
+const cachedUpcoming = unstable_cache(computeUpcoming, ["field-calendar-upcoming-v3"], {
   revalidate: 180,
 });
 
@@ -356,7 +390,7 @@ async function computeCalendarRange(
   return monthsFromInputs(area, activity, year, month, count, inputs);
 }
 
-const cachedCalendarRange = unstable_cache(computeCalendarRange, ["field-calendar-v3"], {
+const cachedCalendarRange = unstable_cache(computeCalendarRange, ["field-calendar-v4"], {
   revalidate: 300,
 });
 

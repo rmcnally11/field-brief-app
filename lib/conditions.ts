@@ -5,6 +5,24 @@ import { fetchOpenMeteo } from "@/lib/openmeteo";
 import { loadTides } from "@/lib/tides";
 import { moonPhase } from "@/lib/moon";
 import { cardinalFromDeg, ymdInZone } from "@/lib/time";
+import { coerceSky, skyFromWmo } from "@/lib/wx";
+
+function blankWeather(source: WeatherNow["source"]): WeatherNow {
+  return {
+    airF: null,
+    windMph: null,
+    windGustMph: null,
+    windDirDeg: null,
+    windCardinal: null,
+    pressureMb: null,
+    precipChance: null,
+    precipIn: null,
+    sky: null,
+    wx: null,
+    source,
+    fetchedAt: new Date().toISOString(),
+  };
+}
 
 function openMeteoAt(
   om: Awaited<ReturnType<typeof fetchOpenMeteo>>,
@@ -21,6 +39,9 @@ function openMeteoAt(
     }
   });
   const useHour = bestDelta < 18 * 3600000;
+  const precipChance = useHour ? (om.hourly.precipitation_probability[best] ?? null) : null;
+  const precipIn = useHour ? (om.hourly.precipitation[best] ?? null) : (om.current.precipitation ?? null);
+  const code = useHour ? om.hourly.weather_code[best] : om.current.weather_code;
   return {
     airF: useHour ? om.hourly.temperature_2m[best] : om.current.temperature_2m,
     windMph: useHour ? om.hourly.wind_speed_10m[best] : om.current.wind_speed_10m,
@@ -30,6 +51,10 @@ function openMeteoAt(
       useHour ? om.hourly.wind_direction_10m[best] : om.current.wind_direction_10m,
     ),
     pressureMb: om.current.pressure_msl,
+    precipChance,
+    precipIn,
+    sky: null,
+    wx: coerceSky(skyFromWmo(code), precipChance),
     source: "open-meteo",
     fetchedAt: new Date().toISOString(),
   };
@@ -55,6 +80,10 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
         windDirDeg: wind.dir,
         windCardinal: cardinalFromDeg(wind.dir),
         pressureMb: null,
+        precipChance: nwsNow?.precipChance ?? null,
+        precipIn: null,
+        sky: nwsNow?.sky ?? null,
+        wx: nwsNow?.wx ?? null,
         source: "noaa",
         fetchedAt: new Date().toISOString(),
       };
@@ -67,6 +96,10 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
         windDirDeg: nwsNow.windDirDeg,
         windCardinal: nwsNow.windCardinal,
         pressureMb: null,
+        precipChance: nwsNow.precipChance,
+        precipIn: null,
+        sky: nwsNow.sky,
+        wx: nwsNow.wx,
         source: "nws",
         fetchedAt: new Date().toISOString(),
       };
@@ -85,6 +118,10 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
           windDirDeg: atHour.windDirDeg,
           windCardinal: atHour.windCardinal,
           pressureMb: null,
+          precipChance: atHour.precipChance,
+          precipIn: null,
+          sky: atHour.sky,
+          wx: atHour.wx,
           source: "nws",
           fetchedAt: new Date().toISOString(),
         };
@@ -98,16 +135,7 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
     const om = await fetchOpenMeteo(area.lat, area.lon);
     return openMeteoAt(om, at);
   } catch {
-    return {
-      airF: null,
-      windMph: null,
-      windGustMph: null,
-      windDirDeg: null,
-      windCardinal: null,
-      pressureMb: null,
-      source: modeledOcean ? "open-meteo" : "nws",
-      fetchedAt: new Date().toISOString(),
-    };
+    return blankWeather(modeledOcean ? "open-meteo" : "nws");
   }
 }
 

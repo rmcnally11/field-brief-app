@@ -25,7 +25,7 @@ export function YoloBanner({
         {formatYmdLong(day.date, timezone)} · {day.score.toFixed(1)}
       </p>
       <p className="mt-1 text-sm text-[color:var(--cream)]/65">
-        Best remaining day this month with a real wind forecast
+        Best remaining dry day this month with a real wind forecast
         {day.amazing ? " — and it is a copper day." : "."} {day.drivers.join(" · ")}
       </p>
     </a>

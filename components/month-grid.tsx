@@ -4,6 +4,7 @@ import { scoreColor } from "@/components/score-pip";
 import { MoonDisk } from "@/components/viz/moon-disk";
 import { scoreHex } from "@/lib/viz";
 import { briefHref } from "@/lib/hrefs";
+import { skyWord } from "@/lib/wx";
 
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -100,6 +101,11 @@ export function MonthGrid({
                   <span className="text-[9px] opacity-70">{Math.round(day.windMph)}mph</span>
                 ) : null}
               </div>
+              {skyWord(day.wx) ? (
+                <p className="text-[9px] font-semibold uppercase tracking-wide text-[color:var(--copper)]">
+                  {skyWord(day.wx)}
+                </p>
+              ) : null}
               <TideSpark day={day} />
               {day.yolo ? (
                 <p className="mt-1 text-[9px] font-bold uppercase tracking-wide">YOLO</p>

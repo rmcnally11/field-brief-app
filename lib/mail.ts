@@ -339,7 +339,7 @@ export function letterEmailText(issue: NewsletterIssue, coasts: TheaterId[] | nu
     `Read the letter: ${ORIGIN}/newsletter${qs}`,
     `Season: ${ORIGIN}/fundamentals${qs ? `?theater=${coasts![0]}` : ""}`,
     "",
-    "This edition is the water you elected. A Texas list does not carry Andros or Seychelles. Scores are 1–10, not a bite.",
+    "This edition is the water you elected. Coasts you did not pick stay off this letter. Scores are 1–10, not a bite.",
   );
   return parts.join("\n");
 }
@@ -385,7 +385,7 @@ export function letterEmailHtml(issue: NewsletterIssue, coasts: TheaterId[] | nu
       <a href="${ORIGIN}/newsletter${qs}" style="display:inline-block;background:#1c6b6b;color:#ffffff;text-decoration:none;padding:10px 16px;border-radius:6px;font-size:14px">Open the letter</a>
     </p>
     <p style="margin:28px 0 0;font-size:12px;color:#6a7580;line-height:1.45">
-      This edition is the water you elected. A Texas list does not carry Andros or Seychelles. Scores are 1–10, not a bite.
+      This edition is the water you elected. Coasts you did not pick stay off this letter. Scores are 1–10, not a bite.
     </p>
   </div>
 </body></html>`;

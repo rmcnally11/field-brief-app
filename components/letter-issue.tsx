@@ -223,7 +223,7 @@ export function LetterIssue({
         <p className="mt-4 text-sm text-[color:var(--cream)]/50">
           {all
             ? "Drawn from Galveston, Venice, Islamorada, Andros, Ascension, San Juan, and Alphonse — one desk per theater, not every micro-area."
-            : `This edition is ${edition} only — ${deskNames}. Andros and Seychelles stay off a Texas list.`}{" "}
+            : `This edition is ${edition} only — ${deskNames}. Coasts you did not elect stay off this letter.`}{" "}
           Scores are 1–10. They are not bite guarantees.{" "}
           <a href={seasonHref} className="text-[color:var(--sea)] underline underline-offset-4">
             Read this month’s seasonal fundamentals

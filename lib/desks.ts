@@ -42,3 +42,11 @@ export const DESKS = [
     kicker: "GT country",
   },
 ] as const;
+
+export function deskChoiceLabel(desk: (typeof DESKS)[number]) {
+  const place =
+    desk.areaId === "san-juan"
+      ? "San Juan"
+      : desk.areaId.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return `${desk.desk.replace(" desk", "")} — ${place}`;
+}

@@ -6,7 +6,9 @@ export const dynamic = "force-dynamic";
 
 export default async function SubscribersPage() {
   let rows: Array<{
+    name?: string;
     email: string;
+    zip?: string;
     desks: string[];
     cadence?: string[];
     status?: string;
@@ -24,7 +26,9 @@ export default async function SubscribersPage() {
     }
   } else {
     rows = (await listSubscribers()).map((s) => ({
+      name: s.name,
       email: s.email,
+      zip: s.zip,
       desks: s.desks,
       cadence: s.cadence,
       status: "local",
@@ -69,9 +73,11 @@ export default async function SubscribersPage() {
           <table className="w-full min-w-[36rem] text-left text-sm">
             <thead className="bg-[color:var(--panel)] text-[11px] uppercase tracking-[0.14em] text-[color:var(--cream)]/45">
               <tr>
+                <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Desks</th>
-                <th className="px-4 py-3">Cadence</th>
+                <th className="px-4 py-3">ZIP</th>
+                <th className="px-4 py-3">Water</th>
+                <th className="px-4 py-3">What they receive</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Source</th>
                 <th className="px-4 py-3">Joined</th>
@@ -80,14 +86,25 @@ export default async function SubscribersPage() {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.email} className="border-t border-[color:var(--line)]">
+                  <td className="px-4 py-3 text-[color:var(--cream)]">{r.name || "—"}</td>
                   <td className="px-4 py-3 text-[color:var(--cream)]">{r.email}</td>
+                  <td className="px-4 py-3 text-[color:var(--cream)]/70">{r.zip || "—"}</td>
                   <td className="px-4 py-3 text-[color:var(--cream)]/70">
                     {r.desks
                       .map((id) => DESKS.find((d) => d.areaId === id)?.desk.replace(" desk", "") ?? id)
                       .join(", ")}
                   </td>
                   <td className="px-4 py-3 text-[color:var(--cream)]/70">
-                    {(r.cadence ?? []).map((c) => c[0]?.toUpperCase() + c.slice(1)).join(", ") || "—"}
+                    {(r.cadence ?? [])
+                      .map((c) => {
+                        const id = c.toLowerCase();
+                        if (id === "daily") return "5am brief";
+                        if (id === "weekly") return "Saturday letter";
+                        if (id === "calendar") return "Sunday calendar";
+                        if (id === "seasonal") return "1st fundamentals";
+                        return c;
+                      })
+                      .join(" · ") || "—"}
                   </td>
                   <td className="px-4 py-3 text-[color:var(--cream)]/70">{r.status ?? "—"}</td>
                   <td className="px-4 py-3 text-[color:var(--cream)]/70">{r.source ?? "—"}</td>

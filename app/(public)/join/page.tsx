@@ -30,7 +30,7 @@ export default async function JoinPage({
           Get tonight’s water
         </h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/65">
-          Pick the coast you fish and leave an email. You get today’s brief, this month’s calendar,
+          Name, home ZIP, and the coast you fish. You get today’s brief, this month’s calendar,
           and the letter for that water now — then the 5am line after that. A Texas signup does not
           get Andros or Seychelles.
         </p>

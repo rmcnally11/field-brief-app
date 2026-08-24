@@ -17,7 +17,9 @@ import {
 export const DESK_IDS: string[] = DESKS.map((d) => d.areaId);
 
 export type Subscriber = {
+  name: string;
   email: string;
+  zip: string;
   desks: string[];
   cadence: Cadence[];
   createdAt: string;
@@ -33,6 +35,17 @@ export function validEmail(raw: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw.trim());
 }
 
+export function validName(raw: string) {
+  const name = raw.trim();
+  return name.length >= 2 && name.length <= 80;
+}
+
+export function validPostal(raw: string) {
+  const zip = raw.trim();
+  if (/^\d{5}(-\d{4})?$/.test(zip)) return true;
+  return /^[A-Za-z0-9][A-Za-z0-9 \-]{1,11}$/.test(zip);
+}
+
 export function parseDesks(raw: unknown): string[] {
   const wanted = new Set(DESK_IDS);
   const list = Array.isArray(raw) ? raw : typeof raw === "string" ? raw.split(",") : [];
@@ -42,9 +55,16 @@ export function parseDesks(raw: unknown): string[] {
 async function readLocal(): Promise<Subscriber[]> {
   try {
     const raw = await readFile(FILE, "utf8");
-    const parsed = JSON.parse(raw) as Array<Subscriber & { cadence?: Cadence[] }>;
+    const parsed = JSON.parse(raw) as Array<Partial<Subscriber> & { cadence?: Cadence[] }>;
     return Array.isArray(parsed)
-      ? parsed.map((s) => ({ ...s, cadence: parseCadence(s.cadence) }))
+      ? parsed.map((s) => ({
+          name: s.name?.trim() ?? "",
+          email: s.email ?? "",
+          zip: s.zip?.trim() ?? "",
+          desks: Array.isArray(s.desks) ? s.desks : [],
+          cadence: parseCadence(s.cadence),
+          createdAt: s.createdAt ?? "",
+        }))
       : [];
   } catch {
     return [];
@@ -64,7 +84,9 @@ function envSubscribers(): Subscriber[] {
     .map((email) => email.trim())
     .filter(validEmail)
     .map((email) => ({
+      name: "",
       email: normalizeEmail(email),
+      zip: "",
       desks: [...DESK_IDS],
       cadence: [...CADENCES],
       createdAt: "env",
@@ -76,14 +98,19 @@ export async function addSubscriber(
   desks: string[],
   source: ListSource = "Brief",
   cadence: Cadence[] = [...CADENCES],
+  profile?: { name?: string; zip?: string },
 ) {
   const sub: Subscriber = {
+    name: profile?.name?.trim() ?? "",
     email: normalizeEmail(email),
+    zip: profile?.zip?.trim() ?? "",
     desks: parseDesks(desks),
     cadence: parseCadence(cadence),
     createdAt: new Date().toISOString(),
   };
+  if (!validName(sub.name)) throw new Error("Leave the name you go by.");
   if (!validEmail(sub.email)) throw new Error("That is not an email.");
+  if (!validPostal(sub.zip)) throw new Error("Leave a home ZIP or postal code.");
   if (!sub.desks.length) throw new Error("Pick at least one coast.");
   const local = await readLocal();
   const next = [...local.filter((s) => s.email !== sub.email), sub];
@@ -98,6 +125,8 @@ export async function addSubscriber(
       desks: sub.desks,
       source,
       cadence: cadenceLabels(sub.cadence),
+      name: sub.name,
+      zip: sub.zip,
     });
     return { subscriber: sub, persisted: true, via: "airtable" as const };
   }
@@ -110,7 +139,9 @@ export async function addSubscriber(
 
 function mergeSubscriber(prev: Subscriber | undefined, next: Subscriber): Subscriber {
   return {
+    name: next.name || prev?.name || "",
     email: next.email,
+    zip: next.zip || prev?.zip || "",
     desks: [...new Set([...(prev?.desks ?? []), ...next.desks])],
     cadence: [...new Set([...(prev?.cadence ?? []), ...next.cadence])],
     createdAt: prev?.createdAt ?? next.createdAt,
@@ -123,7 +154,9 @@ export async function listSubscribers(): Promise<Subscriber[]> {
   if (airtableConfigured()) {
     try {
       airtable = (await listAirtableSubscribers()).map((s) => ({
+        name: s.name,
         email: s.email,
+        zip: s.zip,
         desks: parseDesks(s.desks),
         cadence: parseCadence(s.cadence),
         createdAt: s.joined || "airtable",

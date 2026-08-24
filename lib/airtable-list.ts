@@ -4,7 +4,9 @@ export const AIRTABLE_TABLE = "tblqoCAVvAvEFYMe6";
 export const AIRTABLE_TABLE_URL = `https://airtable.com/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`;
 
 export const AIRTABLE_FIELDS = {
+  name: "fld3dNtADK32TeRYD",
   email: "fldxbuLSA1abol1QD",
+  zip: "fld5CbrwcpJwkubQ4",
   desks: "fldfp7bhxDuVsvLDs",
   status: "fldNvuox5pwxbDc9i",
   source: "fldCrpEUBV2t9a5oh",
@@ -21,6 +23,14 @@ function token() {
 
 export function airtableConfigured() {
   return Boolean(token());
+}
+
+function asString(value: unknown) {
+  return typeof value === "string" ? value : "";
+}
+
+function asStrings(value: unknown) {
+  return Array.isArray(value) ? value.map(String) : [];
 }
 
 async function airtable<T>(path: string, init?: RequestInit): Promise<T> {
@@ -44,14 +54,7 @@ async function airtable<T>(path: string, init?: RequestInit): Promise<T> {
 
 type AirtableRecord = {
   id: string;
-  fields: {
-    Email?: string;
-    Desks?: string[];
-    Status?: string;
-    Source?: string;
-    Joined?: string;
-    Cadence?: string[];
-  };
+  fields: Record<string, unknown>;
 };
 
 export async function upsertAirtableSubscriber(input: {
@@ -59,24 +62,35 @@ export async function upsertAirtableSubscriber(input: {
   desks: string[];
   source: ListSource;
   cadence?: string[];
+  name?: string;
+  zip?: string;
 }) {
   const found = await airtable<{ records: AirtableRecord[] }>(
     `?${new URLSearchParams({
       filterByFormula: `LOWER({Email})="${input.email.replaceAll('"', "")}"`,
       maxRecords: "1",
+      returnFieldsByFieldId: "true",
     })}`,
   );
   const existing = found.records[0];
-  const fields = {
-    Email: input.email,
-    Desks: input.desks,
-    Status: existing?.fields.Status === "Unsubscribed" ? "Active" : (existing?.fields.Status ?? "Active"),
-    Source: existing?.fields.Source ?? input.source,
-    Joined: existing?.fields.Joined ?? new Date().toISOString().slice(0, 10),
-    Cadence: input.cadence?.length
+  const fields: Record<string, unknown> = {
+    [AIRTABLE_FIELDS.email]: input.email,
+    [AIRTABLE_FIELDS.desks]: input.desks,
+    [AIRTABLE_FIELDS.status]:
+      asString(existing?.fields[AIRTABLE_FIELDS.status]) === "Unsubscribed"
+        ? "Active"
+        : (asString(existing?.fields[AIRTABLE_FIELDS.status]) || "Active"),
+    [AIRTABLE_FIELDS.source]: asString(existing?.fields[AIRTABLE_FIELDS.source]) || input.source,
+    [AIRTABLE_FIELDS.joined]:
+      asString(existing?.fields[AIRTABLE_FIELDS.joined]) || new Date().toISOString().slice(0, 10),
+    [AIRTABLE_FIELDS.cadence]: input.cadence?.length
       ? input.cadence
-      : (existing?.fields.Cadence ?? ["Daily", "Weekly", "Calendar", "Seasonal"]),
+      : asStrings(existing?.fields[AIRTABLE_FIELDS.cadence]).length
+        ? asStrings(existing?.fields[AIRTABLE_FIELDS.cadence])
+        : ["Daily", "Weekly", "Calendar", "Seasonal"],
   };
+  if (input.name?.trim()) fields[AIRTABLE_FIELDS.name] = input.name.trim();
+  if (input.zip?.trim()) fields[AIRTABLE_FIELDS.zip] = input.zip.trim();
   if (existing) {
     await airtable(`/${existing.id}`, { method: "PATCH", body: JSON.stringify({ fields, typecast: true }) });
     return { id: existing.id, created: false };
@@ -90,7 +104,9 @@ export async function upsertAirtableSubscriber(input: {
 
 export async function listAirtableSubscribers() {
   const out: Array<{
+    name: string;
     email: string;
+    zip: string;
     desks: string[];
     cadence: string[];
     status: string;
@@ -102,19 +118,24 @@ export async function listAirtableSubscribers() {
     const qs = new URLSearchParams({
       filterByFormula: `OR({Status}="Active",{Status}="Paid")`,
       pageSize: "100",
+      returnFieldsByFieldId: "true",
     });
     if (offset) qs.set("offset", offset);
     const page = await airtable<{ records: AirtableRecord[]; offset?: string }>(`?${qs}`);
     for (const rec of page.records) {
-      const email = rec.fields.Email?.trim().toLowerCase();
+      const email = asString(rec.fields[AIRTABLE_FIELDS.email]).trim().toLowerCase();
       if (!email) continue;
       out.push({
+        name: asString(rec.fields[AIRTABLE_FIELDS.name]).trim(),
         email,
-        desks: rec.fields.Desks ?? [],
-        cadence: rec.fields.Cadence ?? ["Daily", "Weekly", "Calendar", "Seasonal"],
-        status: rec.fields.Status ?? "Active",
-        source: rec.fields.Source ?? "",
-        joined: rec.fields.Joined ?? "",
+        zip: asString(rec.fields[AIRTABLE_FIELDS.zip]).trim(),
+        desks: asStrings(rec.fields[AIRTABLE_FIELDS.desks]),
+        cadence: asStrings(rec.fields[AIRTABLE_FIELDS.cadence]).length
+          ? asStrings(rec.fields[AIRTABLE_FIELDS.cadence])
+          : ["Daily", "Weekly", "Calendar", "Seasonal"],
+        status: asString(rec.fields[AIRTABLE_FIELDS.status]) || "Active",
+        source: asString(rec.fields[AIRTABLE_FIELDS.source]),
+        joined: asString(rec.fields[AIRTABLE_FIELDS.joined]),
       });
     }
     offset = page.offset;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { airtableConfigured, listAirtableSubscribers, type ListSource } from "@/lib/airtable-list";
-import { addSubscriber, parseDesks, validEmail } from "@/lib/subscribers";
+import { addSubscriber, parseDesks, validEmail, validName, validPostal } from "@/lib/subscribers";
 import { sendWelcomeEmails } from "@/lib/samples";
 import {
   COASTS_COOKIE,
@@ -38,15 +38,30 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  let body: { email?: string; desks?: unknown; cadence?: unknown; source?: string };
+  let body: { email?: string; name?: string; zip?: string; desks?: unknown; cadence?: unknown; source?: string };
   try {
-    body = (await request.json()) as { email?: string; desks?: unknown; cadence?: unknown; source?: string };
+    body = (await request.json()) as {
+      email?: string;
+      name?: string;
+      zip?: string;
+      desks?: unknown;
+      cadence?: unknown;
+      source?: string;
+    };
   } catch {
     return NextResponse.json({ error: "Send JSON." }, { status: 400 });
   }
+  const name = body.name?.trim() ?? "";
+  const zip = body.zip?.trim() ?? "";
   const email = body.email?.trim() ?? "";
+  if (!validName(name)) {
+    return NextResponse.json({ error: "Leave the name you go by." }, { status: 400 });
+  }
   if (!validEmail(email)) {
     return NextResponse.json({ error: "That is not an email." }, { status: 400 });
+  }
+  if (!validPostal(zip)) {
+    return NextResponse.json({ error: "Leave a home ZIP or postal code." }, { status: 400 });
   }
   const desks = parseDesks(body.desks);
   if (!desks.length) {
@@ -55,7 +70,7 @@ export async function POST(request: NextRequest) {
   const cadence = parseCadence(body.cadence);
   const source = SOURCES.has(body.source as ListSource) ? (body.source as ListSource) : "Brief";
   try {
-    const result = await addSubscriber(email, desks, source, cadence);
+    const result = await addSubscriber(email, desks, source, cadence, { name, zip });
     const coasts = coastsForDesks(result.subscriber.desks);
     let welcome: Awaited<ReturnType<typeof sendWelcomeEmails>> | null = null;
     let welcomeError: string | null = null;

@@ -108,7 +108,7 @@ curl -sS -X POST https://field-brief-app.vercel.app/api/subscribe \
   -d '{"email":"FAMILY_EMAIL_HERE","desks":["galveston"],"cadence":["daily","weekly","calendar","seasonal"],"source":"Letter"}'
 ```
 
-You want `"via":"airtable"` in the JSON. Then open the [Subscribers table](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) and confirm the new row: Email, Desks `galveston`, Cadence all four, Status **Active**.
+You want `"via":"airtable"` in the JSON. Then open the [Subscribers table](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) and confirm the new row: Name, Email, Home ZIP, Coasts they fish `galveston`, What they receive all four, Status **Active**.
 
 `via: "local"` means that production process still does not have the token.
 
@@ -128,12 +128,14 @@ You do not have to wait for `/join` if you want names on the list now. After the
 
 | Field | What to put |
 | --- | --- |
+| Name | The name they go by |
 | Email | Their real address |
-| Desks | `galveston` for Texas. Add `venice`, `islamorada`, `andros`, `ascension`, `san-juan`, `alphonse` only if they fish that water. |
-| Cadence | `Daily`, `Weekly`, `Calendar`, `Seasonal` — or only the ones they want |
+| Home ZIP | Home ZIP or postal code |
+| Coasts they fish | `galveston` for Texas. Add `venice`, `islamorada`, `andros`, `ascension`, `san-juan`, `alphonse` only if they fish that water. |
+| What they receive | `Daily` (5am brief), `Weekly` (Saturday letter), `Calendar` (Sunday month grid), `Seasonal` (1st fundamentals) |
 | Status | **Active** |
-| Source | `Operator` if you typed it; `/join` writes `Letter` |
-| Joined | Today (`YYYY-MM-DD`) |
+| How they joined | `Operator` if you typed it; `/join` writes `Letter` |
+| Joined on | Today (`YYYY-MM-DD`) |
 | Notes | Optional |
 
 A Texas-only row must **not** include Andros or Alphonse. Empty Desks is not “all seven” — the cron skips a row with no desks.
@@ -184,13 +186,15 @@ You should not have to change these. They live in `lib/airtable-list.ts`.
 
 | Field | ID | Type |
 | --- | --- | --- |
+| Name | `fld3dNtADK32TeRYD` | text |
 | Email | `fldxbuLSA1abol1QD` | email |
-| Desks | `fldfp7bhxDuVsvLDs` | multiple select: `galveston`, `venice`, `islamorada`, `andros`, `ascension`, `san-juan`, `alphonse` |
+| Home ZIP | `fld5CbrwcpJwkubQ4` | text |
+| Coasts they fish | `fldfp7bhxDuVsvLDs` | multiple select: `galveston`, `venice`, `islamorada`, `andros`, `ascension`, `san-juan`, `alphonse` |
 | Status | `fldNvuox5pwxbDc9i` | single select: `Active`, `Paid`, `Unsubscribed` |
-| Source | `fldCrpEUBV2t9a5oh` | single select: `Brief`, `Letter`, `Morning`, `Operator` |
-| Joined | `fldTQcD4XDpVsdy6f` | date |
+| How they joined | `fldCrpEUBV2t9a5oh` | single select: `Brief`, `Letter`, `Morning`, `Operator` |
+| Joined on | `fldTQcD4XDpVsdy6f` | date |
 | Notes | `fldYDuwwxmogAbDvl` | long text |
-| Cadence | `fldedcanNXcoKuOnM` | multiple select: `Daily`, `Weekly`, `Calendar`, `Seasonal` |
+| What they receive | `fldedcanNXcoKuOnM` | multiple select: `Daily`, `Weekly`, `Calendar`, `Seasonal` |
 
 Base `app3GRvkkpJdnVIKy`. Table `tblqoCAVvAvEFYMe6`. Workspace is Costal Cavaliers for now; remap later if you want.
 
@@ -204,7 +208,7 @@ Do not rename choice values. The app writes those exact strings.
 
 1. Open the [Subscribers table](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6).
 2. **+** next to the views → **Form**.
-3. Keep Email, Desks, Cadence. Hide Status and set its default to **Active**. Hide Source / Joined / Notes or default Source to `Letter`.
+3. Keep Name, Email, Home ZIP, Coasts they fish, and What they receive. Hide Status and set its default to **Active**. Hide How they joined / Joined on / Notes or default How they joined to `Letter`.
 4. Share the form link if you want. Rows still need Status **Active** and at least one desk for the cron to send.
 
 The 5am job still needs `AIRTABLE_API_KEY` on Vercel to *read* those rows. A form without the token is a notebook the cron cannot see.

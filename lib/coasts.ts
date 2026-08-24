@@ -8,11 +8,31 @@ export const COASTS_COOKIE = "fb_coasts";
 export const CADENCES = ["daily", "weekly", "calendar", "seasonal"] as const;
 export type Cadence = (typeof CADENCES)[number];
 
-export const CADENCE_META: { id: Cadence; label: string; blurb: string }[] = [
-  { id: "daily", label: "Daily", blurb: "The 5am line for the desks you pick" },
-  { id: "weekly", label: "Weekly", blurb: "Saturday’s letter, those desks only" },
-  { id: "calendar", label: "Calendar", blurb: "Sunday’s month grid with scores and YOLO" },
-  { id: "seasonal", label: "Seasonal", blurb: "The 1st: this month’s fundamentals for those coasts" },
+export const CADENCE_META: { id: Cadence; label: string; title: string; blurb: string }[] = [
+  {
+    id: "daily",
+    label: "Daily",
+    title: "5am morning brief",
+    blurb: "Every morning at 5, the live line for the water you elected — wind, tide, score, and what is actually in play.",
+  },
+  {
+    id: "weekly",
+    label: "Weekly",
+    title: "Saturday Field Letter",
+    blurb: "Once a week, the letter for those desks only. A Texas signup does not get Andros or Seychelles.",
+  },
+  {
+    id: "calendar",
+    label: "Calendar",
+    title: "Sunday month calendar",
+    blurb: "The 1–10 grid for the month ahead, moon, wet marks, and the copper YOLO day.",
+  },
+  {
+    id: "seasonal",
+    label: "Seasonal",
+    title: "First-of-month fundamentals",
+    blurb: "On the 1st: what is in season, what is closed, and how to fish those coasts this month.",
+  },
 ];
 
 export function parseCoasts(raw?: string | null): TheaterId[] {

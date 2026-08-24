@@ -14,9 +14,9 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 
 - Live **NOAA CO-OPS** tides, observed water level, water temperature, and station wind on Texas and Florida gauges.
 - **Wind versus the table**: observed minus predicted water. On the Texas coast the wind often *is* the tide.
-- **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas).
+- **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas, Mexico).
 - Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**.
-- **Weekly Field Letter** (`/newsletter`) — one live desk per theater (Galveston, Islamorada, Andros), this month’s peaks, and harvest closures, in the Field Manual voice.
+- **Weekly Field Letter** (`/newsletter`) — one live desk per theater (Galveston, Venice, Islamorada, Andros, Ascension), this month’s peaks, and harvest closures, in the Field Manual voice.
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by region, water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next, with a drawn moon and tide range on every day. Copper outline = amazing day.
 - Satellite chart (Esri imagery) with official layers and your My Maps.
@@ -59,7 +59,7 @@ Not a nightly batch. Each Brief / Calendar / Map load hits live gauges, then cac
 | NOAA CO-OPS tides, observed water, station wind, water temp | ~5 minutes |
 | NWS hourly forecast (U.S.) | ~10 minutes |
 | NWS point metadata | ~30 minutes |
-| Open-Meteo (Bahamas wind) | ~10 minutes |
+| Open-Meteo (Bahamas and Mexico wind) | ~10 minutes |
 | USGS GNIS / NOAA ENC / FKNMS polygons | ~1 hour |
 | Moon phase | computed from the clock, every load |
 | Calendar days past the wind forecast | tide + moon + season only (labeled astronomical) |
@@ -78,7 +78,7 @@ A nightly cron would only make sense later for a morning text/email (“Galvesto
 
 **Mexico:** Ascension Bay / Sian Ka’an · Isla Mujeres / Cancún bank · East Cape / Los Barriles · La Paz / Espíritu Santo
 
-Bahamas tides are a modeled lunar tide, labeled as such. There is no NOAA gauge on those islands.
+Bahamas and Mexico tides are a modeled lunar tide, labeled as such. There is no NOAA gauge on those coasts.
 
 ## Official sources we cite
 

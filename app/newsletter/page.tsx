@@ -155,7 +155,7 @@ export default async function NewsletterPage() {
           Week of the water
         </h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/55">
-          {issue.rangeLabel} · {issue.monthName} fundamentals · {liveDesks} of 3 desks live
+          {issue.rangeLabel} · {issue.monthName} fundamentals · {liveDesks} of 5 desks live
         </p>
         <Waterline className="mx-auto mt-4 max-w-xl" />
       </header>

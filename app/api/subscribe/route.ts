@@ -33,20 +33,23 @@ export async function POST(request: NextRequest) {
     const result = await addSubscriber(email, desks, source, cadence);
     const coasts = coastsForDesks(result.subscriber.desks);
     let welcome: Awaited<ReturnType<typeof sendWelcomeEmails>> | null = null;
+    let welcomeError: string | null = null;
     try {
       welcome = await sendWelcomeEmails(result.subscriber.email, {
         desks: result.subscriber.desks,
         cadence: result.subscriber.cadence,
       });
-    } catch {
-      welcome = null;
+    } catch (error) {
+      welcomeError = error instanceof Error ? error.message : "Welcome mail did not send.";
     }
     const sentNow = welcome?.results.some((r) => r.sent) ?? false;
-    const note =
-      result.via === "local" && !sentNow
-        ? "Saved on this machine only. The operator still needs the list wired for tomorrow’s 5am."
-        : sentNow
-          ? `You're on the list for ${coasts.join(", ")}. Tonight’s water is on the way.`
+    const needsDomain = Boolean(welcomeError?.includes("verify a domain"));
+    const note = sentNow
+      ? `You're on the list for ${coasts.join(", ")}. Tonight’s water is on the way.`
+      : needsDomain
+        ? "You're saved. Mail to anyone but the operator needs a verified domain on Resend and RESEND_FROM on Vercel."
+        : result.via === "local"
+          ? "Saved on this machine only. The operator still needs the list wired for tomorrow’s 5am."
           : `You're on the Field Brief list for ${coasts.join(", ")}.`;
     const res = NextResponse.json({
       ok: true,

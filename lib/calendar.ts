@@ -106,14 +106,23 @@ function seasonalForArea(area: Area, month: number, activity: ActivityId | "all"
   return scores.sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, scores.length);
 }
 
+function withBudget<T>(promise: Promise<T>, ms: number, label: string) {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      setTimeout(() => reject(new Error(`${label} exceeded ${ms}ms`)), ms);
+    }),
+  ]);
+}
+
 async function loadCalendarInputs(area: Area, start: Date, dayCount: number): Promise<CalendarInputs> {
   const [hiloSettled, windSettled] = await Promise.allSettled([
     area.noaaStation
-      ? fetchHiLo(area.noaaStation, new Date(start.getTime() - 86400000), dayCount + 2)
+      ? withBudget(fetchHiLo(area.noaaStation, new Date(start.getTime() - 86400000), dayCount + 2), 2800, "NOAA hi/lo")
       : Promise.resolve([]),
     area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles"
-      ? fetchOpenMeteo(area.lat, area.lon)
-      : fetchNwsDayWinds(area.lat, area.lon),
+      ? withBudget(fetchOpenMeteo(area.lat, area.lon), 2500, "Open-Meteo")
+      : withBudget(fetchNwsDayWinds(area.lat, area.lon), 2800, "NWS"),
   ]);
 
   const hilo: HiLoRow[] =

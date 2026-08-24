@@ -78,7 +78,7 @@ export default async function MorningPage({
           </a>
         </div>
       </article>
-      <MorningMail defaultDesk={briefing.area.id} />
+      <MorningMail defaultDesk={briefing.area.id} source="Morning" />
       {yolo ? (
         <YoloBanner
           day={yolo}

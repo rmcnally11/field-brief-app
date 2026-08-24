@@ -1,6 +1,12 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { DESKS } from "@/lib/desks";
+import {
+  airtableConfigured,
+  listAirtableSubscribers,
+  upsertAirtableSubscriber,
+  type ListSource,
+} from "@/lib/airtable-list";
 
 export const DESK_IDS: string[] = DESKS.map((d) => d.areaId);
 
@@ -100,7 +106,7 @@ async function listResendContacts(): Promise<Subscriber[]> {
     }));
 }
 
-export async function addSubscriber(email: string, desks: string[]) {
+export async function addSubscriber(email: string, desks: string[], source: ListSource = "Brief") {
   const sub: Subscriber = {
     email: normalizeEmail(email),
     desks: parseDesks(desks),
@@ -112,24 +118,46 @@ export async function addSubscriber(email: string, desks: string[]) {
   try {
     await writeLocal(next);
   } catch {
-    // Vercel filesystem is ephemeral — Resend or SUBSCRIBER_EMAILS keeps the list.
+    // Vercel filesystem is ephemeral — Airtable is the list that survives.
   }
-  let remote = false;
-  try {
-    remote = await addResendContact(sub);
-  } catch {
-    remote = false;
+  let via: "airtable" | "resend" | "local" = "local";
+  if (airtableConfigured()) {
+    try {
+      await upsertAirtableSubscriber({ email: sub.email, desks: sub.desks, source });
+      via = "airtable";
+    } catch {
+      via = "local";
+    }
+  }
+  if (via !== "airtable") {
+    try {
+      if (await addResendContact(sub)) via = "resend";
+    } catch {
+      // keep via
+    }
   }
   return {
     subscriber: sub,
-    persisted: remote || Boolean(process.env.SUBSCRIBER_EMAILS),
-    via: remote ? ("resend" as const) : ("local" as const),
+    persisted: via !== "local" || Boolean(process.env.SUBSCRIBER_EMAILS),
+    via,
   };
 }
 
 export async function listSubscribers(): Promise<Subscriber[]> {
   const byEmail = new Map<string, Subscriber>();
-  for (const sub of [...envSubscribers(), ...(await listResendContacts()), ...(await readLocal())]) {
+  let airtable: Subscriber[] = [];
+  if (airtableConfigured()) {
+    try {
+      airtable = (await listAirtableSubscribers()).map((s) => ({
+        email: s.email,
+        desks: parseDesks(s.desks),
+        createdAt: s.joined || "airtable",
+      }));
+    } catch {
+      airtable = [];
+    }
+  }
+  for (const sub of [...envSubscribers(), ...airtable, ...(await listResendContacts()), ...(await readLocal())]) {
     const prev = byEmail.get(sub.email);
     byEmail.set(sub.email, {
       email: sub.email,

@@ -25,7 +25,7 @@ export default async function NewsletterPage() {
   return (
     <div className="space-y-8">
       <LetterIssue issue={issue} />
-      <MorningMail />
+      <MorningMail source="Letter" />
     </div>
   );
 }

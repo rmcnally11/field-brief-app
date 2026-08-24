@@ -24,6 +24,7 @@ const LINKS = [
   { href: "/method", label: "Method", dek: "How the score is built" },
   { href: "/newsletter", label: "Letter", dek: "Seven live desks" },
   { href: "/fundamentals", label: "Season", dek: "Month and coast" },
+  { href: "/subscribers", label: "List", dek: "Who gets the 5am mail" },
 ];
 
 function activePath(pathname: string, href: string) {

@@ -9,9 +9,11 @@ import { Label } from "@/components/ui/label";
 export function MorningMail({
   defaultDesk,
   compact = false,
+  source = "Brief",
 }: {
   defaultDesk?: string;
   compact?: boolean;
+  source?: "Brief" | "Letter" | "Morning";
 }) {
   const [email, setEmail] = useState("");
   const [desks, setDesks] = useState<string[]>(defaultDesk ? [defaultDesk] : DESKS.map((d) => d.areaId));
@@ -30,7 +32,7 @@ export function MorningMail({
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, desks }),
+        body: JSON.stringify({ email, desks, source }),
       });
       const json = (await res.json()) as { error?: string; note?: string };
       if (!res.ok) {
@@ -56,13 +58,14 @@ export function MorningMail({
           : "rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5"
       }
     >
-      <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">5am mail</p>
+      <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">The list</p>
       <h2 className={`mt-1 font-heading text-[color:var(--cream)] ${compact ? "text-xl" : "text-2xl"}`}>
-        One line when the coast wakes up
+        Get the morning line
       </h2>
       <p className="mt-2 text-sm text-[color:var(--cream)]/65">
-        Same morning line as the brief. Generated live from the gauges at send time — not a 2am batch.
-        No SMS on Hobby.
+        Public signup. Your address goes on the Field Brief table. The 5am email is that same live
+        morning line — not a nightly batch. Sending turns on when the operator wires Resend. No SMS
+        on Hobby. A paid letter can use this list later.
       </p>
       <div className="mt-4 space-y-2">
         <Label htmlFor="morning-email" className="text-[color:var(--cream)]/70">
@@ -109,7 +112,7 @@ export function MorningMail({
         disabled={status === "loading" || desks.length === 0}
         className="mt-4 bg-[color:var(--sea)] text-white hover:bg-[color:var(--sea)]/90"
       >
-        {status === "loading" ? "Saving…" : "Send it at 5am"}
+        {status === "loading" ? "Saving…" : "Join the list"}
       </Button>
       {note ? (
         <p className={`mt-3 text-sm ${status === "err" ? "text-[color:var(--copper)]" : "text-[color:var(--cream)]/70"}`} role="status">

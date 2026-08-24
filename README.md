@@ -49,7 +49,7 @@ No API keys for the gauges. NOAA, NWS, USGS, and Open-Meteo are public. NWS requ
 This repo does **not** auto-deploy. The Preview you see in Cursor is this cloud VM. To get an `https://….vercel.app` link:
 
 1. Import `rmcnally11/field-brief-app` in [vercel.com](https://vercel.com). Production branch is `main`.
-2. Framework: Next.js. Optional: `SITE_PASSWORD` to change the shared door word (compare / morning / species / method / season). For mail: `RESEND_API_KEY`, `RESEND_FROM`, `RESEND_AUDIENCE_ID`, `SUBSCRIBER_EMAILS`, `CRON_SECRET`.
+2. Framework: Next.js. Optional: `SITE_PASSWORD` to change the shared door word (compare / morning / species / method / season / list). For the list and mail: `AIRTABLE_API_KEY` (PAT on the Field Brief base), `RESEND_API_KEY`, `RESEND_FROM`, `SUBSCRIBER_EMAILS`, `CRON_SECRET`.
 3. After the first deploy, every `git push` to the connected branch rebuilds the site.
 
 There is no nightly site rebuild. Code updates when someone pushes. Conditions update when someone opens a page (see below).
@@ -72,15 +72,17 @@ Not a nightly batch. Each Brief / Calendar / Map load hits live gauges, then cac
 
 The page stays live. Texas wind versus the table changes inside a morning. The 5am email is a snapshot of that same live brief, not a separate overnight batch.
 
-## 5am email — how it is generated and sent
+## The list — signup, the table, and the 5am email
 
-There is no nightly rebuild of the gauges. The mailer asks the same function the `/morning` page does.
+Others can subscribe. The form is public on the brief and the letter (`/newsletter`). `/morning` still sits behind the hobby door.
 
-1. **Generate.** `GET /api/cron/dispatch` (Vercel Cron, or a manual hit) loads each letter desk — Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse — through `getBriefing()` + `morningLine()`. Wind, sky, tide, USGS discharge, and NWS alerts are whatever the public APIs return at send time. The HTML is that one line, any river/alert warnings, and a link back to the live brief and `/card`. The site is not frozen to the email.
-2. **When.** `vercel.json` schedules `0 10 * * *` — **10:00 UTC**, which is **5:00 a.m. Galveston in daylight time**. Vercel Hobby only allows a daily cron, so that single run sends all seven desks. Set `CRON_HOURLY=1` and change the schedule to `0 * * * *` on Pro (or ping the route hourly from cron-job.org) to send each desk only when its local clock is 05:00 (`America/Chicago`, `America/New_York`, `America/Cancun`, `Indian/Mahe`).
-3. **Send.** If `RESEND_API_KEY` is set, the handler POSTs to Resend (`RESEND_FROM`, default `Field Brief <onboarding@resend.dev>`). Recipients come from `RESEND_AUDIENCE_ID` (signup writes a contact), plus `SUBSCRIBER_EMAILS` (comma list), plus a local `data/subscribers.json` when the filesystem can keep it. No key: the same payload is written to `data/outbox/` and logged — nothing leaves the machine. `CRON_SECRET` locks the route (`Authorization: Bearer …`); leave it unset and the route stays callable for local tests. `?force=1` sends every desk; `?desk=galveston` sends one.
+There **is** a managed table: [Field Brief → Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) in the Costal Cavaliers workspace. Columns: Email, Desks, Status (`Active` / `Paid` / `Unsubscribed`), Source, Joined, Notes. `Paid` is the monetize hook — same list, later a charge. A gated `/subscribers` page in the app shows the same rows.
 
-Signup lives on the brief, the letter, and `/morning`. No SMS on Hobby. Do not commit the subscriber file.
+**How you get the email.** You are a row on that table (operator). Nothing lands in your inbox until sending is on. Fastest path: add `RESEND_API_KEY` + a verified `RESEND_FROM` on Vercel, and `AIRTABLE_API_KEY` (an Airtable PAT scoped to this base) so the cron can read the table. You can also put your address in `SUBSCRIBER_EMAILS` as a belt-and-suspenders.
+
+**How others get the email.** They submit the public form. With `AIRTABLE_API_KEY` on Vercel, the row is upserted in Airtable. At 10:00 UTC the cron generates the live morning line and Resend sends it to every Active/Paid address that picked that desk. Without the Airtable token, a production signup only lives on that one Vercel instance and is lost. Without Resend, the cron writes `data/outbox/` and nobody’s inbox moves.
+
+There is no nightly rebuild of the gauges. The mailer asks the same `getBriefing()` + `morningLine()` the `/morning` page does. Hobby cron is daily (`0 10 * * *` = 5:00 a.m. Galveston CDT) and sends all seven desks. `CRON_HOURLY=1` plus an hourly ping sends each desk only at local 05:00. `?force=1` and `?desk=galveston` are for tests. No SMS on Hobby. Do not commit addresses.
 
 ## Theaters and micro-areas
 

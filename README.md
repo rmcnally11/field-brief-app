@@ -23,7 +23,7 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - **Morning line** (`/morning`) — one sentence you can copy or mail. No SMS on Hobby.
 - Last theater / area / method is remembered in a cookie.
 - Weekly Field Letter has a Saturday permalink (`/newsletter/YYYY-MM-DD`) and a short archive.
-- Satellite chart (Esri imagery) with official layers and your My Maps.
+- Satellite chart (Esri imagery) with official layers and your My Maps. Pick a micro-area and the camera zooms to that water only — Flamingo does not keep Islamorada lit.
 - Filters for **wade / skiff / kayak / fly / spin / jetty / offshore** (troll, edge, deep jig).
 - Official map layers:
   - **USGS GNIS** — canonical names and coordinates for passes, bays, channels

@@ -15,8 +15,16 @@ export async function GET(request: NextRequest) {
   }
   const force = request.nextUrl.searchParams.get("force") === "1";
   const weekly = request.nextUrl.searchParams.get("weekly") === "1";
+  const calendar = request.nextUrl.searchParams.get("calendar") === "1";
+  const seasonal = request.nextUrl.searchParams.get("seasonal") === "1";
   const desk = request.nextUrl.searchParams.get("desk") ?? undefined;
-  const result = await runDispatch({ forceAll: force || undefined, desk, weekly: weekly || undefined });
+  const result = await runDispatch({
+    forceAll: force || undefined,
+    desk,
+    weekly: weekly || undefined,
+    calendar: calendar || undefined,
+    seasonal: seasonal || undefined,
+  });
   return NextResponse.json(result);
 }
 

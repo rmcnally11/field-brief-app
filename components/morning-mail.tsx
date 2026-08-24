@@ -21,7 +21,7 @@ export function MorningMail({
   const homeDesk = letterDeskForArea(defaultDesk) ?? "galveston";
   const [email, setEmail] = useState("");
   const [desks, setDesks] = useState<string[]>(defaultDesks?.length ? defaultDesks : [homeDesk]);
-  const [cadence, setCadence] = useState<Cadence[]>(["daily", "weekly", "seasonal"]);
+  const [cadence, setCadence] = useState<Cadence[]>(["daily", "weekly", "calendar", "seasonal"]);
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
   const [note, setNote] = useState<string | null>(null);
 
@@ -73,8 +73,8 @@ export function MorningMail({
       </h2>
       <p className="mt-2 text-sm text-[color:var(--cream)]/65">
         Pick the coasts you fish. A Texas-only list does not get Andros or Seychelles — not in the
-        5am line, not in Saturday’s letter, not on the season page. Default is the water you are
-        looking at, not the whole book.
+        5am line, not in Saturday’s letter, not in Sunday’s calendar, not on the season page.
+        Default is the water you are looking at, not the whole book.
       </p>
       <div className="mt-4 space-y-2">
         <Label htmlFor="morning-email" className="text-[color:var(--cream)]/70">
@@ -143,7 +143,8 @@ export function MorningMail({
           })}
         </div>
         <p className="mt-2 text-xs text-[color:var(--cream)]/45">
-          Daily is 5am. Weekly is Saturday. Seasonal is this month’s fundamentals for those coasts.
+          Daily is 5am. Weekly is Saturday’s letter. Calendar is Sunday’s month grid. Seasonal is
+          the 1st — this month’s fundamentals for those coasts.
         </p>
       </fieldset>
       <Button

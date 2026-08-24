@@ -73,15 +73,17 @@ export async function upsertAirtableSubscriber(input: {
     Status: existing?.fields.Status === "Unsubscribed" ? "Active" : (existing?.fields.Status ?? "Active"),
     Source: existing?.fields.Source ?? input.source,
     Joined: existing?.fields.Joined ?? new Date().toISOString().slice(0, 10),
-    Cadence: input.cadence?.length ? input.cadence : (existing?.fields.Cadence ?? ["Daily", "Weekly", "Seasonal"]),
+    Cadence: input.cadence?.length
+      ? input.cadence
+      : (existing?.fields.Cadence ?? ["Daily", "Weekly", "Calendar", "Seasonal"]),
   };
   if (existing) {
-    await airtable(`/${existing.id}`, { method: "PATCH", body: JSON.stringify({ fields }) });
+    await airtable(`/${existing.id}`, { method: "PATCH", body: JSON.stringify({ fields, typecast: true }) });
     return { id: existing.id, created: false };
   }
   const created = await airtable<{ id: string }>("", {
     method: "POST",
-    body: JSON.stringify({ fields }),
+    body: JSON.stringify({ fields, typecast: true }),
   });
   return { id: created.id, created: true };
 }
@@ -109,7 +111,7 @@ export async function listAirtableSubscribers() {
       out.push({
         email,
         desks: rec.fields.Desks ?? [],
-        cadence: rec.fields.Cadence ?? ["Daily", "Weekly", "Seasonal"],
+        cadence: rec.fields.Cadence ?? ["Daily", "Weekly", "Calendar", "Seasonal"],
         status: rec.fields.Status ?? "Active",
         source: rec.fields.Source ?? "",
         joined: rec.fields.Joined ?? "",

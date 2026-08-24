@@ -4,17 +4,27 @@ import { getBriefing } from "@/lib/briefing";
 import { getYoloDay } from "@/lib/calendar";
 import { AREA_BY_ID } from "@/lib/data/areas";
 import {
+  buildSeasonIssue,
+  calendarEmailHtml,
+  calendarEmailText,
+  calendarSubject,
   letterEmailHtml,
   letterEmailText,
   letterSubject,
   morningEmailHtml,
   morningEmailText,
   morningSubject,
+  seasonalEmailHtml,
+  seasonalEmailText,
+  seasonalSubject,
 } from "@/lib/mail";
 import { DESKS } from "@/lib/desks";
 import { listSubscribers, subscribersForDesk } from "@/lib/subscribers";
 import { coastsForDesks } from "@/lib/coasts";
 import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
+import { sendResend } from "@/lib/send";
+import { buildCalendarRange } from "@/lib/calendar";
+import { clockParts } from "@/lib/time";
 
 export function localHour(timeZone: string, at = new Date()) {
   const hour = new Intl.DateTimeFormat("en-US", {
@@ -32,23 +42,6 @@ export function desksDue(at = new Date(), forceAll = false) {
     const area = AREA_BY_ID[desk.areaId];
     return area ? localHour(area.timezone, at) === 5 : false;
   });
-}
-
-async function sendResend(to: string[], subject: string, html: string, text: string) {
-  const key = process.env.RESEND_API_KEY?.trim();
-  if (!key) return { sent: false as const, id: null as string | null, why: "missing RESEND_API_KEY" };
-  const from = process.env.RESEND_FROM?.trim() || "Field Brief <onboarding@resend.dev>";
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ from, to, subject, html, text }),
-  });
-  const json = (await res.json()) as { id?: string; message?: string };
-  if (!res.ok) throw new Error(json.message ?? `Resend ${res.status}`);
-  return { sent: true as const, id: json.id ?? null, why: null as string | null };
 }
 
 async function writeOutbox(areaId: string, payload: unknown) {
@@ -129,11 +122,22 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
   };
 }
 
+export function chicagoParts(at = new Date()) {
+  const weekday = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: "America/Chicago" }).format(at);
+  const day = Number(new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: "America/Chicago" }).format(at));
+  return { weekday, day };
+}
+
 export function isChicagoSaturday(at = new Date()) {
-  return (
-    new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: "America/Chicago" }).format(at) ===
-    "Sat"
-  );
+  return chicagoParts(at).weekday === "Sat";
+}
+
+export function isChicagoSunday(at = new Date()) {
+  return chicagoParts(at).weekday === "Sun";
+}
+
+export function isChicagoMonthStart(at = new Date()) {
+  return chicagoParts(at).day === 1;
 }
 
 export async function dispatchWeekly(opts?: { force?: boolean; at?: Date }) {
@@ -196,8 +200,134 @@ export async function dispatchWeekly(opts?: { force?: boolean; at?: Date }) {
   return { skipped: false as const, reason: null, results };
 }
 
-export async function runDispatch(opts?: { forceAll?: boolean; desk?: string; weekly?: boolean; at?: Date }) {
+export async function dispatchCalendar(opts?: { force?: boolean; desk?: string; at?: Date }) {
+  const at = opts?.at ?? new Date();
+  if (!opts?.force && !isChicagoSunday(at)) {
+    return { skipped: true as const, reason: "not Sunday in Chicago", results: [] as const };
+  }
+  const subscribers = await listSubscribers();
+  const due = DESKS.filter((d) => !opts?.desk || d.areaId === opts.desk);
+  const results: Array<{
+    areaId: string;
+    subject: string;
+    recipients: number;
+    sent: boolean;
+    outbox?: string;
+    error?: string;
+    why?: string;
+  }> = [];
+  for (const desk of due) {
+    const area = AREA_BY_ID[desk.areaId];
+    if (!area) continue;
+    const recipients = subscribersForDesk(subscribers, desk.areaId, "calendar");
+    try {
+      const now = clockParts(at, area.timezone);
+      const months = await buildCalendarRange(area, now.year, now.month, "all", 1);
+      const month = months[0];
+      if (!month) throw new Error("Calendar did not set.");
+      const subject = calendarSubject(area, month);
+      const html = calendarEmailHtml(area, month);
+      const text = calendarEmailText(area, month);
+      if (!recipients.length) {
+        const outbox = await writeOutbox(`cal-${desk.areaId}`, { subject, text, recipients: [] }).catch(() => undefined);
+        results.push({ areaId: desk.areaId, subject, recipients: 0, sent: false, outbox, why: "no address on the list" });
+        continue;
+      }
+      const remote = await sendResend(recipients, subject, html, text);
+      const outbox = remote.sent
+        ? undefined
+        : await writeOutbox(`cal-${desk.areaId}`, { subject, text, recipients, html }).catch(() => undefined);
+      results.push({
+        areaId: desk.areaId,
+        subject,
+        recipients: recipients.length,
+        sent: remote.sent,
+        outbox,
+        why: remote.why ?? undefined,
+      });
+    } catch (error) {
+      results.push({
+        areaId: desk.areaId,
+        subject: `${desk.desk} calendar`,
+        recipients: recipients.length,
+        sent: false,
+        error: error instanceof Error ? error.message : "Calendar mail failed",
+      });
+    }
+  }
+  return { skipped: false as const, reason: null, results };
+}
+
+export async function dispatchSeasonal(opts?: { force?: boolean; at?: Date }) {
+  const at = opts?.at ?? new Date();
+  if (!opts?.force && !isChicagoMonthStart(at)) {
+    return { skipped: true as const, reason: "not the 1st in Chicago", results: [] as const };
+  }
+  const subscribers = await listSubscribers();
+  const seasonal = subscribers.filter((s) => s.cadence.includes("seasonal") && s.desks.length);
+  if (!seasonal.length) {
+    return { skipped: false as const, reason: "no seasonal addresses", results: [] as const };
+  }
+  const groups = new Map<string, string[]>();
+  for (const sub of seasonal) {
+    const key = [...sub.desks].sort().join(",");
+    groups.set(key, [...(groups.get(key) ?? []), sub.email]);
+  }
+  const results: Array<{
+    desks: string[];
+    subject: string;
+    recipients: number;
+    sent: boolean;
+    outbox?: string;
+    error?: string;
+    why?: string;
+  }> = [];
+  for (const [key, emails] of groups) {
+    const desks = key.split(",");
+    const coasts = coastsForDesks(desks);
+    const issue = buildSeasonIssue(coasts, at);
+    const subject = seasonalSubject(issue);
+    const html = seasonalEmailHtml(issue);
+    const text = seasonalEmailText(issue);
+    try {
+      const remote = await sendResend(emails, subject, html, text);
+      const outbox = remote.sent
+        ? undefined
+        : await writeOutbox(`season-${desks.join("-")}`, { subject, text, recipients: emails, html }).catch(
+            () => undefined,
+          );
+      results.push({
+        desks,
+        subject,
+        recipients: emails.length,
+        sent: remote.sent,
+        outbox,
+        why: remote.why ?? undefined,
+      });
+    } catch (error) {
+      results.push({
+        desks,
+        subject,
+        recipients: emails.length,
+        sent: false,
+        error: error instanceof Error ? error.message : "Seasonal mail failed",
+      });
+    }
+  }
+  return { skipped: false as const, reason: null, results };
+}
+
+export async function runDispatch(opts?: {
+  forceAll?: boolean;
+  desk?: string;
+  weekly?: boolean;
+  calendar?: boolean;
+  seasonal?: boolean;
+  at?: Date;
+}) {
   const morning = await dispatchMorning(opts);
   const weekly = await dispatchWeekly({ force: opts?.weekly, at: opts?.at });
-  return { ...morning, weekly };
+  const calendar = await dispatchCalendar({ force: opts?.calendar, desk: opts?.desk, at: opts?.at });
+  const seasonal = await dispatchSeasonal({ force: opts?.seasonal, at: opts?.at });
+  return { ...morning, weekly, calendar, seasonal };
 }

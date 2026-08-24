@@ -18,9 +18,15 @@ export const DESKS = [
     kicker: "Wind is the tide",
   },
   {
+    theater: "louisiana" as const,
+    areaId: "venice",
+    desk: "Louisiana desk",
+    kicker: "River is the tide",
+  },
+  {
     theater: "florida" as const,
     areaId: "islamorada",
-    desk: "Keys desk",
+    desk: "Florida desk",
     kicker: "Educated fish, short windows",
   },
   {

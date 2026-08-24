@@ -1,6 +1,6 @@
 # Field Brief
 
-Inshore conditions for three theaters: the **Texas coast**, **Miami & the Florida Keys**, and the **Bahamas**. The brief tells you **where**, **when**, and **why** fish should be on a given piece of water — and which species are actually in play.
+Inshore conditions for four theaters: the **Texas coast**, **Louisiana**, **Florida** (Keys, Boca Grande, Jupiter), and the **Bahamas**. The brief tells you **where**, **when**, and **why** fish should be on a given piece of water — and which species are actually in play.
 
 GitHub: [rmcnally11/field-brief-app](https://github.com/rmcnally11/field-brief-app). Live site: [field-brief-app.vercel.app](https://field-brief-app.vercel.app). Your three My Maps are imported as cream pins:
 
@@ -70,7 +70,9 @@ A nightly cron would only make sense later for a morning text/email (“Galvesto
 
 **Texas:** Sabine · Galveston · Matagorda · Rockport / Aransas · Corpus · Baffin / Upper Laguna · Lower Laguna Madre
 
-**Florida:** Biscayne (Miami) · Islamorada · Florida Bay / Flamingo · Marathon · Key West
+**Louisiana:** Venice / Birdfoot · Grand Isle / Barataria · Calcasieu / Cameron
+
+**Florida:** Biscayne (Miami) · Islamorada · Florida Bay / Flamingo · Marathon · Key West · Boca Grande / Charlotte Harbor · Jupiter / Loxahatchee
 
 **Bahamas:** Andros · Abaco · Grand Bahama · Eleuthera
 
@@ -91,6 +93,7 @@ Bahamas tides are a modeled lunar tide, labeled as such. There is no NOAA gauge 
 | [Texas GLO beach access](https://www.glo.texas.gov/coast/coastal-management/beach-access) | Drive-on beaches, county 2WD/4WD plans |
 | [NPS Padre Island](https://www.nps.gov/pais/planyourvisit/beach-driving.htm) | PINS driving / camping |
 | [FWC](https://myfwc.com/fishing/saltwater/recreational/) | Florida bonefish, permit, snook, redfish |
+| [LDWF recreational saltwater](https://www.wlf.louisiana.gov/page/recreational-saltwater-finfish) | Louisiana bag, slot, and flounder season |
 
 The TPWD coastal-ramp GIS and the GLO Beach & Bay Access feature service are the right legal inventories; the public TAMU ramp layer we tested is inland only, and the GLO Hub query required a token. Those go live when the open endpoints are reachable. Drop a Google My Maps **KML** into the project to add your saved structure as a layer — no matching export was in Drive.
 

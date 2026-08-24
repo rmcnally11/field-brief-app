@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { AREAS } from "@/lib/data/areas";
 import { SPECIES, regulationFor } from "@/lib/data/species";
 import type { SpeciesId, TheaterId } from "@/lib/types";
+import { THEATER_IDS, THEATER_META } from "@/lib/data/theaters";
 import {
   MONTH_NAMES,
   MONTH_THEATER,
@@ -23,9 +24,7 @@ import { cn } from "@/lib/utils";
 
 const THEATERS: { id: TheaterId | "all"; label: string }[] = [
   { id: "all", label: "All coasts" },
-  { id: "texas", label: "Texas" },
-  { id: "florida", label: "Miami & Keys" },
-  { id: "bahamas", label: "Bahamas" },
+  ...THEATER_META.map((t) => ({ id: t.id, label: t.label })),
 ];
 
 function href(next: {
@@ -85,8 +84,7 @@ export default async function FundamentalsPage({
   const peaks = peaksThisMonth(month, theater);
   const closures = closuresThisMonth(month);
   const typeAreas = type === "all" ? [] : areasForType(type, theater);
-  const regionIds: TheaterId[] =
-    theater === "all" ? ["texas", "florida", "bahamas"] : [theater];
+  const regionIds: TheaterId[] = theater === "all" ? [...THEATER_IDS] : [theater];
 
   const primaryChoices = SPECIES.filter((s) => s.role === "primary" || s.role === "incidental");
 
@@ -184,7 +182,7 @@ export default async function FundamentalsPage({
         </div>
       </div>
 
-      <section className="grid gap-4 md:grid-cols-3">
+      <section className="grid gap-4 md:grid-cols-2">
         {regionIds.map((id) => {
           const essay = REGION_ESSAYS[id];
           return (

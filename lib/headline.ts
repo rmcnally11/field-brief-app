@@ -11,7 +11,7 @@ function heatNote(area: Area, water: number | null, wind: number | null) {
   if (water != null && water >= 88) return "Heat is the clock — first light or last light.";
   if (water != null && water <= 58) return "Cold fish slide to guts and mud. Midday sun is legal.";
   if (wind != null && wind >= 18) {
-    return area.theater === "texas"
+    return area.theater === "texas" || area.theater === "louisiana"
       ? "The wind is the tide. Work the leeward shore."
       : "Work the leeward shore — fly gets harder.";
   }
@@ -93,6 +93,36 @@ const PLACE: Record<
     outgoing: "the oceanside wrecks and the falling contentment flats",
     "high-slack": "make the run or wait; slack out here is expensive",
     "low-slack": "wait for the next flood after the shower clears",
+  },
+  "boca-grande": {
+    incoming: "the Pass — tarpon in the throat, then Gasparilla grass for reds and snook",
+    outgoing: "sit the falling pass and the first harbor drains; this is current water",
+    "high-slack": "wait — slack in Boca Grande Pass is a boat parade, not a hunt",
+    "low-slack": "hold for the next push; the pass does not fish dead",
+  },
+  jupiter: {
+    incoming: "Jupiter Inlet and the first Loxahatchee points — snook, then a beach tarpon",
+    outgoing: "the inlet jetties and the river mouth on the dump",
+    "high-slack": "wait; slack here is traffic",
+    "low-slack": "hold for the next incoming through the jetties",
+  },
+  venice: {
+    incoming: "flood the west-bank ponds, then the south passes if the bulls are in",
+    outgoing: "the birdfoot drains and the pass edges — wind and river stage are the tide",
+    "high-slack": "wait; slack on the delta is a pause",
+    "low-slack": "sit the remaining guts until the marsh dumps",
+  },
+  "grand-isle": {
+    incoming: "push Barataria and the bayside grass — trout first, reds on the drain later",
+    outgoing: "Caminada and the island backside as they empty",
+    "high-slack": "the surf and the park pier still fish; the bay wants current",
+    "low-slack": "sit Caminada until it turns",
+  },
+  calcasieu: {
+    incoming: "flood Calcasieu Lake shell, then the pass if the wind lets water in",
+    outgoing: "the Cameron jetties and the pass — fall flounder water before the LDWF close",
+    "high-slack": "wait; this pass wants moving water",
+    "low-slack": "lake guts and the ship-channel edges until it turns",
   },
   andros: {
     incoming: "west-side white sand — schools, then the double-digit singles",

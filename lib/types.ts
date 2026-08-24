@@ -1,4 +1,4 @@
-export type TheaterId = "texas" | "florida" | "bahamas";
+export type TheaterId = "texas" | "louisiana" | "florida" | "bahamas";
 
 export type ActivityId = "wade" | "skiff" | "kayak" | "fly" | "spin" | "structure";
 

@@ -1,6 +1,15 @@
 import type { ActivityId, Habitat, SpeciesId, TheaterId } from "@/lib/types";
 import { AREAS } from "@/lib/data/areas";
-import { SPECIES, flounderClosed, seFloridaSnookClosed } from "@/lib/data/species";
+import { theaterLabel } from "@/lib/data/theaters";
+import {
+  SPECIES,
+  charlotteHarborSnookClosed,
+  flounderClosed,
+  louisianaFlounderClosed,
+  seFloridaSnookClosed,
+} from "@/lib/data/species";
+
+export { theaterLabel };
 
 export const MONTH_NAMES = [
   "January",
@@ -79,7 +88,7 @@ export const WATER_TYPES: {
     activities: ["skiff"],
     species: ["permit", "bonefish", "tarpon", "redfish", "snook"],
     essay:
-      "Pole the skinny, run the guts. A skiff loses a flat at dead low and loses the fish when you run across the bank they are using. Islamorada and Biscayne are poling theaters with boat traffic as a species. Flamingo is a different boat — backcountry, color, wind. Texas Rockport and Baffin are the same idea in grass and rock. Idle before you think you should.",
+      "Pole the skinny, run the guts. A skiff loses a flat at dead low and loses the fish when you run across the bank they are using. Islamorada and Biscayne are poling theaters with boat traffic as a species. Flamingo is a different boat — backcountry, color, wind. Venice is a third — river-marsh, not a sight flat. Texas Rockport and Baffin are the same idea in grass and rock. Idle before you think you should.",
   },
   {
     id: "structure",
@@ -121,9 +130,14 @@ export const REGION_ESSAYS: Record<
     body: "This coast runs from a brackish border estuary at Sabine to hypersaline rock at Baffin and the clear classroom of the Lower Laguna. The main event is the red. Trout live a foot deeper in the same bays. Flounder own the fall nights at the passes until the November closure. Winter belongs to drum and sheep on mud and granite. Corpus still sees a tarpon along the beach in mid-summer — Port A was once Tarpon, Texas — but that is a bay-boat job, not the skinny skiff. Do not fish Baffin like Rockport. Do not invent Rollover Pass; it was filled in 2019. Birds are GPS for trout. A hard norther empties the shoreline and stacks fish in the guts. Fly when the morning is honest. The gold spoon is what you came for when it is not.",
   },
   florida: {
-    title: "Miami & the Keys — educated fish, short windows",
-    dek: "Oceanside is bones and permit. Backcountry is reds and snook. Do not mix the two.",
-    body: "Biscayne is the north end of the grand-slam stage and the most watched water in the hemisphere. Islamorada is the mecca — Channel 5 current, oceanside banks, wrecks for permit that have seen every crab. Flamingo is a different country: Snake Bight and the banks west of the dock, color and wind deciding the day, reds that do not live on the oceanside. Marathon and Key West stretch the same idea south — more tarpon, longer runs, summer showers that can switch a flat on once they pass. Best permit window is often an hour and a half to three hours into the incoming. Snook close in the summer spawn on the SE/Atlantic side. Tarpon peak in the spring migration, then thin. Treat bones and permit as catch-and-release. The FKNMS polygons on the map are law, not decoration.",
+    title: "Florida — two coasts, do not mix them",
+    dek: "Keys oceanside is bones and permit. Backcountry is reds and snook. Boca is the pass. Jupiter is the inlet.",
+    body: "Biscayne is the north end of the grand-slam stage. Islamorada is the mecca — Channel 5, oceanside banks, wrecks for permit that have seen every crab. Flamingo is a different country: reds and snook, not oceanside bones. Marathon and Key West stretch it south. Then the mainland: Boca Grande Pass is the spring tarpon stack, Charlotte Harbor the snook and reds — Gulf rules, not Atlantic. Jupiter is inlet snook and a beach tarpon, clocked to Lake Worth Pier. Snook closures differ by FWC region. FKNMS polygons are Keys-only. Do not headline Jupiter with a bonefish.",
+  },
+  louisiana: {
+    title: "Louisiana — river, marsh, and the birdfoot",
+    dek: "Wind and the Mississippi move more water than the printed tide.",
+    body: "Venice is the birdfoot — South and Southwest Pass, ponds on the west bank, bulls in the throats, school reds and trout inside, tarpon in the heat on the south passes. Grand Isle is a different desk: one inhabited barrier island, Caminada, Barataria, a state-park surf. Calcasieu is the Texas-border cousin under LDWF rules — same fish, different bag, not Sabine Lake. Reds are 4 a day, 18–27, none over 27. Trout are a slot. Flounder typically close Oct 15–Nov 30. Do not put a Texas tag on a Cameron fish.",
   },
   bahamas: {
     title: "Bahamas — bonefish country",
@@ -136,106 +150,124 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
   1: {
     texas:
       "Gut month. Black drum and sheep on mud and granite. Trout slide to holes after a norther. Midday sun is legal. Reds still eat; they just will not tail in a north wind.",
+    louisiana:
+      "Same norther, more marsh. Reds in the ponds on the warm afternoon. Trout in the lakes. Venice is a coat and a gut.",
     florida:
-      "Cold fronts thin the bones, then hand you a bluebird day. Snook are typically closed on the SE/Atlantic side. Winter sail live offshore — not on the flat.",
+      "Cold fronts thin the bones, then hand you a bluebird day. Snook closed on both coasts this month. Boca Pass is a winter red and a closed snook. Jupiter too.",
     bahamas:
       "Single-bone season. Fewer fish, bigger shoulders, longer leaders. Dress for the front. The school of 3-pounders is a summer story.",
   },
   2: {
     texas:
       "Still winter. Sheep and drum until the water climbs. Early reds start to show on mud flats on the warm afternoons. Do not trust a February trout on the grass at dawn.",
+    louisiana:
+      "Last of the winter ponds. Reds start to show. Trout still want the remaining water. A front is a plan.",
     florida:
-      "Bones and permit if the front missed you. Tarpon are a rumor that becomes a fish in March. Backcountry reds do not care what month the calendar thinks it is.",
+      "Bones and permit if the front missed you. Tarpon are a rumor that becomes a fish in March. Boca snook still closed through the end of the month.",
     bahamas:
       "The last honest month of winter singles. Book the wade. West-side permit are still early.",
   },
   3: {
     texas:
       "The coast wakes up. Reds and trout both peak. Water is finally in the window. Windy, but the fish are on the grass again.",
+    louisiana:
+      "Reds and trout both turn on. Ponds fill. The birdfoot starts to feel like the photograph.",
     florida:
-      "Permit season opens its shoulders. Bones still around. Tarpon start to show on the oceanside and in the harbor.",
+      "Permit opens its shoulders. Boca tarpon start to stack. Jupiter snook reopen on the typical SE calendar — verify FWC.",
     bahamas:
       "Transition. Winter singles mix with the first schools. A good month to have both a shrimp and a crab tied.",
   },
   4: {
     texas:
       "Prime. Reds tailing, trout on bait, water not yet a bathtub. This is the Texas month people move for.",
+    louisiana:
+      "Prime marsh. Reds in the ponds, trout on bait, the passes still honest. Book Venice now.",
     florida:
-      "Tarpon migration. Permit still in play. Bones on the banks before the boats. Snook on the mangrove points.",
+      "Tarpon month. Boca Grande Pass is why the rest of the year exists. Keys migration. Jupiter inlet. Permit still in play.",
     bahamas:
       "Bones through the spring. Tarpon in the bights. The week starts to feel like the photograph.",
   },
   5: {
     texas:
       "Still excellent if you beat the heat. First light on the grass, then deeper. Jacks arrive as noise.",
+    louisiana:
+      "Still excellent early. Heat starts. Trout slide deeper at midday. First-light ponds.",
     florida:
-      "Tarpon peak. Permit on wrecks and banks. Afternoon storms start rewriting the flat. Bones get harder in the glare.",
+      "Boca tarpon still the headline — then Gulf snook close May 1. Keys tarpon peak. Afternoon storms rewrite the flat.",
     bahamas:
       "West-side permit turn on. Bones still school. This is the grand-slam calendar month if the wind allows the fly.",
   },
   6: {
     texas:
       "Heat is the clock. Trout leave the flat at midday. Reds work drains at dawn. Corpus beach tarpon is a different boat.",
+    louisiana:
+      "Heat and river. Venice tarpon on the south passes. Trout at first light. Reds in the drains.",
     florida:
-      "Snook typically closed on the SE/Atlantic spawn. Tarpon still around. Early bones, then the storm. Do not harvest a snook because the brief scored an 8.",
+      "Snook closed on both coasts. Boca still a tarpon argument. Jupiter is catch-and-release. Do not harvest a snook because the brief scored an 8.",
     bahamas:
       "Summer schools of 3–5 lb bones. Permit on the west sides. Bring the buff and the 8-weight and go early.",
   },
   7: {
     texas:
       "Bathtub bays. Night and first-light reds. Trout in guts and over deep grass. Beach tarpon if you already know the water.",
+    louisiana:
+      "Birdfoot tarpon if you already know the water. Night and first-light reds. Trout in the lakes.",
     florida:
-      "Snook still closed. Summer showers can switch a Key West flat on once they clear. Permit on the incoming if you can stand the glare.",
+      "Snook still closed. Boca Pass is a heat-and-current problem. Summer showers can switch a Key West flat on once they clear.",
     bahamas:
       "Schoolie bones and resident tarpon. The lodge week is a heat-management problem as much as a fish problem.",
   },
   8: {
     texas:
       "Same heat, slightly shorter days. Trout still deep. Reds on the first moving water. Flounder are a September story — do not force them.",
+    louisiana:
+      "Same heat. Venice tarpon thinning. Reds on the first moving water. Flounder are an October story here.",
     florida:
-      "Last of the spawn closure for snook. Bones at first light. Afternoon thunder is the tide you did not order.",
+      "Snook still closed — Boca through September, Jupiter through August. Bones at first light. Thunder by two.",
     bahamas:
       "Summer pattern holds. Smaller packs, honest shots, west-side permit if it lays down. Fly in the morning. Shade at noon.",
   },
   9: {
     texas:
       "The coast exhales. Reds peak again. Trout come back up. Jetty bulls start to show. Water finally loses a few degrees.",
+    louisiana:
+      "The marsh exhales. Reds and trout come back up. Flounder start to think about the passes.",
     florida:
-      "Snook reopen on the typical SE calendar — verify FWC the morning you keep one. Permit still around. Tarpon thin.",
+      "Jupiter snook typically reopen Sept 1. Boca stays closed through the 30th — Charlotte Harbor / Southwest. Verify FWC. Keys permit still around.",
     bahamas:
       "Bones and permit both still in play. The first cool nights are a rumor that becomes a fish in November.",
   },
   10: {
     texas:
       "The best month many years. Reds, trout, and the flounder run to the Gulf. Nights at the passes. Measure every flatfish — the closure is coming.",
+    louisiana:
+      "Reds, trout, and the flounder run. LDWF typically shuts flounder Oct 15. Measure everything before the 15th.",
     florida:
-      "Snook and reds in the backcountry. Bones on cooler fronts. Permit if you still want the argument.",
+      "Boca snook typically reopen Oct 1. Jupiter still open. Keys backcountry gets its color back.",
     bahamas:
       "Permit taper on the west sides. Bones start to look like winter again. A lovely shoulder week.",
   },
   11: {
     texas:
       "Flounder closed the entire month. Do not keep one. Reds still peak. Trout on the last warm grass. Drum show up with the first real front.",
+    louisiana:
+      "Flounder closed the entire month. Reds still eat. Trout on the last warm ponds. A front is a plan.",
     florida:
-      "Bones like the cooler water. Backcountry reds. Tarpon are mostly gone. Dress for the front that was a Texas story yesterday.",
+      "Bones like the cooler water. Backcountry reds. Boca and Jupiter snook still typically open — verify FWC. Tarpon are mostly gone.",
     bahamas:
-      "Winter singles begin. This is why people book Andros in November. Long leaders, soft landings, fewer boats.",
+      "Winter singles begin. This is why people book Andros in November. Long leaders. Soft landings. Fewer boats.",
   },
   12: {
     texas:
       "Flounder stay closed through the 14th. Drum and sheep take the granite. Trout in the guts. A Christmas cold snap is a plan, not a cancellation.",
+    louisiana:
+      "Flounder typically reopen Dec 1 — verify LDWF. Drum and reds in the remaining water. A front is still a plan.",
     florida:
-      "Bones if the front missed you. Sailfish live on the edge — not in this brief. Backcountry still holds reds.",
+      "Boca snook close Dec 1. Jupiter closes Dec 15. Bones if the front missed you. Sailfish live on the edge — not in this brief.",
     bahamas:
       "Peak winter bonefishing. Schools give way to singles. Permit are a maybe. You came for the grey ghost.",
   },
 };
-
-export function theaterLabel(theater: TheaterId) {
-  if (theater === "florida") return "Miami & the Keys";
-  if (theater === "texas") return "Texas";
-  return "Bahamas";
-}
 
 export function waterTypeById(id: string | null | undefined) {
   return WATER_TYPES.find((t) => t.id === id) ?? null;
@@ -247,7 +279,8 @@ export function areasForType(type: WaterTypeId, theater?: TheaterId | "all") {
     if (theater && theater !== "all" && a.theater !== theater) return false;
     if (type === "marsh") return a.tideCharacter === "marsh-current";
     if (type === "skinny" || type === "sight") return a.tideCharacter === "sight-skinny";
-    if (type === "structure") return a.tideCharacter === "pass-current" || a.theater === "texas";
+    if (type === "structure")
+      return a.tideCharacter === "pass-current" || a.theater === "texas" || a.theater === "louisiana";
     if (type === "fly" || type === "spin" || type === "wade" || type === "skiff") {
       return a.leadSpecies.some((id) => def?.species.includes(id));
     }
@@ -294,15 +327,32 @@ export function closuresThisMonth(month: number, date = new Date()) {
       body: "The run to the Gulf is on. Measure every fish. The season shuts Nov 1 through Dec 14.",
     });
   }
+  if (louisianaFlounderClosed(date, "America/Chicago")) {
+    notes.push({
+      title: "Louisiana flounder",
+      body: "Typically closed Oct 15–Nov 30. LDWF, not TPWD. Verify the week you keep one.",
+    });
+  } else if (month === 10) {
+    notes.push({
+      title: "Louisiana flounder — last call",
+      body: "The run is on. Typical close is Oct 15. Measure everything.",
+    });
+  }
   if (seFloridaSnookClosed(date, "America/New_York")) {
     notes.push({
-      title: "SE Florida snook",
-      body: "Typically closed June–August (spawn) and January. Catch-and-release is still fishing. Do not harvest a snook because a desk scored an 8.",
+      title: "SE Florida snook (Jupiter, Keys, Biscayne)",
+      body: "Typically closed Dec 15–Jan 31 and June 1–Aug 31. Catch-and-release is still fishing. Do not harvest a snook because a desk scored an 8.",
     });
   } else if (month === 5) {
     notes.push({
       title: "SE Florida snook — spawn window ahead",
       body: "The typical June–August closure is next. Verify FWC the morning you keep one.",
+    });
+  }
+  if (charlotteHarborSnookClosed(date, "America/New_York")) {
+    notes.push({
+      title: "Charlotte Harbor / Boca Grande snook",
+      body: "Typically closed Dec 1–end of Feb and May 1–Sep 30. Gulf region, not Atlantic. Verify FWC.",
     });
   }
   return notes;

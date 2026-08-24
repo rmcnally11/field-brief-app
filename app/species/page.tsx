@@ -46,7 +46,7 @@ export default function SpeciesPage() {
                 ) : (
                   s.theaters.map((t) => (
                     <Badge key={t} variant="secondary" className="bg-[color:var(--cream)]/5 capitalize text-[color:var(--cream)]/70">
-                      {t === "florida" ? "Miami & Keys" : t}
+                      {t === "florida" ? "Florida" : t === "louisiana" ? "Louisiana" : t}
                     </Badge>
                   ))
                 )}

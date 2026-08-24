@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import type { Briefing, CalendarDay } from "@/lib/types";
 import { regulationFor } from "@/lib/data/species";
+import { theaterLabel } from "@/lib/data/theaters";
+import { isKeysFlorida } from "@/lib/data/theaters";
 import { ScorePip } from "@/components/score-pip";
 import { ScoreRing } from "@/components/viz/score-ring";
 import { MoonDisk } from "@/components/viz/moon-disk";
@@ -36,7 +38,7 @@ export function BriefingPanel({
         <div className="grid gap-6 p-5 md:grid-cols-[1fr_auto] md:p-7">
           <div>
             <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
-              {area.theater === "texas" ? "Texas coast" : area.theater === "florida" ? "Miami & the Keys" : "Bahamas"} ·{" "}
+              {theaterLabel(area.theater)} ·{" "}
               {area.name}
             </p>
             <h1 className="mt-2 font-heading text-3xl leading-tight text-[color:var(--cream)] md:text-5xl">
@@ -144,8 +146,8 @@ export function BriefingPanel({
             {conditions.tides.anomalyFt.toFixed(2)} ft
           </strong>{" "}
           from the NOAA prediction.{" "}
-          {area.theater === "texas"
-            ? "On the Texas coast this is often the real tide."
+          {area.theater === "texas" || area.theater === "louisiana"
+            ? "On this coast this is often the real tide."
             : area.theater === "florida"
               ? "Read the water, not just the printout."
               : "Bahamas tides are modeled — treat a miss as setup, not a guarantee."}
@@ -236,8 +238,10 @@ export function BriefingPanel({
             <p className="mt-1 text-xs text-[color:var(--cream)]/45">
               {area.theater === "texas"
                 ? "Cited to TPWD, Texas GLO beach-access plans, and NPS. 2WD/4WD is the county plan, not a guess."
+                : area.theater === "louisiana"
+                  ? "Cited to LDWF ramp lists and Louisiana State Parks. Parish rules shift after a blow."
                 : area.theater === "florida"
-                  ? "County and state ramps near this water. FKNMS no-take is on the legal list, not here."
+                  ? "County and state ramps near this water. FKNMS no-take is Keys-only, on the legal list."
                   : "Settlement and lodge launches. There is no TPWD-style ramp inventory on this island."}
             </p>
             {briefing.access.length === 0 ? (
@@ -260,13 +264,13 @@ export function BriefingPanel({
           <div>
             <h2 className="font-heading text-2xl text-[color:var(--cream)]">Legal water</h2>
             <p className="mt-1 text-xs text-[color:var(--cream)]/45">
-              {area.theater === "florida"
+              {isKeysFlorida(area.id)
                 ? "NOAA FKNMS management zones — Sanctuary Preservation Areas, Ecological Reserves, Research-Only."
-                : "No-take and closed water cited to the agency that owns it. Texas and Bahamas are not FKNMS."}
+                : "No-take and closed water cited to the agency that owns it. Only the Keys box is FKNMS."}
             </p>
             {briefing.legal.length === 0 ? (
               <p className="mt-3 text-sm text-[color:var(--cream)]/55">
-                No FKNMS polygon in this box. Texas and Bahamas marks are not sanctuary closures.
+                No FKNMS polygon in this box. Mainland Florida, Louisiana, Texas, and the Bahamas are not sanctuary closures.
               </p>
             ) : (
               <ul className="mt-3 space-y-2">

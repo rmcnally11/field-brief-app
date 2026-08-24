@@ -29,7 +29,7 @@ async function computeBriefing(areaId: string, activity: ActivityId | "all"): Pr
   };
 }
 
-const cachedBriefing = unstable_cache(computeBriefing, ["field-briefing"], {
+const cachedBriefing = unstable_cache(computeBriefing, ["field-briefing-v2"], {
   revalidate: 180,
 });
 

@@ -2,8 +2,8 @@ const CHICAGO = "America/Chicago";
 const NEW_YORK = "America/New_York";
 const NASSAU = "America/Nassau";
 
-export function timezoneForTheater(theater: "texas" | "florida" | "bahamas") {
-  if (theater === "texas") return CHICAGO;
+export function timezoneForTheater(theater: "texas" | "louisiana" | "florida" | "bahamas") {
+  if (theater === "texas" || theater === "louisiana") return CHICAGO;
   if (theater === "florida") return NEW_YORK;
   return NASSAU;
 }

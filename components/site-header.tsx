@@ -17,7 +17,7 @@ export function SiteHeader() {
             Field Brief
           </span>
           <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[color:var(--sea)] sm:inline">
-            Three theaters
+            Four theaters
           </span>
         </a>
         <nav className="flex flex-wrap items-center gap-1 text-sm">

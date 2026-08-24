@@ -4,13 +4,12 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { AREAS } from "@/lib/data/areas";
 import { ACTIVITIES } from "@/lib/data/activities";
 import type { TheaterId } from "@/lib/types";
+import { THEATER_META } from "@/lib/data/theaters";
 import { cn } from "@/lib/utils";
 
 const THEATERS: { id: TheaterId | "all"; label: string }[] = [
   { id: "all", label: "All water" },
-  { id: "texas", label: "Texas" },
-  { id: "florida", label: "Miami & Keys" },
-  { id: "bahamas", label: "Bahamas" },
+  ...THEATER_META.map((t) => ({ id: t.id, label: t.label })),
 ];
 
 export function FilterBar({

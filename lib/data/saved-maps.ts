@@ -1763,7 +1763,15 @@ function speciesFor(pin: SavedPin, area: Area): SpeciesId[] {
 export function savedSpotsNear(area: Area, maxMiles?: number): Spot[] {
   const radius =
     maxMiles ??
-    (area.id === "florida-bay" ? 18 : area.theater === "florida" ? 22 : area.theater === "bahamas" ? 40 : 42);
+    (area.id === "florida-bay" || area.id === "calcasieu"
+      ? 16
+      : area.id === "boca-grande" || area.id === "jupiter" || area.id === "venice" || area.id === "grand-isle"
+        ? 18
+        : area.theater === "florida"
+          ? 22
+          : area.theater === "bahamas"
+            ? 40
+            : 42);
   return SAVED_PINS.filter((p) => p.kind === "fish" || p.kind === "access")
     .filter((p) => {
       const n = `${p.name} ${p.folder}`.toLowerCase();

@@ -13,7 +13,11 @@ import type {
 } from "@/lib/types";
 import { SPECIES, SPECIES_BY_ID } from "@/lib/data/species";
 import { spotsForArea } from "@/lib/data/spots";
-import { flounderClosed, seFloridaSnookClosed } from "@/lib/data/species";
+import {
+  flounderClosed,
+  louisianaFlounderClosed,
+  snookClosedOn,
+} from "@/lib/data/species";
 import { clockParts, hourInZone } from "@/lib/time";
 import { composeHeadline, pickHeadlineSpecies } from "@/lib/headline";
 
@@ -85,8 +89,11 @@ function isClosed(speciesId: string, area: Area, now: Date) {
   if (speciesId === "flounder" && area.theater === "texas") {
     return flounderClosed(now, area.timezone);
   }
-  if (speciesId === "snook" && area.theater === "florida") {
-    return seFloridaSnookClosed(now, area.timezone);
+  if (speciesId === "flounder" && area.theater === "louisiana") {
+    return louisianaFlounderClosed(now, area.timezone);
+  }
+  if (speciesId === "snook") {
+    return snookClosedOn(area.id, area.theater, now, area.timezone);
   }
   return false;
 }
@@ -223,11 +230,12 @@ export function pickSpots(
       }
 
       const anomaly = conditions.tides.anomalyFt;
-      const texasMarsh = area.theater === "texas" && area.tideCharacter === "marsh-current";
+      const gulfMarsh =
+        (area.theater === "texas" || area.theater === "louisiana") && area.tideCharacter === "marsh-current";
       if (anomaly != null && anomaly < -0.4 && (spot.depth === "deep" || spot.habitat === "channel-gut" || spot.habitat === "marsh-drain")) {
         score += 1;
         why.push(
-          texasMarsh
+          gulfMarsh
             ? `Observed water is ${anomaly.toFixed(1)} ft below the tide table — wind is pulling water out.`
             : `Observed water is ${anomaly.toFixed(1)} ft below the tide table — sit the remaining guts.`,
         );
@@ -235,7 +243,7 @@ export function pickSpots(
       if (anomaly != null && anomaly > 0.4 && (spot.habitat === "grass-flat" || spot.habitat === "hard-flat" || spot.habitat === "marsh-drain")) {
         score += 0.8;
         why.push(
-          texasMarsh
+          gulfMarsh
             ? `Observed water is ${anomaly.toFixed(1)} ft above the table — the marsh and flats are wetter than printed.`
             : `Observed water is ${anomaly.toFixed(1)} ft above the table — the banks are wetter than printed.`,
         );
@@ -358,7 +366,7 @@ export function buildBriefing(
     const a = conditions.tides.anomalyFt;
     const signed = `${a > 0 ? "+" : ""}${a.toFixed(2)}`;
     if (Math.abs(a) >= 0.35) {
-      if (area.theater === "texas") {
+      if (area.theater === "texas" || area.theater === "louisiana") {
         why.push(
           `On this coast the wind often outruns the printed tide. Observed water is ${signed} ft versus the prediction.`,
         );
@@ -396,8 +404,15 @@ export function buildBriefing(
   if (flounderClosed(now, area.timezone) && area.theater === "texas") {
     warnings.push("Texas flounder season is closed Nov 1–Dec 14. Catch-and-release only if you hook one.");
   }
-  if (seFloridaSnookClosed(now, area.timezone) && area.theater === "florida") {
-    warnings.push("Snook are typically closed to harvest on the SE/Atlantic coast in this month. Verify FWC.");
+  if (louisianaFlounderClosed(now, area.timezone) && area.theater === "louisiana") {
+    warnings.push("Louisiana flounder is typically closed Oct 15–Nov 30. Verify LDWF before you keep one.");
+  }
+  if (snookClosedOn(area.id, area.theater, now, area.timezone)) {
+    warnings.push(
+      area.id === "boca-grande"
+        ? "Charlotte Harbor / Southwest snook harvest is typically closed May 1–Sep 30 and Dec 1–end of Feb. Verify FWC."
+        : "Snook are typically closed to harvest on the SE/Atlantic coast in this window. Verify FWC.",
+    );
   }
   const zones = [...(official?.zones ?? [])].sort((a, b) => {
     const da = Math.hypot(a.lat - area.lat, (a.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180));

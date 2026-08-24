@@ -165,8 +165,8 @@ export default async function NewsletterPage() {
           {issue.letter}
         </p>
         <p className="mt-4 text-sm text-[color:var(--cream)]/50">
-          Drawn from the Galveston, Islamorada, and Andros briefs — one desk per theater, not a
-          sixteen-bay dump. Scores are 1–10. They are not bite guarantees.{" "}
+          Drawn from the Galveston, Venice, Islamorada, and Andros briefs — one desk per theater, not
+          every micro-area. Scores are 1–10. They are not bite guarantees.{" "}
           <a href="/fundamentals" className="text-[color:var(--sea)] underline underline-offset-4">
             Read this month’s seasonal fundamentals
           </a>
@@ -178,15 +178,15 @@ export default async function NewsletterPage() {
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
-              Three desks
+              Four desks
             </p>
             <h2 className="font-heading text-3xl text-[color:var(--cream)]">This week, live</h2>
           </div>
           <p className="text-xs text-[color:var(--cream)]/45">
-            Texas · Keys · Bahamas · not every micro-area
+            Texas · Louisiana · Florida · Bahamas · not every micro-area
           </p>
         </div>
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {issue.desks.map((desk) => (
             <DeskCard key={desk.areaId} desk={desk} />
           ))}

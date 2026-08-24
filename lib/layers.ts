@@ -1,4 +1,5 @@
 import type { Area, OfficialMark } from "@/lib/types";
+import { isKeysFlorida } from "@/lib/data/theaters";
 
 export type OfficialPoint = OfficialMark;
 
@@ -44,7 +45,7 @@ export async function fetchGnisNear(area: Area): Promise<OfficialPoint[]> {
     "Key",
   ];
   const state =
-    area.theater === "texas" ? "TX" : area.theater === "florida" ? "FL" : "";
+    area.theater === "texas" ? "TX" : area.theater === "florida" ? "FL" : area.theater === "louisiana" ? "LA" : "";
   const nameClause = names.map((n) => `gaz_name LIKE '%${n}%'`).join(" OR ");
   const where = state ? `state_alpha='${state}' AND (${nameClause})` : nameClause;
   const geom = `${xmin},${ymin},${xmax},${ymax}`;
@@ -118,7 +119,7 @@ const ZONE_LABEL: Record<number, string> = {
 };
 
 export async function fetchFknmsZones(area: Area): Promise<OfficialPoint[]> {
-  if (area.theater !== "florida") return [];
+  if (!isKeysFlorida(area.id)) return [];
   const pad = area.id === "florida-bay" ? 0.2 : 0.32;
   const { xmin, ymin, xmax, ymax } = bbox(area, pad);
   const url =
@@ -505,10 +506,81 @@ const ACCESS: OfficialPoint[] = [
     sourceUrl: "https://www.cityofkeywest-fl.gov/",
     detail: "The Lower Keys door. Marquesas is a weather-window run from here.",
   },
+  {
+    id: "acc-placida",
+    name: "Placida / Gasparilla public ramps",
+    lat: 26.833,
+    lon: -82.265,
+    kind: "access",
+    source: "Charlotte County",
+    sourceUrl: "https://www.charlottecountyfl.gov/",
+    detail: "Harbor side of the Boca desk. The Pass is a run south from here.",
+  },
+  {
+    id: "acc-cayo-costa",
+    name: "Cayo Costa State Park",
+    lat: 26.66,
+    lon: -82.22,
+    kind: "access",
+    source: "Florida State Parks",
+    sourceUrl: "https://www.floridastateparks.org/parks-and-trails/cayo-costa-state-park",
+    detail: "Barrier island south of Boca Grande Pass. Boat or ferry. Park rules.",
+  },
+  {
+    id: "acc-burt-reynolds",
+    name: "Burt Reynolds Park ramp",
+    lat: 26.944,
+    lon: -80.082,
+    kind: "access",
+    source: "Palm Beach County Parks",
+    sourceUrl: "https://discover.pbcgov.org/parks/",
+    detail: "Loxahatchee / Jupiter Inlet. County ramp. The inlet is in sight.",
+  },
+  {
+    id: "acc-juno-pier",
+    name: "Juno Beach Pier",
+    lat: 26.893,
+    lon: -80.056,
+    kind: "access",
+    source: "Palm Beach County Parks",
+    sourceUrl: "https://discover.pbcgov.org/parks/",
+    detail: "Public pier. Snook and a beach tarpon if they swing close.",
+  },
+  {
+    id: "acc-venice-marina",
+    name: "Venice public launches",
+    lat: 29.277,
+    lon: -89.355,
+    kind: "access",
+    source: "Plaquemines Parish / LDWF ramp directory",
+    sourceUrl: "https://www.wlf.louisiana.gov/page/boat-ramps",
+    detail: "Birdfoot door. South and Southwest Pass are the run. Confirm which ramps are open after a blow.",
+  },
+  {
+    id: "acc-grand-isle-sp",
+    name: "Grand Isle State Park",
+    lat: 29.263,
+    lon: -89.955,
+    kind: "access",
+    source: "Louisiana State Parks",
+    sourceUrl: "https://www.lastateparks.com/historic-sites/grand-isle-state-park",
+    detail: "Campground, pier, surf. NOAA 8761724 is on this island.",
+  },
+  {
+    id: "acc-holly-beach",
+    name: "Cameron / Calcasieu Point",
+    lat: 29.768,
+    lon: -93.34,
+    kind: "access",
+    source: "Cameron Parish / LDWF",
+    sourceUrl: "https://www.wlf.louisiana.gov/page/boat-ramps",
+    detail: "SW Louisiana beach. Parish rules shift. Calcasieu Pass is the next throat east.",
+  },
 ];
 
 export function accessNear(area: Area): OfficialPoint[] {
-  const maxDeg = area.theater === "florida" ? 0.32 : area.theater === "texas" ? 0.55 : 0.9;
+  const maxDeg =
+    area.theater === "florida" || area.theater === "louisiana" ? 0.28 : area.theater === "texas" ? 0.55 : 0.9;
   return ACCESS.filter((p) => {
     const dlat = p.lat - area.lat;
     const dlon = (p.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180);

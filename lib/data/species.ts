@@ -6,7 +6,7 @@ export const SPECIES: Species[] = [
     commonName: "Redfish",
     latin: "Sciaenops ocellatus",
     role: "primary",
-    theaters: ["texas", "florida"],
+    theaters: ["texas", "louisiana", "florida"],
     peakMonths: [3, 4, 5, 9, 10, 11],
     presentMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     tempMin: 52,
@@ -16,7 +16,7 @@ export const SPECIES: Species[] = [
     preferTide: ["incoming", "outgoing"],
     flyNote: "8-weight. Crab or shrimp on bead-chain for tailers. Gold spoon when the wind wrecks the fly. 20 lb near oyster.",
     spinNote: "Weedless gold spoon, paddle, or soft plastic. Heavy spoon or big paddle for the fall jetty bulls.",
-    why: "Texas main event. Tails in flooded grass, wakes on shell, winter schools on mud, bulls on the jetties Sept–Nov. Keys: backcountry only, not oceanside.",
+    why: "Texas and Louisiana main event. Tails in flooded grass, wakes on shell, winter schools on mud, bulls in the passes. Keys: backcountry only, not oceanside. Boca Harbor yes. Jupiter is a snook desk.",
     regulation:
       "Texas (Sep 1 2025–Aug 31 2026): 3/day, 20–28 in slot. One over 28 in per license year with a Red Drum Tag (plus bonus tag). Florida SE: typically 18–27 in, 1/person, 2/vessel — harvest banned in federal waters. Bahamas: absent.",
     regulationUrl: "https://tpwd.texas.gov/regulations/outdoor-annual/fishing/saltwater-fishing/bag-length-limits/drum-bag-length-limits",
@@ -26,7 +26,7 @@ export const SPECIES: Species[] = [
     commonName: "Speckled trout",
     latin: "Cynoscion nebulosus",
     role: "primary",
-    theaters: ["texas"],
+    theaters: ["texas", "louisiana"],
     peakMonths: [3, 4, 5, 10, 11],
     presentMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     tempMin: 48,
@@ -36,7 +36,7 @@ export const SPECIES: Species[] = [
     preferTide: ["incoming", "outgoing"],
     flyNote: "7–8 wt. Baitfish and shrimp. Gurgler when they are up. Soft mouth — strip-set, do not trout-set a trout.",
     spinNote: "Topwater at dawn. Soft plastic on a light jig the rest of the day. Slow down after a front.",
-    why: "Same bays as the red, a foot deeper. Birds are GPS. Heat drives them off the flat at midday. Cold drives them to guts and mud.",
+    why: "Same bays as the red, a foot deeper. Birds are GPS. Heat drives them off the flat at midday. Cold drives them to guts and mud. Louisiana lives on this fish.",
     regulation:
       "Texas: 3/day, 15–20 in slot. One over 28 in per license year with a Spotted Seatrout Tag (plus bonus). Soft mouth + slot = measure every fish.",
     regulationUrl: "https://tpwd.texas.gov/regulations/outdoor-annual/fishing/saltwater-fishing/bag-length-limits/seatrout-bag-length-limits",
@@ -46,7 +46,7 @@ export const SPECIES: Species[] = [
     commonName: "Southern flounder",
     latin: "Paralichthys lethostigma",
     role: "primary",
-    theaters: ["texas"],
+    theaters: ["texas", "louisiana"],
     peakMonths: [10, 11],
     presentMonths: [3, 4, 5, 6, 9, 10, 11, 12],
     tempMin: 50,
@@ -56,7 +56,7 @@ export const SPECIES: Species[] = [
     preferTide: ["outgoing", "incoming"],
     flyNote: "Clouser or shrimp on the bottom. Slow. The eat is a weight, not a tap.",
     spinNote: "Gulp or soft plastic hopped on sand drains and jetty guts. Fall nights at the passes are the run.",
-    why: "Fall migration to the Gulf when water drops a few degrees. Males leave first. Spring return. Closed in Texas Nov 1–Dec 14.",
+    why: "Fall migration to the Gulf when water drops a few degrees. Males leave first. Spring return. Texas closed Nov 1–Dec 14. Louisiana typically closed Oct 15–Nov 30 — verify LDWF.",
     regulation:
       "Texas: 5/day, 15 in minimum (verify Outdoor Annual). Fishery closed Nov 1–Dec 14. Possession equals the daily bag.",
     regulationUrl: "https://tpwd.texas.gov/regulations/outdoor-annual/fishing/saltwater-fishing/bag-length-limits/",
@@ -66,7 +66,7 @@ export const SPECIES: Species[] = [
     commonName: "Black drum",
     latin: "Pogonias cromis",
     role: "primary",
-    theaters: ["texas", "florida"],
+    theaters: ["texas", "louisiana", "florida"],
     peakMonths: [12, 1, 2, 3],
     presentMonths: [1, 2, 3, 4, 11, 12],
     tempMin: 50,
@@ -86,7 +86,7 @@ export const SPECIES: Species[] = [
     commonName: "Sheepshead",
     latin: "Archosargus probatocephalus",
     role: "primary",
-    theaters: ["texas", "florida"],
+    theaters: ["texas", "louisiana", "florida"],
     peakMonths: [12, 1, 2, 3],
     presentMonths: [11, 12, 1, 2, 3, 4],
     tempMin: 52,
@@ -125,7 +125,7 @@ export const SPECIES: Species[] = [
     commonName: "Tarpon",
     latin: "Megalops atlanticus",
     role: "primary",
-    theaters: ["texas", "florida", "bahamas"],
+    theaters: ["texas", "louisiana", "florida", "bahamas"],
     peakMonths: [4, 5, 6, 7],
     presentMonths: [3, 4, 5, 6, 7, 8, 9, 10],
     tempMin: 72,
@@ -135,7 +135,7 @@ export const SPECIES: Species[] = [
     preferTide: ["incoming", "outgoing"],
     flyNote: "10–12 wt. Cockroach, toad, or baitfish. Bow to the king on the jump. 40–60 lb shock.",
     spinNote: "Live crab or large swimbaits at passes. Texas beachfront July–early fall is a bay-boat game, not the skinny skiff.",
-    why: "Keys migratory peak Apr–May. Texas beach/passes mid-summer — Port A was once Tarpon, Texas. Bahamas: resident fish in bights Apr–Oct.",
+    why: "Keys migratory peak Apr–May. Boca Grande Pass is the spring stack. Jupiter inlet and beach. Texas beach/passes mid-summer. Venice south passes in the heat. Bahamas: resident fish in bights Apr–Oct.",
     regulation:
       "Florida: catch-and-release. Fish over 40 in must stay in the water. One harvest tag/year ($50) only for a potential IGFA record. Texas/Bahamas: treat as C&R.",
     regulationUrl: "https://myfwc.com/fishing/saltwater/recreational/tarpon/",
@@ -185,7 +185,7 @@ export const SPECIES: Species[] = [
     commonName: "Jack crevalle",
     latin: "Caranx hippos",
     role: "incidental",
-    theaters: ["texas", "florida", "bahamas"],
+    theaters: ["texas", "louisiana", "florida", "bahamas"],
     peakMonths: [5, 6, 7, 8, 9],
     presentMonths: [4, 5, 6, 7, 8, 9, 10],
     tempMin: 68,
@@ -290,22 +290,38 @@ export function regulationFor(species: Species, theater: TheaterId) {
   const byTheater: Partial<Record<Species["id"], Partial<Record<TheaterId, string>>>> = {
     redfish: {
       texas: "Texas (Sep 1 2025–Aug 31 2026): 3/day, 20–28 in slot. One over 28 in per license year with a Red Drum Tag.",
-      florida: "Florida SE: typically 18–27 in, 1/person, 2/vessel. Harvest banned in federal waters. Keys backcountry, not oceanside.",
+      louisiana:
+        "Louisiana: 4/day, 18–27 in slot. None over 27. No harvest in federal waters. Charter captain/crew bag is zero. Verify LDWF.",
+      florida: "Florida SE: typically 18–27 in, 1/person, 2/vessel. Harvest banned in federal waters. Keys backcountry, not oceanside. Boca Harbor yes.",
+    },
+    "speckled-trout": {
+      texas: "Texas: 3/day, 15–20 in slot. One over 28 in per license year with a Spotted Seatrout Tag (plus bonus). Soft mouth + slot = measure every fish.",
+      louisiana:
+        "Louisiana: 15/day, 13–20 in slot, no more than two over 20. Charter captain/crew bag is zero. Verify LDWF.",
+    },
+    flounder: {
+      texas: "Texas: 5/day, 15 in minimum (verify Outdoor Annual). Closed Nov 1–Dec 14.",
+      louisiana:
+        "Louisiana: typically 10/day. Recreational harvest usually closed Oct 15–Nov 30 — verify LDWF the week you keep one.",
     },
     "black-drum": {
       texas: "Texas: 5/day, 14–30 in. One over 52 in allowed as part of the bag.",
+      louisiana: "Louisiana: check LDWF coastal finfish before you keep a drum.",
       florida: "Florida: check FWC regional rules before you keep a drum.",
     },
     sheepshead: {
       texas: "Texas: 5/day, 15 in minimum.",
+      louisiana: "Louisiana: check LDWF coastal finfish.",
       florida: "Florida: check FWC regional sheepshead rules.",
     },
     snook: {
       texas: "Texas: 1/day, 24–28 in. Rare this far west — verify before you keep one.",
-      florida: "Florida SE/Atlantic: typically 28–32 in, 1/day, snook permit required. Closed in the summer spawn window — verify FWC.",
+      florida:
+        "Region matters. SE/Atlantic (Jupiter, Biscayne): typically 28–32 in, 1/day, closed Dec 15–Jan 31 and June 1–Aug 31. Charlotte Harbor / Southwest (Boca Grande): typically 28–33 in, closed Dec 1–end of Feb and May 1–Sep 30. Snook permit required. Verify FWC.",
     },
     tarpon: {
       texas: "Texas: treat as catch-and-release.",
+      louisiana: "Louisiana: treat as catch-and-release.",
       florida: "Florida: catch-and-release. Fish over 40 in must stay in the water. One harvest tag/year only for a potential IGFA record.",
       bahamas: "Bahamas: treat as catch-and-release.",
     },
@@ -319,6 +335,7 @@ export function regulationFor(species: Species, theater: TheaterId) {
     },
     jacks: {
       texas: "Generally unregulated. Still, do not leave a pile.",
+      louisiana: "Generally unregulated. Still, do not leave a pile.",
       florida: "Generally unregulated. Still, do not leave a pile.",
       bahamas: "Treat as incidental. Not why you booked the flat.",
     },
@@ -340,9 +357,44 @@ export function flounderClosed(date: Date, timezone: string) {
 }
 
 export function seFloridaSnookClosed(date: Date, timezone: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    month: "numeric",
+    day: "numeric",
+  }).formatToParts(date);
+  const month = Number(parts.find((p) => p.type === "month")?.value);
+  const day = Number(parts.find((p) => p.type === "day")?.value);
+  // SE/Atlantic typical: Dec 15–Jan 31 and June 1–Aug 31.
+  if (month === 6 || month === 7 || month === 8) return true;
+  if (month === 1) return true;
+  if (month === 12 && day >= 15) return true;
+  return false;
+}
+
+/** Charlotte Harbor / Southwest (Boca Grande): Dec 1–end of Feb and May 1–Sep 30. */
+export function charlotteHarborSnookClosed(date: Date, timezone: string) {
   const month = Number(
     new Intl.DateTimeFormat("en-US", { timeZone: timezone, month: "numeric" }).format(date),
   );
-  // SE/Atlantic typical: closed June–August (spawn) and mid-Dec–Jan.
-  return month === 6 || month === 7 || month === 8 || month === 1;
+  return month === 12 || month === 1 || month === 2 || month === 5 || month === 6 || month === 7 || month === 8 || month === 9;
+}
+
+export function louisianaFlounderClosed(date: Date, timezone: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    month: "numeric",
+    day: "numeric",
+  }).formatToParts(date);
+  const month = Number(parts.find((p) => p.type === "month")?.value);
+  const day = Number(parts.find((p) => p.type === "day")?.value);
+  // LDWF typical recreational closure Oct 15–Nov 30 — verify the week you keep one.
+  if (month === 11) return true;
+  if (month === 10 && day >= 15) return true;
+  return false;
+}
+
+export function snookClosedOn(areaId: string, theater: TheaterId, date: Date, timezone: string) {
+  if (theater !== "florida") return false;
+  if (areaId === "boca-grande") return charlotteHarborSnookClosed(date, timezone);
+  return seFloridaSnookClosed(date, timezone);
 }

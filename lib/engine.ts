@@ -106,7 +106,13 @@ export function scoreSpecies(
     const tideFit = Math.max(...s.preferTide.map((t) => (t === conditions.tides.stage ? 1 : 0.55)));
     let score = 10 * (0.4 * season + 0.35 * thermal + 0.25 * tideFit);
     if (closed) score *= 0.35;
+    if (s.role === "incidental") score = Math.min(score, 5.8);
+    if (s.role === "bluewater") score *= 0.42;
+    if (s.role === "pacific") score = 0;
     const bits: string[] = [];
+    if (s.role === "incidental") bits.push("Bycatch and beach noise — not the reason you came.");
+    if (s.role === "bluewater") bits.push("Bluewater. Weedlines, humps, and the edge — not this flat or marsh.");
+    if (s.role === "pacific") bits.push("Pacific fish. Not on this atlas.");
     if (closed) bits.push("Closed to harvest — still swims, do not keep.");
     if (peak) bits.push("In peak season for this water.");
     else if (present) bits.push("Present, not peak.");
@@ -120,7 +126,7 @@ export function scoreSpecies(
     return {
       species: s,
       score: Number(clamp(score, 0, 10).toFixed(1)),
-      inPlay: score >= 5 && present,
+      inPlay: score >= 5 && present && s.role === "primary",
       closed,
       why: bits.join(" "),
     };
@@ -143,7 +149,7 @@ function wreckMarkToSpot(mark: OfficialMark, area: Area): Spot {
     activities: ["skiff", "spin", "fly"],
     species:
       area.theater === "florida"
-        ? ["permit", "tarpon", "jacks"]
+        ? ["permit", "tarpon", "mahi", "tuna"]
         : ["redfish", "speckled-trout", "sheepshead"],
     source: "public-structure",
     note: `${mark.detail || "Charted wreck / obstruction."} NOAA ENC — surveyed position, not a navigation chart.`,
@@ -351,7 +357,10 @@ export function buildBriefing(
     );
   }
 
-  const top = species[0];
+  const top =
+    species.find((s) => s.species.role === "primary" && s.inPlay) ??
+    species.find((s) => s.species.role === "primary") ??
+    species[0];
   const overall = clamp(
     0.4 * (where[0]?.score ?? 4) +
       0.3 * (top?.score ?? 4) +

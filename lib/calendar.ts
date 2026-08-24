@@ -47,7 +47,7 @@ function dayTideQuality(
 }
 
 function seasonalForArea(area: Area, month: number, activity: ActivityId | "all") {
-  const local = SPECIES.filter((s) => s.theaters.includes(area.theater));
+  const local = SPECIES.filter((s) => s.theaters.includes(area.theater) && s.role === "primary");
   if (!local.length) return 0.5;
   const scores = local.map((s) => {
     if (!s.presentMonths.includes(month)) return 0.15;

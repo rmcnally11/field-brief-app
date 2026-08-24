@@ -36,7 +36,14 @@ export type SpeciesId =
   | "tarpon"
   | "bonefish"
   | "permit"
-  | "jacks";
+  | "jacks"
+  | "mahi"
+  | "sailfish"
+  | "tuna"
+  | "roosterfish";
+
+/** Who may own a brief headline. Incidental = noise. Bluewater ≠ a flat. */
+export type SpeciesRole = "primary" | "incidental" | "bluewater" | "pacific";
 
 export type Area = {
   id: string;
@@ -91,6 +98,7 @@ export type Species = {
   id: SpeciesId;
   commonName: string;
   latin: string;
+  role: SpeciesRole;
   theaters: TheaterId[];
   peakMonths: number[];
   presentMonths: number[];

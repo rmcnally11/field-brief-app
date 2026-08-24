@@ -29,12 +29,27 @@ export default function SpeciesPage() {
                 <h2 className="font-heading text-2xl text-[color:var(--cream)]">{s.commonName}</h2>
                 <p className="text-sm italic text-[color:var(--cream)]/45">{s.latin}</p>
               </div>
-              <div className="flex gap-1">
-                {s.theaters.map((t) => (
-                  <Badge key={t} variant="secondary" className="bg-white/5 capitalize text-[color:var(--cream)]/70">
-                    {t === "florida" ? "Miami & Keys" : t}
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="secondary" className="bg-[color:var(--copper)]/20 capitalize text-[color:var(--cream)]/80">
+                  {s.role === "primary"
+                    ? "Inshore target"
+                    : s.role === "incidental"
+                      ? "Noise — not the headline"
+                      : s.role === "bluewater"
+                        ? "Bluewater"
+                        : "Pacific only"}
+                </Badge>
+                {s.theaters.length === 0 ? (
+                  <Badge variant="secondary" className="bg-white/5 text-[color:var(--cream)]/70">
+                    Not on this water
                   </Badge>
-                ))}
+                ) : (
+                  s.theaters.map((t) => (
+                    <Badge key={t} variant="secondary" className="bg-white/5 capitalize text-[color:var(--cream)]/70">
+                      {t === "florida" ? "Miami & Keys" : t}
+                    </Badge>
+                  ))
+                )}
               </div>
             </div>
             <MonthHeat className="mt-4" peak={s.peakMonths} present={s.presentMonths} nowMonth={nowMonth} />

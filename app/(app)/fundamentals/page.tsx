@@ -55,7 +55,7 @@ function Chip({
     <a
       href={to}
       className={cn(
-        "cursor-pointer rounded-full border px-3 py-1 text-xs uppercase tracking-[0.14em]",
+        "cursor-pointer rounded-full border px-3 py-2.5 text-xs uppercase tracking-[0.14em] md:py-1",
         active
           ? "border-[color:var(--sea)] bg-[color:var(--sea)]/20 text-[color:var(--cream)]"
           : "border-[color:var(--line)] text-[color:var(--cream)]/60 hover:text-[color:var(--cream)]",

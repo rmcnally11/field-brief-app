@@ -67,7 +67,7 @@ export function CoastMap({
     <MapContainer
       center={center}
       zoom={6}
-      className="h-[min(80vh,860px)] w-full rounded-2xl ring-1 ring-[color:var(--line)]"
+      className="h-[min(62dvh,560px)] w-full rounded-2xl ring-1 ring-[color:var(--line)] md:h-[min(80vh,860px)]"
       scrollWheelZoom
     >
       <TileLayer

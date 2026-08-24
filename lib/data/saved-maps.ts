@@ -1774,7 +1774,7 @@ export function savedSpotsNear(
 ): Spot[] {
   const radius =
     maxMiles ??
-    (area.id === "florida-bay" || area.id === "calcasieu"
+    (area.id === "florida-bay" || area.id === "calcasieu" || area.id === "key-largo"
       ? 16
       : area.id === "boca-grande" || area.id === "jupiter" || area.id === "venice" || area.id === "grand-isle"
         ? 18

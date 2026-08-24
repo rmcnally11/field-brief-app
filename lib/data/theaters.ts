@@ -19,6 +19,7 @@ export function theaterLabel(theater: TheaterId) {
 export function isKeysFlorida(areaId: string) {
   return (
     areaId === "biscayne" ||
+    areaId === "key-largo" ||
     areaId === "islamorada" ||
     areaId === "florida-bay" ||
     areaId === "marathon" ||

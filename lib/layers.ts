@@ -273,7 +273,17 @@ const ACCESS: OfficialPoint[] = [
     kind: "access",
     source: "Florida State Parks",
     sourceUrl: "https://www.floridastateparks.org/parks-and-trails/john-pennekamp-coral-reef-state-park",
-    detail: "Upper Keys launch. Adjacent SPAs are no-take — check the red polygons.",
+    detail: "Key Largo launch. Adjacent SPAs are no-take — check the red polygons.",
+  },
+  {
+    id: "acc-harry-harris",
+    name: "Harry Harris Park / Tavernier",
+    lat: 25.025,
+    lon: -80.493,
+    kind: "access",
+    source: "Monroe County Parks",
+    sourceUrl: "https://www.monroecounty-fl.gov/",
+    detail: "County park on the oceanside at the south end of Key Largo. Tavernier Creek is the cut.",
   },
   {
     id: "acc-founders",
@@ -689,7 +699,9 @@ const ACCESS: OfficialPoint[] = [
 
 export function accessNear(area: Area): OfficialPoint[] {
   const maxDeg =
-    area.theater === "florida" || area.theater === "louisiana"
+    area.id === "key-largo"
+      ? 0.18
+      : area.theater === "florida" || area.theater === "louisiana"
       ? 0.28
       : area.theater === "texas"
         ? 0.55

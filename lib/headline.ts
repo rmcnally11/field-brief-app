@@ -78,6 +78,12 @@ const PLACE: Record<
     "high-slack": "do not grind a Biscayne slack — boat traffic already did",
     "low-slack": "wait for the next incoming; they will not eat a bad presentation here",
   },
+  "key-largo": {
+    incoming: "oceanside banks off Garden Cove and Rodriguez Key — bones and permit, then Card Sound if you want current",
+    outgoing: "the falling ocean bank and Tavernier Creek; Pennekamp SPAs stay no-take",
+    "high-slack": "do not grind a Key Largo slack — the park traffic already did",
+    "low-slack": "wait for the flood; these fish have seen the catalog",
+  },
   islamorada: {
     incoming: "oceanside permit and bones, or Channel 5 current — not a Texas marsh sentence",
     outgoing: "the wrecks and the falling ocean bank; pressured fish want a clean shot",

@@ -142,7 +142,7 @@ export const REGION_ESSAYS: Record<
   florida: {
     title: "Florida — two coasts, do not mix them",
     dek: "Keys oceanside is bones and permit. Backcountry is reds and snook. Boca is the pass. Jupiter is the inlet.",
-    body: "Biscayne is the north end of the grand-slam stage. Islamorada is the mecca — Channel 5, oceanside banks, wrecks for permit that have seen every crab. Flamingo is a different country: reds and snook, not oceanside bones. Marathon and Key West stretch it south. Then the mainland: Boca Grande Pass is the spring tarpon stack, Charlotte Harbor the snook and reds — Gulf rules, not Atlantic. Jupiter is inlet snook and a beach tarpon, clocked to Lake Worth Pier. Snook closures differ by FWC region. FKNMS polygons are Keys-only. Do not headline Jupiter with a bonefish.",
+    body: "Biscayne is the north end of the grand-slam stage. Key Largo is the first Key — Card Sound, Garden Cove, Pennekamp as the launch, not a secret flat. Adjacent SPAs are no-take. Islamorada is the mecca — Channel 5, oceanside banks, wrecks for permit that have seen every crab. Flamingo is a different country: reds and snook, not oceanside bones. Marathon and Key West stretch it south. Then the mainland: Boca Grande Pass is the spring tarpon stack, Charlotte Harbor the snook and reds — Gulf rules, not Atlantic. Jupiter is inlet snook and a beach tarpon, clocked to Lake Worth Pier. Snook closures differ by FWC region. FKNMS polygons are Keys-only. Do not headline Jupiter with a bonefish.",
   },
   louisiana: {
     title: "Louisiana — river, marsh, and the birdfoot",

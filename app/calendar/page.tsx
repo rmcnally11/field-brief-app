@@ -6,7 +6,6 @@ import { FilterBar } from "@/components/filters";
 import { AmazingChip, MonthGrid } from "@/components/month-grid";
 import { clockParts } from "@/lib/time";
 import { Waterline } from "@/components/viz/waterline";
-import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -64,12 +63,12 @@ export default async function CalendarPage({
         <FilterBar areaId={area.id} activity={activity} theater={q.theater ?? area.theater} />
       </Suspense>
       <div className="flex items-center justify-between">
-        <Link className="text-sm text-[color:var(--cream)]/70 hover:text-[color:var(--cream)]" href={href(prev.getUTCFullYear(), prev.getUTCMonth() + 1)}>
+        <a className="text-sm text-[color:var(--cream)]/70 hover:text-[color:var(--cream)]" href={href(prev.getUTCFullYear(), prev.getUTCMonth() + 1)}>
           ← Previous pair
-        </Link>
-        <Link className="text-sm text-[color:var(--cream)]/70 hover:text-[color:var(--cream)]" href={href(next.getUTCFullYear(), next.getUTCMonth() + 1)}>
+        </a>
+        <a className="text-sm text-[color:var(--cream)]/70 hover:text-[color:var(--cream)]" href={href(next.getUTCFullYear(), next.getUTCMonth() + 1)}>
           Next pair →
-        </Link>
+        </a>
       </div>
       {amazing.length > 0 && (
         <section>

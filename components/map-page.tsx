@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import type { OfficialPoint } from "@/lib/layers";
 import { FilterBar } from "@/components/filters";
+import { SAVED_MAPS, savedMarksNear } from "@/lib/data/saved-maps";
+import { getArea } from "@/lib/data/areas";
 
 const CoastMap = dynamic(() => import("@/components/coast-map").then((m) => m.CoastMap), {
   ssr: false,
@@ -45,9 +47,10 @@ export function MapPageClient({
     };
   }, [areaId]);
 
+  const atlas = savedMarksNear(getArea(areaId));
   const extras = layers
-    ? [...layers.zones, ...layers.wrecks, ...layers.access, ...layers.gnis]
-    : [];
+    ? [...layers.zones, ...layers.wrecks, ...layers.access, ...layers.gnis, ...atlas]
+    : atlas;
 
   return (
     <div className="space-y-5">
@@ -60,7 +63,16 @@ export function MapPageClient({
           Green are NOAA ENC wrecks. Sand are TPWD / GLO / NPS access, including GLO drive-on
           corridors and PINS 4WD rules. Teal are live GNIS hydro features. TPWD coastal REST and
           the GLO Hub query still need agency tokens; TxGIO is the clearinghouse those inventories
-          flow through. Drop a My Maps KML later and it becomes a private layer.
+          flow through. Cream pins are your My Maps:{" "}
+          {SAVED_MAPS.map((m, i) => (
+            <span key={m.id}>
+              {i > 0 ? " · " : ""}
+              <a className="underline decoration-[color:var(--copper)]/50" href={m.url}>
+                {m.title}
+              </a>
+            </span>
+          ))}
+          . Red rings from your Keys map are no-take / caution.
         </p>
       </div>
       <FilterBar areaId={areaId} activity={activity} theater={theater} />
@@ -75,6 +87,7 @@ export function MapPageClient({
         <li>NOAA ENC wrecks — {layers?.wrecks.length ?? "…"} charted</li>
         <li>FKNMS zones — {layers?.zones.length ?? "…"} (Florida only)</li>
         <li>Public access — {layers?.access.length ?? "…"} TPWD / GLO / NPS</li>
+        <li>Your My Maps — {atlas.length} marks in this box</li>
       </ul>
     </div>
   );

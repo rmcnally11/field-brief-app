@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import { getArea } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
-import { buildCalendar } from "@/lib/calendar";
+import { buildCalendarRange } from "@/lib/calendar";
 import { FilterBar } from "@/components/filters";
 import { MonthGrid } from "@/components/month-grid";
+import { clockParts } from "@/lib/time";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -16,9 +17,9 @@ export default async function CalendarPage({
   const q = await searchParams;
   const area = getArea(q.area);
   const activity = parseActivity(q.activity);
-  const now = new Date();
-  let year = now.getUTCFullYear();
-  let month = now.getUTCMonth() + 1;
+  const now = clockParts(new Date(), area.timezone);
+  let year = now.year;
+  let month = now.month;
   if (q.month && /^\d{4}-\d{2}$/.test(q.month)) {
     year = Number(q.month.slice(0, 4));
     month = Number(q.month.slice(5, 7));
@@ -34,31 +35,27 @@ export default async function CalendarPage({
     return `/calendar?${p}`;
   };
 
-  let days;
+  let months;
   let error: string | null = null;
   try {
-    days = await buildCalendar(area, year, month, activity);
+    months = await buildCalendarRange(area, year, month, activity, 2);
   } catch (e) {
     error = e instanceof Error ? e.message : "Calendar failed.";
   }
 
-  const title = new Date(Date.UTC(year, month - 1, 1)).toLocaleString("en-US", {
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
+  const amazing = (months ?? []).flatMap((m) => m.days.filter((d) => d.amazing));
 
   return (
     <div className="space-y-6">
       <div>
         <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
-          Monthly 1–10 · {area.name}
+          This month and next · {area.name}
         </p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)]">{title}</h1>
+        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)]">Amazing-day calendar</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
-          Color is a score, not a promise. Days inside the weather forecast use wind. Days beyond that
-          are tide + moon + season only — that is the honest horizon. Filter by wade, skiff, fly, or
-          spin; the wind tax changes.
+          Two months for this micro-area. Each cell is moon phase, NOAA high/low (or modeled tide),
+          and a 1–10. Copper outline = book it. Wind is only inside the forecast; farther out is tide
+          + moon + season. Station {area.noaaStation ?? "modeled M2"}.
         </p>
       </div>
       <Suspense>
@@ -66,22 +63,50 @@ export default async function CalendarPage({
       </Suspense>
       <div className="flex items-center justify-between">
         <Link className="text-sm text-[color:var(--cream)]/70 hover:text-[color:var(--cream)]" href={href(prev.getUTCFullYear(), prev.getUTCMonth() + 1)}>
-          ← Previous
+          ← Previous pair
         </Link>
         <Link className="text-sm text-[color:var(--cream)]/70 hover:text-[color:var(--cream)]" href={href(next.getUTCFullYear(), next.getUTCMonth() + 1)}>
-          Next →
+          Next pair →
         </Link>
       </div>
-      {error || !days ? (
+      {amazing.length > 0 && (
+        <section className="rounded-2xl border border-[color:var(--copper)]/40 bg-[color:var(--copper)]/10 p-4">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">Amazing days on {area.shortName}</p>
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+            {amazing.map((d) => (
+              <li key={d.date} className="text-sm text-[color:var(--cream)]/85">
+                <span className="font-medium">
+                  {d.date.slice(5)} · {d.score.toFixed(1)}
+                </span>{" "}
+                {d.moon.glyph} {d.moon.name.toLowerCase()} · {d.moon.springNeap}
+                {d.tides.length ? ` · ${d.tides.map((t) => `${t.type} ${t.time}`).join(", ")}` : ""}
+                {d.tideRangeFt != null ? ` · Δ ${d.tideRangeFt.toFixed(1)} ft` : ""}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {error || !months ? (
         <p className="text-rose-200">{error}</p>
       ) : (
-        <MonthGrid year={year} month={month} days={days} timezone={area.timezone} />
+        <div className="grid gap-10 lg:grid-cols-2">
+          {months.map((m) => (
+            <MonthGrid
+              key={`${m.year}-${m.month}`}
+              year={m.year}
+              month={m.month}
+              days={m.days}
+              timezone={area.timezone}
+              title={m.label}
+            />
+          ))}
+        </div>
       )}
       <div className="flex flex-wrap gap-3 text-xs text-[color:var(--cream)]/50">
         <span className="rounded bg-rose-400/90 px-2 py-0.5 text-rose-950">1–3 stay home / structure</span>
         <span className="rounded bg-orange-400 px-2 py-0.5 text-orange-950">4–5 workable if you pick water</span>
         <span className="rounded bg-amber-300 px-2 py-0.5 text-amber-950">6–7 go</span>
-        <span className="rounded bg-teal-400 px-2 py-0.5 text-teal-950">8–10 the day you booked for</span>
+        <span className="rounded bg-teal-400 px-2 py-0.5 text-teal-950">8–10 / copper outline = amazing</span>
       </div>
     </div>
   );

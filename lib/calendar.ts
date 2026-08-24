@@ -1,8 +1,8 @@
 import type { ActivityId, Area, CalendarDay } from "@/lib/types";
 import { clockParts, ymdInZone } from "@/lib/time";
-import { moonPhase } from "@/lib/moon";
+import { moonGlyph, moonPhase } from "@/lib/moon";
 import { SPECIES } from "@/lib/data/species";
-import { fetchHourly } from "@/lib/noaa";
+import { fetchHiLo, fetchHourly } from "@/lib/noaa";
 import { fetchNwsForecast } from "@/lib/nws";
 import { fetchOpenMeteo } from "@/lib/openmeteo";
 import { modeledHourlyTide } from "@/lib/moon";
@@ -104,6 +104,15 @@ export async function buildCalendar(
     // calendar still works on tide + moon + season
   }
 
+  let hilo: { time: string; height: number; type: "H" | "L"; at: Date }[] = [];
+  if (area.noaaStation) {
+    try {
+      hilo = await fetchHiLo(area.noaaStation, new Date(start.getTime() - 86400000), daysInMonth + 2);
+    } catch {
+      hilo = [];
+    }
+  }
+
   const todayYmd = ymdInZone(new Date(), area.timezone);
   const days: CalendarDay[] = [];
   for (let d = 1; d <= daysInMonth; d++) {
@@ -149,6 +158,27 @@ export async function buildCalendar(
     const confidence: CalendarDay["confidence"] =
       ymd === todayYmd ? "observed" : hasWind ? "forecast" : "astronomical";
 
+    const tides = hilo
+      .filter((t) => ymdInZone(t.at, area.timezone) === ymd)
+      .map((t) => {
+        const p = clockParts(t.at, area.timezone);
+        const h12 = ((p.hour + 11) % 12) + 1;
+        const ap = p.hour >= 12 ? "p" : "a";
+        return {
+          type: t.type,
+          time: `${h12}:${String(p.minute).padStart(2, "0")}${ap}`,
+          height: t.height,
+        };
+      });
+    const rangeFromHiLo =
+      tides.length >= 2 ? Math.max(...tides.map((t) => t.height)) - Math.min(...tides.map((t) => t.height)) : tide.range;
+
+    const amazing =
+      score >= 8 ||
+      (score >= 7.4 &&
+        (area.tideCharacter === "sight-skinny" ? moon.springNeap !== "spring" : moon.springNeap === "spring") &&
+        (wind == null || wind <= 14));
+
     days.push({
       date: ymd,
       score: Number(score.toFixed(1)),
@@ -158,9 +188,38 @@ export async function buildCalendar(
         tide.bestHour != null
           ? `${((tide.bestHour + 11) % 12) + 1}${tide.bestHour >= 12 ? "p" : "a"} moving water`
           : null,
+      amazing,
+      moon: {
+        name: moon.name,
+        glyph: moonGlyph(moon.phase),
+        illumination: moon.illumination,
+        springNeap: moon.springNeap,
+      },
+      tides,
+      tideRangeFt: Number(rangeFromHiLo.toFixed(2)),
+      windMph: wind,
     });
   }
 
   void end;
   return days;
+}
+
+export async function buildCalendarRange(
+  area: Area,
+  year: number,
+  month: number,
+  activity: ActivityId | "all",
+  count = 2,
+) {
+  const months: { year: number; month: number; label: string; days: CalendarDay[] }[] = [];
+  for (let i = 0; i < count; i++) {
+    const d = new Date(Date.UTC(year, month - 1 + i, 1));
+    const y = d.getUTCFullYear();
+    const m = d.getUTCMonth() + 1;
+    const days = await buildCalendar(area, y, m, activity);
+    const label = d.toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+    months.push({ year: y, month: m, label, days });
+  }
+  return months;
 }

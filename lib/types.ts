@@ -73,7 +73,7 @@ export type Spot = {
   gnisId?: number;
 };
 
-export type OfficialKind = "gnis" | "enc-wreck" | "fknms-zone" | "access" | "pins";
+export type OfficialKind = "gnis" | "enc-wreck" | "fknms-zone" | "access" | "pins" | "saved-map";
 
 export type OfficialMark = {
   id: string;
@@ -195,10 +195,27 @@ export type Briefing = {
   legal: OfficialMark[];
 };
 
+export type CalendarTide = {
+  type: "H" | "L";
+  time: string;
+  height: number;
+};
+
 export type CalendarDay = {
   date: string;
   score: number;
   confidence: "observed" | "forecast" | "astronomical";
   drivers: string[];
   bestWindow: string | null;
+  /** Score high enough that this is a book-the-day window for this micro-area. */
+  amazing: boolean;
+  moon: {
+    name: string;
+    glyph: string;
+    illumination: number;
+    springNeap: "spring" | "neap" | "mid";
+  };
+  tides: CalendarTide[];
+  tideRangeFt: number | null;
+  windMph: number | null;
 };

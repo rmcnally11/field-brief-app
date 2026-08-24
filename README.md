@@ -2,6 +2,12 @@
 
 Inshore conditions for three theaters: the **Texas coast**, **Miami & the Florida Keys**, and the **Bahamas**. The brief tells you **where**, **when**, and **why** fish should be on a given piece of water — and which species are actually in play.
 
+GitHub: [rmcnally11/field-brief](https://github.com/rmcnally11/field-brief) (private). Your three My Maps are imported as cream pins:
+
+- [GULF ATLAS! - FISH](https://www.google.com/maps/d/u/0/edit?mid=1eqN2MMRViRbG4xwKDcL0Tzotogjcktw&usp=sharing)
+- [FL Keys — zones, wrecks, humps, bridges](https://www.google.com/maps/d/u/0/edit?mid=1nn7DQ_IHmDLXRUFsatM4hj9zIqmaUg4&usp=sharing)
+- [Texas corridors / jetties / flats](https://www.google.com/maps/d/u/0/edit?mid=18vm3y2qy_rT3-xeMZcJ1w_cv4i5FyxI&usp=sharing)
+
 This is a conditions instrument, not a bite guarantee and not a chart for navigation.
 
 ## What it does
@@ -9,7 +15,7 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - Live **NOAA CO-OPS** tides, observed water level, water temperature, and station wind on Texas and Florida gauges.
 - **Wind versus the table**: observed minus predicted water. On the Texas coast the wind often *is* the tide.
 - **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas).
-- Monthly **1–10 calendar** by micro-area. Days inside the forecast use wind; days beyond that are tide + moon + season only.
+- Two-month **1–10 calendar** by micro-area: this month and next, with moon phase and NOAA highs/lows on every day. Copper outline = amazing day.
 - Filters for **wade / skiff / kayak / fly / spin / jetty**.
 - Official map layers:
   - **USGS GNIS** — canonical names and coordinates for passes, bays, channels

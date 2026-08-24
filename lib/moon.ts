@@ -29,6 +29,17 @@ export function moonPhase(date: Date) {
   return { phase, name, illumination, springNeap: springNeap as "spring" | "neap" | "mid" };
 }
 
+export function moonGlyph(phase: number) {
+  if (phase < 0.03 || phase > 0.97) return "🌑";
+  if (phase < 0.22) return "🌒";
+  if (phase < 0.28) return "🌓";
+  if (phase < 0.47) return "🌔";
+  if (phase < 0.53) return "🌕";
+  if (phase < 0.72) return "🌖";
+  if (phase < 0.78) return "🌗";
+  return "🌘";
+}
+
 /** Crude M2-style modeled tide for Bahamas (no NOAA gauge). Height in feet around MSL. */
 export function modeledHourlyTide(
   start: Date,

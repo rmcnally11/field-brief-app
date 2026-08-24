@@ -1,4 +1,6 @@
 import type { Spot } from "@/lib/types";
+import { AREA_BY_ID } from "@/lib/data/areas";
+import { savedSpotsNear } from "@/lib/data/saved-maps";
 
 export const SPOTS: Spot[] = [
   // ——— Texas / Sabine ———
@@ -814,5 +816,22 @@ export const SPOTS: Spot[] = [
 ];
 
 export function spotsForArea(areaId: string) {
-  return SPOTS.filter((s) => s.areaId === areaId);
+  const base = SPOTS.filter((s) => s.areaId === areaId);
+  const area = AREA_BY_ID[areaId];
+  if (!area) return base;
+  const saved = savedSpotsNear(area);
+  return [
+    ...base,
+    ...saved.filter(
+      (s) =>
+        !base.some((b) => Math.hypot(b.lat - s.lat, b.lon - s.lon) < 0.025 && namesClose(b.name, s.name)),
+    ),
+  ];
+}
+
+function namesClose(a: string, b: string) {
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const na = norm(a);
+  const nb = norm(b);
+  return na.includes(nb.slice(0, 12)) || nb.includes(na.slice(0, 12));
 }

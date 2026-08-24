@@ -38,6 +38,7 @@ const KIND_COLOR: Record<string, string> = {
   "fknms-zone": "#c43c32",
   access: "#e8d5a3",
   pins: "#e8d5a3",
+  "saved-map": "#e8d5a3",
 };
 
 export function CoastMap({

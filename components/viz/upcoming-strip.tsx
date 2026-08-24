@@ -2,7 +2,6 @@ import type { CalendarDay } from "@/lib/types";
 import { MoonDisk } from "@/components/viz/moon-disk";
 import { scoreHex, scoreInk } from "@/lib/viz";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 function weekday(ymd: string, timezone: string) {
   const d = new Date(`${ymd}T12:00:00`);
@@ -33,9 +32,9 @@ export function UpcomingStrip({
           <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Next two weeks</p>
           <h2 className="font-heading text-2xl text-[color:var(--cream)]">Look at the water, not the table</h2>
         </div>
-        <Link href={hrefBase} className="text-xs text-[color:var(--cream)]/55 underline decoration-[color:var(--copper)]/40">
+        <a href={hrefBase} className="text-xs text-[color:var(--cream)]/55 underline decoration-[color:var(--copper)]/40">
           Full calendar
-        </Link>
+        </a>
       </div>
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0">
         {days.map((day) => {

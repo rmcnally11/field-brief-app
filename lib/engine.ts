@@ -534,6 +534,14 @@ export function buildBriefing(
         : "Rain is likely. A marsh still fishes. A soaker and lightning do not.",
     );
   }
+  if (conditions.river?.high) {
+    warnings.push(
+      `${conditions.river.name} is ${Math.round(conditions.river.cfs).toLocaleString()} cfs — coffee-colored water is the story. USGS ${conditions.river.site}.`,
+    );
+  }
+  for (const alert of conditions.alerts ?? []) {
+    warnings.push(`NWS ${alert.event}: ${alert.headline}`);
+  }
   if (area.theater === "mexico") {
     warnings.push("Mexico requires a CONAPESCA license. Sian Ka’an, Contoy, and Espíritu Santo are park or biosphere water — verify before you fish.");
   }

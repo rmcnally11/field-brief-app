@@ -10,51 +10,9 @@ import {
   peaksThisMonth,
   theaterLabel,
 } from "@/lib/data/fundamentals";
+import { DESKS } from "@/lib/desks";
 
-export const DESKS = [
-  {
-    theater: "texas" as const,
-    areaId: "galveston",
-    desk: "Texas desk",
-    kicker: "Wind is the tide",
-  },
-  {
-    theater: "louisiana" as const,
-    areaId: "venice",
-    desk: "Louisiana desk",
-    kicker: "River is the tide",
-  },
-  {
-    theater: "florida" as const,
-    areaId: "islamorada",
-    desk: "Florida desk",
-    kicker: "Educated fish, short windows",
-  },
-  {
-    theater: "bahamas" as const,
-    areaId: "andros",
-    desk: "Bahamas desk",
-    kicker: "Bonefish country",
-  },
-  {
-    theater: "mexico" as const,
-    areaId: "ascension",
-    desk: "Mexico desk",
-    kicker: "Two oceans",
-  },
-  {
-    theater: "puerto-rico" as const,
-    areaId: "san-juan",
-    desk: "Puerto Rico desk",
-    kicker: "Urban tarpon, then the drop",
-  },
-  {
-    theater: "seychelles" as const,
-    areaId: "alphonse",
-    desk: "Seychelles desk",
-    kicker: "GT country",
-  },
-] as const;
+export { DESKS };
 
 const LETTERS: Record<number, string> = {
   1: "January is a gut month. Texas fish slide to holes and granite; a norther is a plan, not a cancellation. The Keys get the front that was yesterday’s Texas story, then a bluebird day that makes bones look easy. Andros winter is the single-bone season — fewer fish, bigger shoulders, longer leaders. Dress for the wind. Midday sun is legal. The gauges below are this week’s weather, not a promise.",

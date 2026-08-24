@@ -21,6 +21,7 @@ import { morningLine } from "@/lib/morning";
 import { briefHref, compareHref } from "@/lib/hrefs";
 import { neighborArea } from "@/lib/data/areas";
 import { skyCopy } from "@/lib/wx";
+import { MorningMail } from "@/components/morning-mail";
 
 function tideClock(stamp: string, tz: string) {
   const d = stamp.includes("T") ? new Date(stamp) : parseNoaaGmt(stamp);
@@ -104,6 +105,8 @@ export function BriefingPanel({
         </div>
       </section>
 
+      <MorningMail defaultDesk={area.id} compact />
+
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Instrument label="Wind" source={conditions.weather.source.toUpperCase()}>
           <WindCompass
@@ -174,6 +177,20 @@ export function BriefingPanel({
               : conditions.tides.source}
           </p>
         </Instrument>
+        {conditions.river ? (
+          <Instrument label="River" source={`USGS ${conditions.river.site}`}>
+            <p className="font-heading text-3xl leading-tight text-[color:var(--cream)]">
+              {Math.round(conditions.river.cfs).toLocaleString()}{" "}
+              <span className="text-lg font-sans text-[color:var(--cream)]/55">cfs</span>
+            </p>
+            <p className="mt-2 text-sm text-[color:var(--cream)]/65">{conditions.river.name}</p>
+            <p className="mt-3 text-xs text-[color:var(--cream)]/45">
+              {conditions.river.high
+                ? "High — coffee-colored water is the story. Not a secret hole."
+                : "Discharge into this bay. High water stains the flat."}
+            </p>
+          </Instrument>
+        ) : null}
         {showTable ? (
           <Instrument label="Wind vs table" source={conditions.tides.source === "noaa" ? "Observed − predicted" : "No live gauge"}>
             <WindTable

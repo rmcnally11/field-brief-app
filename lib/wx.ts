@@ -23,6 +23,22 @@ export function skyFromWmo(code?: number | null): SkyKind | null {
   return null;
 }
 
+/** Human sky line from an Open-Meteo WMO code — used when NWS left the phrase blank. */
+export function skyPhraseFromWmo(code?: number | null): string | null {
+  if (code == null || Number.isNaN(code)) return null;
+  if (code >= 95) return "Thunderstorms";
+  if (code >= 80) return "Showers";
+  if (code >= 71) return "Snow";
+  if (code >= 61) return "Rain";
+  if (code >= 51) return "Drizzle";
+  if (code >= 45) return "Fog";
+  if (code === 3) return "Overcast";
+  if (code === 2) return "Partly cloudy";
+  if (code === 1) return "Mostly clear";
+  if (code === 0) return "Clear";
+  return null;
+}
+
 export function worseSky(a: SkyKind | null, b: SkyKind | null): SkyKind | null {
   if (!a) return b;
   if (!b) return a;

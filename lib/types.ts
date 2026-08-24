@@ -178,6 +178,20 @@ export type WeatherNow = {
   fetchedAt: string;
 };
 
+export type RiverNow = {
+  site: string;
+  name: string;
+  cfs: number;
+  high: boolean;
+  fetchedAt: string;
+};
+
+export type MarineAlert = {
+  event: string;
+  headline: string;
+  severity: string;
+};
+
 export type Conditions = {
   areaId: string;
   waterTempF: number | null;
@@ -190,6 +204,10 @@ export type Conditions = {
     illumination: number;
     springNeap: "spring" | "neap" | "mid";
   };
+  /** USGS IV 00060 on Texas / Louisiana river mouths. */
+  river?: RiverNow | null;
+  /** Active NWS marine / flood / convective alerts at this point. */
+  alerts?: MarineAlert[];
 };
 
 export type SpotPick = {

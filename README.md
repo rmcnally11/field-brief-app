@@ -40,16 +40,16 @@ npm install
 npm run dev -- --port 43217 --hostname 127.0.0.1
 ```
 
-Open [http://127.0.0.1:43217](http://127.0.0.1:43217). A shared-word door sits in front of the brief (Hobby-friendly — not Vercel’s paid Password Protection). Set `SITE_PASSWORD` to change the word. Leave it unset and the shipped default is used.
+Open [http://127.0.0.1:43217](http://127.0.0.1:43217). The **brief**, **calendar**, and **map** are public. A shared-word door still sits in front of compare, morning, species, method, and season (Hobby-friendly — not Vercel’s paid Password Protection). Set `SITE_PASSWORD` to change the word. Leave it unset and the shipped default is used.
 
-No API keys. NOAA, NWS, USGS, and Open-Meteo are public. NWS requires a User-Agent, which the app sends.
+No API keys for the gauges. NOAA, NWS, USGS, and Open-Meteo are public. NWS requires a User-Agent, which the app sends. The 5am email needs Resend if you want it to leave the machine (see below).
 
 ## A real URL (Vercel)
 
 This repo does **not** auto-deploy. The Preview you see in Cursor is this cloud VM. To get an `https://….vercel.app` link:
 
 1. Import `rmcnally11/field-brief-app` in [vercel.com](https://vercel.com). Production branch is `main`.
-2. Framework: Next.js. Optional: `SITE_PASSWORD` to change the shared door word.
+2. Framework: Next.js. Optional: `SITE_PASSWORD` to change the shared door word (compare / morning / species / method / season). For mail: `RESEND_API_KEY`, `RESEND_FROM`, `RESEND_AUDIENCE_ID`, `SUBSCRIBER_EMAILS`, `CRON_SECRET`.
 3. After the first deploy, every `git push` to the connected branch rebuilds the site.
 
 There is no nightly site rebuild. Code updates when someone pushes. Conditions update when someone opens a page (see below).
@@ -62,13 +62,25 @@ Not a nightly batch. Each Brief / Calendar / Map load hits live gauges, then cac
 | --- | --- |
 | NOAA CO-OPS tides, observed water, station wind, water temp | ~5 minutes |
 | NWS hourly forecast (U.S.) — wind, sky, rain chance | ~10 minutes |
+| NWS active alerts at the desk point | ~5 minutes |
 | NWS point metadata | ~30 minutes |
-| Open-Meteo (wind, precip, weather code; all theaters as fallback) | ~10 minutes |
+| Open-Meteo (wind, precip, weather code; always fetched in parallel so NOAA wind never blanks the sky) | ~10 minutes |
+| USGS IV discharge (`00060`) on Texas / Louisiana river mouths | ~15 minutes |
 | USGS GNIS / NOAA ENC / FKNMS polygons | ~1 hour |
 | Moon phase | computed from the clock, every load |
 | Calendar days past the wind forecast | tide + moon + season only (labeled astronomical) |
 
-A nightly cron would only make sense later for a morning text/email (“Galveston is a 8.2, copper day”). The page itself should stay live — Texas wind versus the table changes inside a morning.
+The page stays live. Texas wind versus the table changes inside a morning. The 5am email is a snapshot of that same live brief, not a separate overnight batch.
+
+## 5am email — how it is generated and sent
+
+There is no nightly rebuild of the gauges. The mailer asks the same function the `/morning` page does.
+
+1. **Generate.** `GET /api/cron/dispatch` (Vercel Cron, or a manual hit) loads each letter desk — Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse — through `getBriefing()` + `morningLine()`. Wind, sky, tide, USGS discharge, and NWS alerts are whatever the public APIs return at send time. The HTML is that one line, any river/alert warnings, and a link back to the live brief and `/card`. The site is not frozen to the email.
+2. **When.** `vercel.json` schedules `0 10 * * *` — **10:00 UTC**, which is **5:00 a.m. Galveston in daylight time**. Vercel Hobby only allows a daily cron, so that single run sends all seven desks. Set `CRON_HOURLY=1` and change the schedule to `0 * * * *` on Pro (or ping the route hourly from cron-job.org) to send each desk only when its local clock is 05:00 (`America/Chicago`, `America/New_York`, `America/Cancun`, `Indian/Mahe`).
+3. **Send.** If `RESEND_API_KEY` is set, the handler POSTs to Resend (`RESEND_FROM`, default `Field Brief <onboarding@resend.dev>`). Recipients come from `RESEND_AUDIENCE_ID` (signup writes a contact), plus `SUBSCRIBER_EMAILS` (comma list), plus a local `data/subscribers.json` when the filesystem can keep it. No key: the same payload is written to `data/outbox/` and logged — nothing leaves the machine. `CRON_SECRET` locks the route (`Authorization: Bearer …`); leave it unset and the route stays callable for local tests. `?force=1` sends every desk; `?desk=galveston` sends one.
+
+Signup lives on the brief, the letter, and `/morning`. No SMS on Hobby. Do not commit the subscriber file.
 
 ## Theaters and micro-areas
 
@@ -93,9 +105,10 @@ Bahamas, Mexico, and Seychelles tides are a modeled lunar tide, labeled as such.
 | Source | Use |
 | --- | --- |
 | [NOAA CO-OPS](https://api.tidesandcurrents.noaa.gov/) | Tides, water temp, station wind |
-| [NWS API](https://www.weather.gov/documentation/services-web-api) | U.S. wind, sky, rain chance, thunderstorms |
+| [NWS API](https://www.weather.gov/documentation/services-web-api) | U.S. wind, sky, rain chance, thunderstorms, active marine/flood alerts |
 | [Open-Meteo](https://open-meteo.com/) | Wind and precip where NWS does not cover (Bahamas, Mexico, Seychelles) |
 | [USGS GNIS](https://www.usgs.gov/tools/geographic-names-information-system-gnis) | Named-feature coordinates (pins snapped where the hydro layer has a Feature ID) |
+| [USGS NWIS IV](https://waterservices.usgs.gov/) | River discharge (`00060`) — Trinity, Sabine, Colorado, Nueces, Mississippi at Belle Chasse, Calcasieu |
 | [TxGIO](https://data.geographic.texas.gov/) | State clearinghouse (formerly TNRIS) for TPWD coastal GIS |
 | [NOAA ENC Direct](https://gis.charttools.noaa.gov/arcgis/rest/services/encdirect) | Wrecks / obstructions |
 | [NOAA FKNMS GIS](https://sanctuaries.noaa.gov/library/imast_gis.html) | Legal sanctuary zones |

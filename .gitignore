@@ -42,3 +42,7 @@ next-env.d.ts
 
 # local research scratch
 /agent-tools
+
+# local 5am list and outbox — never commit addresses
+/data/subscribers.json
+/data/outbox

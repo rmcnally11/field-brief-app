@@ -4,6 +4,22 @@ import { AREA_BY_ID } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
 import { encodeWaterPref, WATER_COOKIE, waterCookieOptions } from "@/lib/prefs";
 
+function rememberWater(request: NextRequest, res: NextResponse) {
+  const areaId = request.nextUrl.searchParams.get("area") ?? request.nextUrl.searchParams.get("a");
+  const area = areaId ? AREA_BY_ID[areaId] : null;
+  if (!area) return res;
+  res.cookies.set(
+    WATER_COOKIE,
+    encodeWaterPref({
+      areaId: area.id,
+      theater: request.nextUrl.searchParams.get("theater") ?? area.theater,
+      activity: parseActivity(request.nextUrl.searchParams.get("activity")),
+    }),
+    waterCookieOptions(),
+  );
+  return res;
+}
+
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const open =
@@ -15,25 +31,16 @@ export function proxy(request: NextRequest) {
     pathname.startsWith("/newsletter/") ||
     pathname === "/for-the-letter" ||
     pathname === "/card" ||
-    pathname.startsWith("/card/");
+    pathname.startsWith("/card/") ||
+    pathname === "/" ||
+    pathname === "/calendar" ||
+    pathname.startsWith("/calendar/") ||
+    pathname === "/map" ||
+    pathname.startsWith("/map/");
 
-  if (open) return NextResponse.next();
+  if (open) return rememberWater(request, NextResponse.next());
   if (isValidGateToken(request.cookies.get(GATE_COOKIE)?.value)) {
-    const res = NextResponse.next();
-    const areaId = request.nextUrl.searchParams.get("area") ?? request.nextUrl.searchParams.get("a");
-    const area = areaId ? AREA_BY_ID[areaId] : null;
-    if (area) {
-      res.cookies.set(
-        WATER_COOKIE,
-        encodeWaterPref({
-          areaId: area.id,
-          theater: request.nextUrl.searchParams.get("theater") ?? area.theater,
-          activity: parseActivity(request.nextUrl.searchParams.get("activity")),
-        }),
-        waterCookieOptions(),
-      );
-    }
-    return res;
+    return rememberWater(request, NextResponse.next());
   }
 
   const url = request.nextUrl.clone();

@@ -28,8 +28,8 @@ export default async function EnterPage({
       <p className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--copper)]">Private water</p>
       <h1 className="mt-2 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">The door</h1>
       <p className="mt-3 text-sm text-[color:var(--cream)]/65">
-        Field Brief is a shared coast book, not a public feed. The person who sent the link has the
-        word.
+        The brief, calendar, and map are open. This word unlocks compare, morning dispatch, species,
+        method, and season. Ask the person who sent you the link.
       </p>
       <Waterline className="mt-5" />
 

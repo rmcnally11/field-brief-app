@@ -48,15 +48,28 @@ function skyBit(briefing: Briefing) {
   }
   if (w.wx === "clear") return "clear fishing weather";
   if (w.wx === "clouds") return "cloudy fishing weather";
+  if (w.sky) return `${w.sky.toLowerCase()} fishing weather`;
   if (w.precipChance != null) return `${Math.round(w.precipChance)}% chance of rain`;
   return "sky not in";
+}
+
+function extraBit(briefing: Briefing) {
+  const alert = (briefing.conditions.alerts ?? []).find((a) =>
+    /small craft|gale|tropical|hurricane|special marine|storm warning/i.test(a.event),
+  );
+  if (alert) return ` NWS ${alert.event}.`;
+  const river = briefing.conditions.river;
+  if (river?.high) {
+    return ` ${river.name.split(",")[0]} ${Math.round(river.cfs).toLocaleString()} cfs — stain is the story.`;
+  }
+  return "";
 }
 
 export function morningTweetText(briefing: Briefing, yolo?: CalendarDay | null, kicker?: string) {
   const place = PLACE[briefing.area.id] ?? `${theaterLabel(briefing.area.theater)} fishing`;
   const yoloBit = yolo ? ` YOLO day ${yolo.date.slice(5)}.` : "";
   const kick = kicker ? ` ${kicker}.` : "";
-  const line = `${briefing.area.shortName} fishing weather: ${briefing.overall.toFixed(1)} this morning. ${place}. Wind ${windBit(briefing)}, ${skyBit(briefing)}.${kick} Field Brief — a 1–10, not a bite.${yoloBit}`;
+  const line = `${briefing.area.shortName} fishing weather: ${briefing.overall.toFixed(1)} this morning. ${place}. Wind ${windBit(briefing)}, ${skyBit(briefing)}.${extraBit(briefing)}${kick} Field Brief — a 1–10, not a bite.${yoloBit}`;
   return `${line}\n${morningCardUrl(briefing.area.id, briefing.area.theater)}`;
 }
 

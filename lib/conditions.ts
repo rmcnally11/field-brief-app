@@ -1,11 +1,12 @@
-import type { Area, Conditions, WeatherNow } from "@/lib/types";
+import type { Area, Conditions, MarineAlert, RiverNow, WeatherNow } from "@/lib/types";
 import { fetchLatest } from "@/lib/noaa";
-import { fetchNwsForecast, nwsWindAt, nwsWindNow } from "@/lib/nws";
+import { fetchNwsAlerts, fetchNwsForecast, nwsWindAt, nwsWindNow } from "@/lib/nws";
 import { fetchOpenMeteo } from "@/lib/openmeteo";
+import { fetchUsgsDischarge } from "@/lib/rivers";
 import { loadTides } from "@/lib/tides";
 import { moonPhase } from "@/lib/moon";
 import { cardinalFromDeg, ymdInZone } from "@/lib/time";
-import { coerceSky, skyFromWmo } from "@/lib/wx";
+import { coerceSky, skyFromWmo, skyPhraseFromWmo } from "@/lib/wx";
 
 function blankWeather(source: WeatherNow["source"]): WeatherNow {
   return {
@@ -24,25 +25,16 @@ function blankWeather(source: WeatherNow["source"]): WeatherNow {
   };
 }
 
-function hasSky(w: Pick<WeatherNow, "wx" | "sky" | "precipChance">) {
-  return w.wx != null || w.sky != null || w.precipChance != null;
-}
-
-async function fillSky(at: Date, lat: number, lon: number, weather: WeatherNow): Promise<WeatherNow> {
-  if (hasSky(weather)) return weather;
-  try {
-    const om = openMeteoAt(await fetchOpenMeteo(lat, lon), at);
-    return {
-      ...weather,
-      airF: weather.airF ?? om.airF,
-      precipChance: om.precipChance,
-      precipIn: om.precipIn,
-      sky: om.sky,
-      wx: om.wx,
-    };
-  } catch {
-    return weather;
-  }
+function mergeSky(primary: WeatherNow, fallback: WeatherNow | null): WeatherNow {
+  if (!fallback) return primary;
+  return {
+    ...primary,
+    airF: primary.airF ?? fallback.airF,
+    precipChance: primary.precipChance ?? fallback.precipChance,
+    precipIn: primary.precipIn ?? fallback.precipIn,
+    sky: primary.sky ?? fallback.sky,
+    wx: primary.wx ?? fallback.wx,
+  };
 }
 
 function openMeteoAt(
@@ -74,7 +66,7 @@ function openMeteoAt(
     pressureMb: om.current.pressure_msl,
     precipChance,
     precipIn,
-    sky: null,
+    sky: skyPhraseFromWmo(code),
     wx: coerceSky(skyFromWmo(code), precipChance),
     source: "open-meteo",
     fetchedAt: new Date().toISOString(),
@@ -86,53 +78,67 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
     area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles";
 
   if (today && area.noaaStation) {
-    const [noaaWind, nws] = await Promise.allSettled([
+    const [noaaWind, nws, om] = await Promise.allSettled([
       fetchLatest(area.noaaStation, "wind"),
       fetchNwsForecast(area.lat, area.lon),
+      fetchOpenMeteo(area.lat, area.lon),
     ]);
     const wind = noaaWind.status === "fulfilled" ? noaaWind.value : null;
     const nwsVal = nws.status === "fulfilled" ? nws.value : null;
     const nwsNow = nwsVal ? nwsWindNow(nwsVal.periods) : null;
+    const omNow = om.status === "fulfilled" ? openMeteoAt(om.value, at) : null;
     if (wind?.speed != null) {
-      return fillSky(at, area.lat, area.lon, {
-        airF: nwsNow?.airF ?? null,
-        windMph: wind.speed,
-        windGustMph: wind.gust,
-        windDirDeg: wind.dir,
-        windCardinal: cardinalFromDeg(wind.dir),
-        pressureMb: null,
-        precipChance: nwsNow?.precipChance ?? null,
-        precipIn: null,
-        sky: nwsNow?.sky ?? null,
-        wx: nwsNow?.wx ?? null,
-        source: "noaa",
-        fetchedAt: new Date().toISOString(),
-      });
+      return mergeSky(
+        {
+          airF: nwsNow?.airF ?? null,
+          windMph: wind.speed,
+          windGustMph: wind.gust,
+          windDirDeg: wind.dir,
+          windCardinal: cardinalFromDeg(wind.dir),
+          pressureMb: null,
+          precipChance: nwsNow?.precipChance ?? null,
+          precipIn: null,
+          sky: nwsNow?.sky ?? null,
+          wx: nwsNow?.wx ?? null,
+          source: "noaa",
+          fetchedAt: new Date().toISOString(),
+        },
+        omNow,
+      );
     }
     if (nwsNow) {
-      return fillSky(at, area.lat, area.lon, {
-        airF: nwsNow.airF,
-        windMph: nwsNow.windMph,
-        windGustMph: null,
-        windDirDeg: nwsNow.windDirDeg,
-        windCardinal: nwsNow.windCardinal,
-        pressureMb: null,
-        precipChance: nwsNow.precipChance,
-        precipIn: null,
-        sky: nwsNow.sky,
-        wx: nwsNow.wx,
-        source: "nws",
-        fetchedAt: new Date().toISOString(),
-      });
+      return mergeSky(
+        {
+          airF: nwsNow.airF,
+          windMph: nwsNow.windMph,
+          windGustMph: null,
+          windDirDeg: nwsNow.windDirDeg,
+          windCardinal: nwsNow.windCardinal,
+          pressureMb: null,
+          precipChance: nwsNow.precipChance,
+          precipIn: null,
+          sky: nwsNow.sky,
+          wx: nwsNow.wx,
+          source: "nws",
+          fetchedAt: new Date().toISOString(),
+        },
+        omNow,
+      );
     }
+    if (omNow) return omNow;
   }
 
   if (!modeledOcean && area.noaaStation) {
-    try {
-      const nws = await fetchNwsForecast(area.lat, area.lon);
-      const atHour = nwsWindAt(nws.periods, at);
-      if (atHour?.windMph != null) {
-        return fillSky(at, area.lat, area.lon, {
+    const [nws, om] = await Promise.allSettled([
+      fetchNwsForecast(area.lat, area.lon),
+      fetchOpenMeteo(area.lat, area.lon),
+    ]);
+    const nwsVal = nws.status === "fulfilled" ? nws.value : null;
+    const atHour = nwsVal ? nwsWindAt(nwsVal.periods, at) : null;
+    const omNow = om.status === "fulfilled" ? openMeteoAt(om.value, at) : null;
+    if (atHour?.windMph != null) {
+      return mergeSky(
+        {
           airF: atHour.airF,
           windMph: atHour.windMph,
           windGustMph: null,
@@ -145,11 +151,11 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
           wx: atHour.wx,
           source: "nws",
           fetchedAt: new Date().toISOString(),
-        });
-      }
-    } catch {
-      // fall through
+        },
+        omNow,
+      );
     }
+    if (omNow) return omNow;
   }
 
   try {
@@ -160,13 +166,24 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
   }
 }
 
+function nwsCovers(area: Area) {
+  return (
+    area.theater === "texas" ||
+    area.theater === "louisiana" ||
+    area.theater === "florida" ||
+    area.theater === "puerto-rico"
+  );
+}
+
 export async function loadConditions(area: Area, at = new Date()): Promise<Conditions> {
   const today = ymdInZone(at, area.timezone) === ymdInZone(new Date(), area.timezone);
   const tempStation = area.noaaTempStation ?? area.noaaStation;
-  const [tides, weather, wt] = await Promise.all([
+  const [tides, weather, wt, river, alerts] = await Promise.all([
     loadTides(area, at, { observe: today }),
     weatherFor(area, at, today),
     today && tempStation ? fetchLatest(tempStation, "water_temperature") : Promise.resolve(null),
+    fetchUsgsDischarge(area.id).catch(() => null as RiverNow | null),
+    nwsCovers(area) ? fetchNwsAlerts(area.lat, area.lon).catch(() => [] as MarineAlert[]) : Promise.resolve([] as MarineAlert[]),
   ]);
   let waterTempF: number | null = null;
   let waterTempSource: string | null = null;
@@ -181,5 +198,7 @@ export async function loadConditions(area: Area, at = new Date()): Promise<Condi
     tides,
     weather,
     moon: moonPhase(at),
+    river,
+    alerts,
   };
 }

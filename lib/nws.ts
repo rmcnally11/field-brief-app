@@ -104,3 +104,41 @@ export function nwsWindNow(periods: NwsPeriod[]) {
   if (!p) return null;
   return nwsDir(p);
 }
+
+export type NwsAlert = {
+  event: string;
+  headline: string;
+  severity: string;
+};
+
+const MARINE_OR_FLOOD =
+  /small craft|gale|storm warning|hurricane|tropical|special marine|severe thunder|tornado|flood|coastal flood|rip current|extreme wind|storm surge/i;
+
+export async function fetchNwsAlerts(lat: number, lon: number): Promise<NwsAlert[]> {
+  const res = await fetch(
+    `https://api.weather.gov/alerts/active?point=${lat.toFixed(3)},${lon.toFixed(3)}`,
+    {
+      headers: { "User-Agent": UA, Accept: "application/geo+json" },
+      next: { revalidate: 300 },
+      signal: AbortSignal.timeout(3500),
+    },
+  );
+  if (!res.ok) throw new Error(`NWS alerts ${res.status}`);
+  const json = (await res.json()) as {
+    features?: Array<{
+      properties?: { event?: string; headline?: string; severity?: string };
+    }>;
+  };
+  const out: NwsAlert[] = [];
+  for (const feature of json.features ?? []) {
+    const event = feature.properties?.event ?? "";
+    if (!MARINE_OR_FLOOD.test(event)) continue;
+    out.push({
+      event,
+      headline: feature.properties?.headline ?? event,
+      severity: feature.properties?.severity ?? "Unknown",
+    });
+    if (out.length >= 4) break;
+  }
+  return out;
+}

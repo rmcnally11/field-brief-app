@@ -7,7 +7,8 @@ import { YoloBanner } from "@/components/yolo-banner";
 import { Waterline } from "@/components/viz/waterline";
 import { ScoreRing } from "@/components/viz/score-ring";
 import { briefHref, calendarHref } from "@/lib/hrefs";
-import { DESKS } from "@/lib/newsletter";
+import { DESKS } from "@/lib/desks";
+import { MorningMail } from "@/components/morning-mail";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +41,7 @@ export default async function MorningPage({
         <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Morning dispatch</p>
         <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">One line, then go</h1>
         <p className="mt-2 text-sm text-[color:var(--cream)]/65">
-          No account. No text service on Hobby. Copy it, mail it, or pin this page. The brief stays live.
+          No account. No text service on Hobby. Copy it, or leave an email for the 5am dispatch. The brief stays live.
         </p>
         <Waterline className="mt-3" />
       </div>
@@ -77,6 +78,7 @@ export default async function MorningPage({
           </a>
         </div>
       </article>
+      <MorningMail defaultDesk={briefing.area.id} />
       {yolo ? (
         <YoloBanner
           day={yolo}

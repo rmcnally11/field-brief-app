@@ -1,5 +1,6 @@
 import { getNewsletter } from "@/lib/newsletter";
 import { LetterIssue } from "@/components/letter-issue";
+import { MorningMail } from "@/components/morning-mail";
 
 export const dynamic = "force-dynamic";
 
@@ -21,5 +22,10 @@ export default async function NewsletterPage() {
     );
   }
 
-  return <LetterIssue issue={issue} />;
+  return (
+    <div className="space-y-8">
+      <LetterIssue issue={issue} />
+      <MorningMail />
+    </div>
+  );
 }

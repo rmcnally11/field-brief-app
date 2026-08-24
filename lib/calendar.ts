@@ -43,6 +43,8 @@ function dayTideQuality(
   let rangeScore: number;
   if (area.tideCharacter === "sight-skinny") {
     rangeScore = range < 0.4 ? 0.4 : range < 2.4 ? 1 : 0.65;
+  } else if (area.tideCharacter === "blue-water") {
+    rangeScore = 0.75;
   } else {
     rangeScore = clamp(range / Math.max(1.2, area.meanRangeFt * 1.4), 0.3, 1);
   }
@@ -51,13 +53,18 @@ function dayTideQuality(
 }
 
 function seasonalForArea(area: Area, month: number, activity: ActivityId | "all") {
-  const local = SPECIES.filter((s) => s.theaters.includes(area.theater) && s.role === "primary");
+  const local = SPECIES.filter((s) => {
+    if (!s.theaters.includes(area.theater)) return false;
+    if (activity === "offshore") return s.role === "bluewater" || s.role === "pacific" || s.role === "primary";
+    return s.role === "primary" || (s.role === "pacific" && area.theater === "mexico");
+  });
   if (!local.length) return 0.5;
   const scores = local.map((s) => {
     if (!s.presentMonths.includes(month)) return 0.15;
     let n = s.peakMonths.includes(month) ? 1 : 0.55;
-    if (activity === "fly" && (s.id === "bonefish" || s.id === "permit" || s.id === "redfish")) n += 0.08;
+    if (activity === "fly" && (s.id === "bonefish" || s.id === "permit" || s.id === "redfish" || s.id === "roosterfish")) n += 0.08;
     if (activity === "structure" && (s.id === "sheepshead" || s.id === "black-drum")) n += 0.1;
+    if (activity === "offshore" && (s.role === "bluewater" || s.id === "roosterfish")) n += 0.12;
     return n;
   });
   return scores.sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / Math.min(3, scores.length);
@@ -71,7 +78,9 @@ async function loadCalendarInputs(area: Area, start: Date, dayCount: number): Pr
     area.noaaStation
       ? fetchHiLo(area.noaaStation, new Date(start.getTime() - 86400000), dayCount + 2)
       : Promise.resolve([]),
-    area.theater === "bahamas" ? fetchOpenMeteo(area.lat, area.lon) : fetchNwsForecast(area.lat, area.lon),
+    area.theater === "bahamas" || area.theater === "mexico"
+      ? fetchOpenMeteo(area.lat, area.lon)
+      : fetchNwsForecast(area.lat, area.lon),
   ]);
 
   let hourly: { time: string; height: number }[] =

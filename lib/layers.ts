@@ -44,6 +44,7 @@ export async function fetchGnisNear(area: Area): Promise<OfficialPoint[]> {
     "Point",
     "Key",
   ];
+  if (area.theater === "mexico" || area.theater === "bahamas") return [];
   const state =
     area.theater === "texas" ? "TX" : area.theater === "florida" ? "FL" : area.theater === "louisiana" ? "LA" : "";
   const nameClause = names.map((n) => `gaz_name LIKE '%${n}%'`).join(" OR ");
@@ -74,7 +75,7 @@ export async function fetchGnisNear(area: Area): Promise<OfficialPoint[]> {
 }
 
 export async function fetchEncWrecks(area: Area): Promise<OfficialPoint[]> {
-  if (area.theater === "bahamas") return [];
+  if (area.theater === "bahamas" || area.theater === "mexico") return [];
   const { xmin, ymin, xmax, ymax } = bbox(area, 0.28);
   const url =
     `https://gis.charttools.noaa.gov/arcgis/rest/services/encdirect/enc_harbour/MapServer/36/query` +
@@ -576,11 +577,57 @@ const ACCESS: OfficialPoint[] = [
     sourceUrl: "https://www.wlf.louisiana.gov/page/boat-ramps",
     detail: "SW Louisiana beach. Parish rules shift. Calcasieu Pass is the next throat east.",
   },
+  {
+    id: "acc-punta-allen",
+    name: "Punta Allen / Sian Ka’an",
+    lat: 19.78,
+    lon: -87.47,
+    kind: "access",
+    source: "Sian Ka’an Biosphere / CONAPESCA",
+    sourceUrl: "https://www.gob.mx/conanp",
+    detail: "Village launch into Ascension Bay. Biosphere reserve. Lodge and park rules. CONAPESCA license.",
+  },
+  {
+    id: "acc-mujeres",
+    name: "Isla Mujeres marinas",
+    lat: 21.237,
+    lon: -86.731,
+    kind: "access",
+    source: "CONAPESCA / Quintana Roo",
+    sourceUrl: "https://www.gob.mx/conapesca",
+    detail: "The sailfish fleet door. Not a flats ramp.",
+  },
+  {
+    id: "acc-barriles",
+    name: "Los Barriles launches",
+    lat: 23.681,
+    lon: -109.699,
+    kind: "access",
+    source: "CONAPESCA / BCS",
+    sourceUrl: "https://www.gob.mx/conapesca",
+    detail: "East Cape door. Surf rooster and the run to Gordo.",
+  },
+  {
+    id: "acc-lapaz",
+    name: "La Paz marinas / malecón",
+    lat: 24.142,
+    lon: -110.311,
+    kind: "access",
+    source: "CONAPESCA / BCS",
+    sourceUrl: "https://www.gob.mx/conapesca",
+    detail: "Town water. Espíritu Santo is the run north. Park rules on the island.",
+  },
 ];
 
 export function accessNear(area: Area): OfficialPoint[] {
   const maxDeg =
-    area.theater === "florida" || area.theater === "louisiana" ? 0.28 : area.theater === "texas" ? 0.55 : 0.9;
+    area.theater === "florida" || area.theater === "louisiana"
+      ? 0.28
+      : area.theater === "texas"
+        ? 0.55
+        : area.theater === "mexico"
+          ? 0.45
+          : 0.9;
   return ACCESS.filter((p) => {
     const dlat = p.lat - area.lat;
     const dlon = (p.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180);

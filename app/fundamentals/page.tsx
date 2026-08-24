@@ -86,7 +86,9 @@ export default async function FundamentalsPage({
   const typeAreas = type === "all" ? [] : areasForType(type, theater);
   const regionIds: TheaterId[] = theater === "all" ? [...THEATER_IDS] : [theater];
 
-  const primaryChoices = SPECIES.filter((s) => s.role === "primary" || s.role === "incidental");
+  const primaryChoices = SPECIES.filter(
+    (s) => s.role === "primary" || s.role === "incidental" || s.role === "pacific" || s.role === "bluewater",
+  );
 
   return (
     <div className="space-y-8">

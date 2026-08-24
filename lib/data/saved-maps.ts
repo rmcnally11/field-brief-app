@@ -1725,7 +1725,7 @@ function miles(aLat: number, aLon: number, bLat: number, bLon: number) {
 function habitatFor(pin: SavedPin): Habitat {
   const n = `${pin.name} ${pin.note} ${pin.folder}`.toLowerCase();
   if (n.includes("troll") || n.includes("offshore") || n.includes("color change") || n.includes("weedline")) {
-    return "wreck-edge";
+    return "blue-water";
   }
   if (n.includes("wreck") || n.includes("hump")) return "wreck-edge";
   if (n.includes("jetty") || n.includes("pass") || n.includes("inlet") || n.includes("bridge")) return "pass-jetty";
@@ -1738,7 +1738,10 @@ function habitatFor(pin: SavedPin): Habitat {
 
 function activitiesFor(pin: SavedPin): ActivityId[] {
   const n = `${pin.name} ${pin.folder}`.toLowerCase();
-  if (n.includes("jetty") || n.includes("wreck") || n.includes("hump") || n.includes("bridge")) {
+  if (n.includes("troll") || n.includes("offshore") || n.includes("color change") || n.includes("hump") || n.includes("weedline")) {
+    return ["offshore", "spin"];
+  }
+  if (n.includes("jetty") || n.includes("wreck") || n.includes("bridge")) {
     return ["structure", "skiff", "spin", "fly"];
   }
   if (n.includes("beach") || n.includes("surf") || n.includes("camp")) return ["structure", "spin", "wade"];
@@ -1751,6 +1754,10 @@ function speciesFor(pin: SavedPin, area: Area): SpeciesId[] {
     return ["mahi", "tuna", "sailfish"];
   }
   if (area.id === "florida-bay") return ["redfish", "snook", "tarpon"];
+  if (area.theater === "mexico") {
+    if (n.includes("troll") || n.includes("offshore") || n.includes("bank")) return ["mahi", "tuna", "sailfish", "roosterfish"];
+    return [...area.leadSpecies];
+  }
   if (area.theater === "florida" || area.theater === "bahamas") {
     if (n.includes("tarpon") || n.includes("bridge")) return ["tarpon", "permit"];
     if (n.includes("wreck") || n.includes("hump")) return ["permit", "tarpon"];
@@ -1760,7 +1767,11 @@ function speciesFor(pin: SavedPin, area: Area): SpeciesId[] {
 }
 
 /** Fishing / access marks from your My Maps, near this micro-area. Closed polygons stay off the brief. */
-export function savedSpotsNear(area: Area, maxMiles?: number): Spot[] {
+export function savedSpotsNear(
+  area: Area,
+  maxMiles?: number,
+  opts?: { includeOffshore?: boolean },
+): Spot[] {
   const radius =
     maxMiles ??
     (area.id === "florida-bay" || area.id === "calcasieu"
@@ -1769,13 +1780,15 @@ export function savedSpotsNear(area: Area, maxMiles?: number): Spot[] {
         ? 18
         : area.theater === "florida"
           ? 22
-          : area.theater === "bahamas"
+          : area.theater === "bahamas" || area.theater === "mexico"
             ? 40
             : 42);
   return SAVED_PINS.filter((p) => p.kind === "fish" || p.kind === "access")
     .filter((p) => {
       const n = `${p.name} ${p.folder}`.toLowerCase();
-      if (n.includes("troll") || n.includes("color change") || n.includes("offshore run") || n.includes("hump")) return false;
+      const offshorePin =
+        n.includes("troll") || n.includes("color change") || n.includes("offshore run") || n.includes("hump");
+      if (offshorePin) return Boolean(opts?.includeOffshore);
       return true;
     })
     .filter((p) => miles(area.lat, area.lon, p.lat, p.lon) <= radius)

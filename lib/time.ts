@@ -2,9 +2,12 @@ const CHICAGO = "America/Chicago";
 const NEW_YORK = "America/New_York";
 const NASSAU = "America/Nassau";
 
-export function timezoneForTheater(theater: "texas" | "louisiana" | "florida" | "bahamas") {
+export function timezoneForTheater(
+  theater: "texas" | "louisiana" | "florida" | "bahamas" | "mexico",
+) {
   if (theater === "texas" || theater === "louisiana") return CHICAGO;
   if (theater === "florida") return NEW_YORK;
+  if (theater === "mexico") return "America/Cancun";
   return NASSAU;
 }
 

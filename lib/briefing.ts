@@ -5,7 +5,7 @@ import { loadConditions } from "@/lib/conditions";
 import { buildBriefing } from "@/lib/engine";
 import { loadOfficialLayers } from "@/lib/layers";
 
-const ACTIVITIES = new Set(["wade", "skiff", "kayak", "fly", "spin", "structure", "all"]);
+const ACTIVITIES = new Set(["wade", "skiff", "kayak", "fly", "spin", "structure", "offshore", "all"]);
 
 export function parseActivity(raw?: string | null): ActivityId | "all" {
   if (!raw || !ACTIVITIES.has(raw)) return "all";
@@ -29,7 +29,7 @@ async function computeBriefing(areaId: string, activity: ActivityId | "all"): Pr
   };
 }
 
-const cachedBriefing = unstable_cache(computeBriefing, ["field-briefing-v2"], {
+const cachedBriefing = unstable_cache(computeBriefing, ["field-briefing-v3"], {
   revalidate: 180,
 });
 

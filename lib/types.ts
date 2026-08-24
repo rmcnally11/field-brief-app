@@ -1,6 +1,6 @@
-export type TheaterId = "texas" | "louisiana" | "florida" | "bahamas";
+export type TheaterId = "texas" | "louisiana" | "florida" | "bahamas" | "mexico";
 
-export type ActivityId = "wade" | "skiff" | "kayak" | "fly" | "spin" | "structure";
+export type ActivityId = "wade" | "skiff" | "kayak" | "fly" | "spin" | "structure" | "offshore";
 
 export type Habitat =
   | "grass-flat"
@@ -16,7 +16,8 @@ export type Habitat =
   | "river-delta"
   | "spoil-bank"
   | "serpulid-reef"
-  | "structure-piling";
+  | "structure-piling"
+  | "blue-water";
 
 export type TideStage =
   | "incoming"
@@ -57,11 +58,13 @@ export type Area = {
   noaaTempStation?: string | null;
   summary: string;
   /** Sight-fishing flats want cleaner, often smaller range. Marsh wants moving water. */
-  tideCharacter: "marsh-current" | "sight-skinny" | "pass-current";
+  tideCharacter: "marsh-current" | "sight-skinny" | "pass-current" | "blue-water";
   meanRangeFt: number;
   modeledTideOffsetHours?: number;
   /** Species that may own this micro-area's headline, in preference order. */
   leadSpecies: SpeciesId[];
+  /** When method is offshore — troll, edge, jig. Inshore leads stay on the flat. */
+  offshoreLead?: SpeciesId[];
 };
 
 export type Spot = {

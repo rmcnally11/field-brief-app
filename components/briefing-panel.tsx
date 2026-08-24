@@ -132,7 +132,9 @@ export function BriefingPanel({
           </ul>
           {conditions.tides.source === "modeled" && (
             <p className="mt-3 text-xs text-amber-800">
-              Bahamas tides are modeled from lunar M2. Use them for windows, not a bar crossing.
+              {area.theater === "mexico"
+                ? "Mexico tides are modeled from lunar M2. Use them for windows, not a bar crossing. There is no NOAA gauge here."
+                : "Bahamas tides are modeled from lunar M2. Use them for windows, not a bar crossing."}
             </p>
           )}
         </Instrument>
@@ -242,6 +244,8 @@ export function BriefingPanel({
                   ? "Cited to LDWF ramp lists and Louisiana State Parks. Parish rules shift after a blow."
                 : area.theater === "florida"
                   ? "County and state ramps near this water. FKNMS no-take is Keys-only, on the legal list."
+                  : area.theater === "mexico"
+                    ? "Lodge towns and cited marinas. CONAPESCA license. Biosphere and park water is not a freelance wade."
                   : "Settlement and lodge launches. There is no TPWD-style ramp inventory on this island."}
             </p>
             {briefing.access.length === 0 ? (
@@ -270,7 +274,7 @@ export function BriefingPanel({
             </p>
             {briefing.legal.length === 0 ? (
               <p className="mt-3 text-sm text-[color:var(--cream)]/55">
-                No FKNMS polygon in this box. Mainland Florida, Louisiana, Texas, and the Bahamas are not sanctuary closures.
+                No FKNMS polygon in this box. Mainland Florida, Louisiana, Texas, Mexico, and the Bahamas are not Keys sanctuary closures.
               </p>
             ) : (
               <ul className="mt-3 space-y-2">

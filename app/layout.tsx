@@ -21,7 +21,7 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: "Field Brief — Texas, Louisiana, Florida, Bahamas",
+  title: "Field Brief — Texas, Louisiana, Florida, Bahamas, Mexico",
   description:
     "Where, when, and why inshore fish should be on the water. Live NOAA tides, a weekly Field Letter, seasonal fundamentals by coast and species, and monthly 1–10 calendars.",
 };

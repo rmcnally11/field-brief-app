@@ -95,7 +95,7 @@ export function MapPageClient({
       <FilterBar areaId={areaId} activity={activity} theater={theater} />
       <div className="relative">
         <CoastMap
-          theater={theater === "all" ? "all" : (theater as "texas" | "louisiana" | "florida" | "bahamas" | undefined)}
+          theater={theater === "all" ? "all" : (theater as import("@/lib/types").TheaterId | undefined)}
           activity={activity === "all" ? "all" : (activity as "fly")}
           areaId={areaId}
           extras={extras}

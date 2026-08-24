@@ -1,6 +1,6 @@
 # Field Brief
 
-Inshore conditions for four theaters: the **Texas coast**, **Louisiana**, **Florida** (Keys, Boca Grande, Jupiter), and the **Bahamas**. The brief tells you **where**, **when**, and **why** fish should be on a given piece of water — and which species are actually in play.
+Inshore and offshore conditions for five theaters: the **Texas coast**, **Louisiana**, **Florida** (Keys, Boca Grande, Jupiter), the **Bahamas**, and **Mexico** (Yucatan flats + Baja). The brief tells you **where**, **when**, and **why** fish should be on a given piece of water — and which species are actually in play.
 
 GitHub: [rmcnally11/field-brief-app](https://github.com/rmcnally11/field-brief-app). Live site: [field-brief-app.vercel.app](https://field-brief-app.vercel.app). Your three My Maps are imported as cream pins:
 
@@ -20,7 +20,7 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by region, water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next, with a drawn moon and tide range on every day. Copper outline = amazing day.
 - Satellite chart (Esri imagery) with official layers and your My Maps.
-- Filters for **wade / skiff / kayak / fly / spin / jetty**.
+- Filters for **wade / skiff / kayak / fly / spin / jetty / offshore** (troll, edge, deep jig).
 - Official map layers:
   - **USGS GNIS** — canonical names and coordinates for passes, bays, channels
   - **NOAA ENC Direct** — charted wrecks and obstructions
@@ -76,6 +76,8 @@ A nightly cron would only make sense later for a morning text/email (“Galvesto
 
 **Bahamas:** Andros · Abaco · Grand Bahama · Eleuthera
 
+**Mexico:** Ascension Bay / Sian Ka’an · Isla Mujeres / Cancún bank · East Cape / Los Barriles · La Paz / Espíritu Santo
+
 Bahamas tides are a modeled lunar tide, labeled as such. There is no NOAA gauge on those islands.
 
 ## Official sources we cite
@@ -94,6 +96,7 @@ Bahamas tides are a modeled lunar tide, labeled as such. There is no NOAA gauge 
 | [NPS Padre Island](https://www.nps.gov/pais/planyourvisit/beach-driving.htm) | PINS driving / camping |
 | [FWC](https://myfwc.com/fishing/saltwater/recreational/) | Florida bonefish, permit, snook, redfish |
 | [LDWF recreational saltwater](https://www.wlf.louisiana.gov/page/recreational-saltwater-finfish) | Louisiana bag, slot, and flounder season |
+| [CONAPESCA](https://www.gob.mx/conapesca) | Mexico recreational license and harvest rules |
 
 The TPWD coastal-ramp GIS and the GLO Beach & Bay Access feature service are the right legal inventories; the public TAMU ramp layer we tested is inland only, and the GLO Hub query required a token. Those go live when the open endpoints are reachable. Drop a Google My Maps **KML** into the project to add your saved structure as a layer — no matching export was in Drive.
 

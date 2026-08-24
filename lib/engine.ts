@@ -12,6 +12,7 @@ import type {
   WindowPick,
 } from "@/lib/types";
 import { SPECIES, SPECIES_BY_ID } from "@/lib/data/species";
+import { leadsFor } from "@/lib/data/areas";
 import { spotsForArea } from "@/lib/data/spots";
 import {
   flounderClosed,
@@ -53,13 +54,21 @@ function habitatTideFit(habitat: Habitat, stage: TideStage) {
     "river-delta": { outgoing: 0.85, incoming: 0.7, "high-slack": 0.4, "low-slack": 0.35 },
     "spoil-bank": { incoming: 0.85, outgoing: 0.75, "high-slack": 0.55, "low-slack": 0.35 },
     "serpulid-reef": { incoming: 0.8, outgoing: 0.8, "high-slack": 0.7, "low-slack": 0.6 },
+    "blue-water": { incoming: 0.8, outgoing: 0.8, "high-slack": 0.65, "low-slack": 0.6 },
   };
   return table[habitat]?.[stage] ?? 0.5;
 }
 
 function windFishability(mph: number | null, activity: ActivityId | "all") {
   if (mph == null) return 0.65;
-  const cap = activity === "fly" || activity === "kayak" ? 16 : activity === "wade" ? 20 : 22;
+  const cap =
+    activity === "fly" || activity === "kayak"
+      ? 16
+      : activity === "wade"
+        ? 20
+        : activity === "offshore"
+          ? 28
+          : 22;
   if (mph < 4) return activity === "fly" ? 0.72 : 0.7; // slick: spooky for sight
   if (mph <= 12) return 1;
   if (mph <= cap) return 0.7;
@@ -102,9 +111,12 @@ export function scoreSpecies(
   area: Area,
   conditions: Conditions,
   now: Date,
+  activity: ActivityId | "all" = "all",
 ): SpeciesPick[] {
   const month = clockParts(now, area.timezone).month;
   const water = conditions.waterTempF;
+  const leads = leadsFor(area, activity);
+  const offshore = activity === "offshore";
   return SPECIES.filter((s) => s.theaters.includes(area.theater)).map((s) => {
     const closed = isClosed(s.id, area, now);
     const present = monthIn(s.presentMonths, month);
@@ -115,12 +127,24 @@ export function scoreSpecies(
     let score = 10 * (0.4 * season + 0.35 * thermal + 0.25 * tideFit);
     if (closed) score *= 0.35;
     if (s.role === "incidental") score = Math.min(score, 5.8);
-    if (s.role === "bluewater") score *= 0.42;
-    if (s.role === "pacific") score = 0;
+    if (s.role === "bluewater" && !offshore) score *= 0.42;
+    if (s.role === "pacific" && area.theater !== "mexico") score = 0;
     const bits: string[] = [];
     if (s.role === "incidental") bits.push("Bycatch and beach noise — not the reason you came.");
-    if (s.role === "bluewater") bits.push("Bluewater. Weedlines, humps, and the edge — not this flat or marsh.");
-    if (s.role === "pacific") bits.push("Pacific fish. Not on this atlas.");
+    if (s.role === "bluewater") {
+      bits.push(
+        offshore
+          ? "Bluewater. Weedlines, humps, and the edge — this is the method."
+          : "Bluewater. Weedlines, humps, and the edge — not this flat or marsh. Switch method to Offshore.",
+      );
+    }
+    if (s.role === "pacific") {
+      bits.push(
+        area.theater === "mexico"
+          ? "Pacific / Sea of Cortez. Baja, not the Gulf."
+          : "Pacific fish. Not on this atlas.",
+      );
+    }
     if (closed) bits.push("Closed to harvest — still swims, do not keep.");
     if (peak) bits.push("In peak season for this water.");
     else if (present) bits.push("Present, not peak.");
@@ -131,10 +155,15 @@ export function scoreSpecies(
       else if (water >= s.tempOpt[0] && water <= s.tempOpt[1]) bits.push(`Water ${water.toFixed(0)}°F sits in the feeding window.`);
     }
     if (s.preferTide.includes(conditions.tides.stage)) bits.push(`This tide stage (${conditions.tides.stage.replace("-", " ")}) matches how they hunt.`);
+    const canHeadline =
+      leads.includes(s.id) &&
+      (s.role === "primary" ||
+        (s.role === "pacific" && area.theater === "mexico") ||
+        (s.role === "bluewater" && (offshore || area.leadSpecies.includes(s.id))));
     return {
       species: s,
       score: Number(clamp(score, 0, 10).toFixed(1)),
-      inPlay: score >= 5 && present && s.role === "primary" && area.leadSpecies.includes(s.id),
+      inPlay: score >= 5 && present && canHeadline,
       closed,
       why: bits.join(" "),
     };
@@ -154,7 +183,7 @@ function wreckMarkToSpot(mark: OfficialMark, area: Area): Spot {
     lat: mark.lat,
     lon: mark.lon,
     habitat: "wreck-edge",
-    activities: ["skiff", "spin", "fly"],
+    activities: ["skiff", "spin", "fly", "offshore"],
     species:
       area.theater === "florida"
         ? ["permit", "tarpon", "mahi", "tuna"]
@@ -180,7 +209,7 @@ export function pickSpots(
   const cold = (water ?? 70) <= 58;
 
   const catalog = [
-    ...spotsForArea(area.id),
+    ...spotsForArea(area.id, activity),
     ...wrecks
       .filter((w) => {
         const n = w.name.trim();
@@ -195,8 +224,15 @@ export function pickSpots(
   return catalog
     .filter((spot) => {
       if (!spotMatchesActivity(spot, activity)) return false;
-      const n = spot.name.toLowerCase();
-      if (n.includes("troll") || n.includes("color change") || n.includes("blue water") || n.includes("hump")) return false;
+      const n = `${spot.name} ${spot.note}`.toLowerCase();
+      const offshoreMark =
+        n.includes("troll") ||
+        n.includes("color change") ||
+        n.includes("blue water") ||
+        n.includes("hump") ||
+        spot.habitat === "blue-water";
+      if (activity === "offshore") return offshoreMark || spot.activities.includes("offshore");
+      if (offshoreMark) return false;
       return true;
     })
     .map((spot) => {
@@ -269,12 +305,23 @@ export function pickSpots(
         why.push("Skiff may be off plane / off the flat at dead low.");
       }
       if (
+        activity !== "offshore" &&
         area.tideCharacter === "sight-skinny" &&
-        spot.habitat === "wreck-edge" &&
+        (spot.habitat === "wreck-edge" || spot.habitat === "blue-water") &&
         spot.depth === "deep"
       ) {
         score -= 2.4;
         why.push("Offshore wreck or hump — secondary to the flat on this brief.");
+      }
+      if (activity === "offshore") {
+        if (spot.habitat === "blue-water" || spot.habitat === "wreck-edge") {
+          score += 1.6;
+          why.push("Troll, edge, or jig water — this is the method.");
+        }
+        if (spot.depth === "skinny") {
+          score -= 2.2;
+          why.push("Skinny water. Not the offshore brief.");
+        }
       }
 
       return { spot, score: Number(clamp(score, 0, 10).toFixed(1)), why };
@@ -338,11 +385,27 @@ export function buildBriefing(
   now = new Date(),
   official?: { wrecks?: OfficialMark[]; zones?: OfficialMark[]; access?: OfficialMark[] },
 ): Omit<Briefing, "generatedAt"> {
-  const species = scoreSpecies(area, conditions, now)
-    .filter((s) => s.species.role === "primary" || s.species.role === "incidental")
-    .filter((s) => s.species.role === "incidental" || area.leadSpecies.includes(s.species.id))
+  const leads = leadsFor(area, activity);
+  const species = scoreSpecies(area, conditions, now, activity)
+    .filter((s) => {
+      if (activity === "offshore") {
+        return (
+          s.species.role === "bluewater" ||
+          s.species.role === "pacific" ||
+          s.species.role === "incidental" ||
+          leads.includes(s.species.id)
+        );
+      }
+      if (s.species.role === "pacific") return area.theater === "mexico" && leads.includes(s.species.id);
+      if (s.species.role === "bluewater") return area.leadSpecies.includes(s.species.id);
+      return s.species.role === "primary" || s.species.role === "incidental";
+    })
+    .filter((s) => s.species.role === "incidental" || leads.includes(s.species.id))
     .sort((a, b) => {
-      if (a.species.role !== b.species.role) return a.species.role === "primary" ? -1 : 1;
+      if (a.species.role !== b.species.role) {
+        const rank = { primary: 0, pacific: 1, bluewater: 2, incidental: 3 } as const;
+        return rank[a.species.role] - rank[b.species.role];
+      }
       return b.score - a.score;
     });
   const where = pickSpots(area, conditions, activity, species, official?.wrecks ?? []).slice(0, 6);
@@ -358,8 +421,8 @@ export function buildBriefing(
       ? " from NOAA"
       : area.noaaStation
         ? " (modeled — the NOAA gauge did not answer)"
-        : area.theater === "bahamas"
-          ? " (modeled — no NOAA gauge on this island)"
+        : area.theater === "bahamas" || area.theater === "mexico"
+          ? " (modeled — no NOAA gauge on this water)"
           : " (modeled — no NOAA gauge on this water)";
   why.push(`Tide is ${conditions.tides.stage.replace("-", " ")}${modeledNote}.`);
   if (conditions.tides.anomalyFt != null) {
@@ -374,7 +437,7 @@ export function buildBriefing(
         why.push(
           `The gauge is ${signed} ft off the predicted table — read the water, not just the printout.`,
         );
-      } else {
+      } else if (area.theater === "mexico" || area.theater === "bahamas") {
         why.push(
           `The model is ${signed} ft off the harmonic table. Treat it as setup, not a guarantee.`,
         );
@@ -387,20 +450,39 @@ export function buildBriefing(
     why.push(`Water ${water.toFixed(1)}°F. ${water >= 86 ? "Heat is the locator: early, late, deeper." : water <= 58 ? "Cold is the locator: guts, mud, midday sun." : "Temperature is in a workable band."}`);
   }
   if (wind != null) {
-    why.push(
-      `Wind ${wind.toFixed(0)} mph ${conditions.weather.windCardinal ?? ""}. ${wind <= 12 ? "Castable. Sight-fishing is on if the sun is out." : wind <= 18 ? "Work the leeward shore. Fly gets harder." : "This is a spin / structure / stay-home call."}`,
-    );
+    if (activity === "offshore") {
+      why.push(
+        `Wind ${wind.toFixed(0)} mph ${conditions.weather.windCardinal ?? ""}. ${
+          wind <= 18
+            ? "Troll and jig are on."
+            : wind <= 28
+              ? "A workday on a real boat. Fly-and-teaser gets ugly."
+              : "Stay tied. This is not a skiff number."
+        }`,
+      );
+    } else {
+      why.push(
+        `Wind ${wind.toFixed(0)} mph ${conditions.weather.windCardinal ?? ""}. ${wind <= 12 ? "Castable. Sight-fishing is on if the sun is out." : wind <= 18 ? "Work the leeward shore. Fly gets harder." : "This is a spin / structure / stay-home call."}`,
+      );
+    }
   }
   why.push(
     `${conditions.moon.name} moon — ${conditions.moon.springNeap} tide range. ${
       area.tideCharacter === "sight-skinny"
         ? "Sight water often prefers a moderate range and clean water over a huge spring."
-        : "Marsh and passes usually want the extra current of a spring."
+        : area.tideCharacter === "blue-water"
+          ? "Offshore wants bait and current more than a skinny tide."
+          : "Marsh and passes usually want the extra current of a spring."
     }`,
   );
 
   if (water != null && water >= 88) warnings.push("Extreme water temperature. Fish stress quickly — keep them wet, or don't boat them.");
-  if (wind != null && wind >= 22) warnings.push("Small-craft wind. The score is not a safety brief.");
+  if (wind != null && wind >= (activity === "offshore" ? 30 : 22)) {
+    warnings.push("Small-craft wind. The score is not a safety brief.");
+  }
+  if (area.theater === "mexico") {
+    warnings.push("Mexico requires a CONAPESCA license. Sian Ka’an, Contoy, and Espíritu Santo are park or biosphere water — verify before you fish.");
+  }
   if (flounderClosed(now, area.timezone) && area.theater === "texas") {
     warnings.push("Texas flounder season is closed Nov 1–Dec 14. Catch-and-release only if you hook one.");
   }
@@ -428,7 +510,7 @@ export function buildBriefing(
     );
   }
 
-  const top = pickHeadlineSpecies(area, species);
+  const top = pickHeadlineSpecies(area, species, leads);
   const overall = clamp(
     0.4 * (where[0]?.score ?? 4) +
       0.3 * (top?.score ?? 4) +

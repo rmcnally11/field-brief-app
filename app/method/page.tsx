@@ -6,7 +6,7 @@ const LAYERS = [
     title: "Observed",
     items: [
       "NOAA CO-OPS tides, observed water, station wind and water temp",
-      "NWS hourly (U.S.) and Open-Meteo (Bahamas)",
+      "NWS hourly (U.S.) and Open-Meteo (Bahamas, Mexico)",
       "USGS GNIS names — pins snapped to Feature IDs when the hydro layer has them",
       "NOAA ENC wrecks and FKNMS legal polygons",
     ],
@@ -17,7 +17,7 @@ const LAYERS = [
       "Habitat × tide: flood the grass, drain the creek, wrecks on the fall",
       "Wind setup/setdown: observed minus predicted. On Texas this often is the tide",
       "Species thermal windows and seasonal peaks",
-      "Bahamas tide is a modeled M2 — labeled, not a gauge",
+      "Bahamas and Mexico tide is a modeled M2 — labeled, not a gauge",
     ],
   },
   {
@@ -27,6 +27,7 @@ const LAYERS = [
       "Wade needs standing water",
       "Skiff loses skinny flats at dead low",
       "Jetty likes midday current. Spin is what you do when the day does not allow the fly",
+      "Offshore (troll / deep jig) wants wind a boat can stand and hides the grass marks on purpose",
     ],
   },
 ];

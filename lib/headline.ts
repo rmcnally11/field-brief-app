@@ -1,10 +1,16 @@
-import type { Area, Conditions, SpeciesPick, TideStage } from "@/lib/types";
+import type { Area, Conditions, SpeciesId, SpeciesPick, TideStage } from "@/lib/types";
 
-function pickLead(area: Area, species: SpeciesPick[]): SpeciesPick | undefined {
-  const ranked = area.leadSpecies
+function pickLead(area: Area, species: SpeciesPick[], leads?: SpeciesId[]): SpeciesPick | undefined {
+  const order = leads ?? area.leadSpecies;
+  const ranked = order
     .map((id) => species.find((s) => s.species.id === id))
     .filter((s): s is SpeciesPick => Boolean(s));
-  return ranked.find((s) => s.inPlay) ?? ranked[0] ?? species.find((s) => s.species.role === "primary");
+  return (
+    ranked.find((s) => s.inPlay) ??
+    ranked[0] ??
+    species.find((s) => s.inPlay) ??
+    species.find((s) => s.species.role === "primary" || s.species.role === "bluewater" || s.species.role === "pacific")
+  );
 }
 
 function heatNote(area: Area, water: number | null, wind: number | null) {
@@ -13,7 +19,9 @@ function heatNote(area: Area, water: number | null, wind: number | null) {
   if (wind != null && wind >= 18) {
     return area.theater === "texas" || area.theater === "louisiana"
       ? "The wind is the tide. Work the leeward shore."
-      : "Work the leeward shore — fly gets harder.";
+      : area.theater === "mexico" && area.tideCharacter === "blue-water"
+        ? "Work the leeward edge — troll if the fly will not go."
+        : "Work the leeward shore — fly gets harder.";
   }
   return null;
 }
@@ -148,10 +156,34 @@ const PLACE: Record<
     "high-slack": "weather decides more than Andros; wait",
     "low-slack": "hold for the next push through the cut",
   },
+  ascension: {
+    incoming: "flood the Ascension flats off Punta Allen — bones first, permit if you earned it",
+    outgoing: "Boca Paila and the drains; tarpon live in the darker mouths",
+    "high-slack": "look, do not grind a high-slack school across the biosphere",
+    "low-slack": "wait for the next inch — this bay empties",
+  },
+  "isla-mujeres": {
+    incoming: "the Cancún / Mujeres bank — sail on the current, not a bonefish morning",
+    outgoing: "the same edge as it dumps; troll along it, never across",
+    "high-slack": "keep the spread out; slack here is still a current seam",
+    "low-slack": "work the north bank and Contoy edge",
+  },
+  "east-cape": {
+    incoming: "the East Cape beaches for rooster, then Gordo if the blue water is in",
+    outgoing: "the same wash — rooster faces the tide",
+    "high-slack": "the beach still fishes; the bank wants a troll",
+    "low-slack": "walk the wash or run the banks",
+  },
+  "la-paz": {
+    incoming: "Espíritu Santo and the rocky beaches — rooster, then El Bajo if the season is on",
+    outgoing: "the same island edges as they fall",
+    "high-slack": "the town run is legal; the seamount wants moving bait",
+    "low-slack": "hold for the next push around the island",
+  },
 };
 
-export function pickHeadlineSpecies(area: Area, species: SpeciesPick[]) {
-  return pickLead(area, species);
+export function pickHeadlineSpecies(area: Area, species: SpeciesPick[], leads?: SpeciesId[]) {
+  return pickLead(area, species, leads);
 }
 
 export function composeHeadline(

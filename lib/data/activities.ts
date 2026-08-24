@@ -42,4 +42,10 @@ export const ACTIVITIES: {
     short: "Rocks",
     blurb: "Granite, pilings, passes. Sheep, bulls, current. Midday is legal.",
   },
+  {
+    id: "offshore",
+    label: "Offshore",
+    short: "Offshore",
+    blurb: "Trolling, the edge, and deep jigging. Weedlines, humps, and banks — not the grass flat.",
+  },
 ];

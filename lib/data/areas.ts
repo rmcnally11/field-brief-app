@@ -1,4 +1,5 @@
-import type { Area } from "@/lib/types";
+import type { ActivityId, Area, SpeciesId } from "@/lib/types";
+import { SPECIES } from "@/lib/data/species";
 
 export const AREAS: Area[] = [
   {
@@ -31,6 +32,7 @@ export const AREAS: Area[] = [
     tideCharacter: "marsh-current",
     meanRangeFt: 1.4,
     leadSpecies: ["redfish", "speckled-trout", "black-drum"],
+    offshoreLead: ["mahi", "tuna"],
   },
   {
     id: "matagorda",
@@ -76,6 +78,7 @@ export const AREAS: Area[] = [
     tideCharacter: "pass-current",
     meanRangeFt: 0.5,
     leadSpecies: ["redfish", "tarpon", "speckled-trout"],
+    offshoreLead: ["mahi", "tuna"],
   },
   {
     id: "baffin",
@@ -123,6 +126,7 @@ export const AREAS: Area[] = [
     tideCharacter: "marsh-current",
     meanRangeFt: 1.0,
     leadSpecies: ["redfish", "speckled-trout", "tarpon"],
+    offshoreLead: ["tuna", "mahi"],
   },
   {
     id: "grand-isle",
@@ -171,6 +175,7 @@ export const AREAS: Area[] = [
     tideCharacter: "sight-skinny",
     meanRangeFt: 2.1,
     leadSpecies: ["bonefish", "permit", "snook", "tarpon"],
+    offshoreLead: ["sailfish", "mahi", "tuna"],
   },
   {
     id: "islamorada",
@@ -187,6 +192,7 @@ export const AREAS: Area[] = [
     tideCharacter: "sight-skinny",
     meanRangeFt: 1.8,
     leadSpecies: ["permit", "bonefish", "tarpon"],
+    offshoreLead: ["sailfish", "mahi", "tuna"],
   },
   {
     id: "florida-bay",
@@ -218,6 +224,7 @@ export const AREAS: Area[] = [
     tideCharacter: "pass-current",
     meanRangeFt: 1.7,
     leadSpecies: ["permit", "tarpon", "bonefish"],
+    offshoreLead: ["sailfish", "mahi", "tuna"],
   },
   {
     id: "key-west",
@@ -233,6 +240,7 @@ export const AREAS: Area[] = [
     tideCharacter: "sight-skinny",
     meanRangeFt: 1.4,
     leadSpecies: ["permit", "tarpon", "bonefish"],
+    offshoreLead: ["sailfish", "mahi", "tuna"],
   },
   {
     id: "boca-grande",
@@ -281,6 +289,7 @@ export const AREAS: Area[] = [
     meanRangeFt: 2.8,
     modeledTideOffsetHours: 1.2,
     leadSpecies: ["bonefish", "permit", "tarpon"],
+    offshoreLead: ["tuna", "mahi"],
   },
   {
     id: "abaco",
@@ -329,6 +338,75 @@ export const AREAS: Area[] = [
     meanRangeFt: 2.9,
     modeledTideOffsetHours: 0.2,
     leadSpecies: ["permit", "bonefish"],
+    offshoreLead: ["tuna", "mahi"],
+  },
+  {
+    id: "ascension",
+    theater: "mexico",
+    name: "Ascension Bay / Sian Ka'an",
+    shortName: "Ascension",
+    lat: 19.78,
+    lon: -87.47,
+    timezone: "America/Cancun",
+    noaaStation: null,
+    summary:
+      "Yucatan flats. Bones, permit, and baby tarpon inside Sian Ka’an. Punta Allen is the village. Lodge water, biosphere rules. Tide is a modeled Caribbean clock — there is no NOAA gauge. Not Baja.",
+    tideCharacter: "sight-skinny",
+    meanRangeFt: 1.2,
+    modeledTideOffsetHours: 0.4,
+    leadSpecies: ["bonefish", "permit", "tarpon"],
+    offshoreLead: ["mahi", "sailfish"],
+  },
+  {
+    id: "isla-mujeres",
+    theater: "mexico",
+    name: "Isla Mujeres / Cancún bank",
+    shortName: "Mujeres",
+    lat: 21.237,
+    lon: -86.731,
+    timezone: "America/Cancun",
+    noaaStation: null,
+    summary:
+      "Winter sailfish capital. The fleet works the Yucatan current north of Cancún. Mahi on the weed in summer. This is a troll-and-kite desk, not a bonefish brief. Modeled tide, Open-Meteo wind.",
+    tideCharacter: "blue-water",
+    meanRangeFt: 1.6,
+    modeledTideOffsetHours: 0.2,
+    leadSpecies: ["sailfish", "mahi", "tuna"],
+    offshoreLead: ["sailfish", "mahi", "tuna"],
+  },
+  {
+    id: "east-cape",
+    theater: "mexico",
+    name: "East Cape / Los Barriles",
+    shortName: "East Cape",
+    lat: 23.681,
+    lon: -109.699,
+    timezone: "America/Mazatlan",
+    noaaStation: null,
+    summary:
+      "Baja California Sur. Roosterfish in the surf and on the beaches. Dorado and tuna on Gordo Banks when the water is right. Pacific and Cortez, not the Gulf of Mexico. Do not invent a rooster on Laguna Madre.",
+    tideCharacter: "pass-current",
+    meanRangeFt: 2.4,
+    modeledTideOffsetHours: -1.1,
+    leadSpecies: ["roosterfish", "mahi", "tuna"],
+    offshoreLead: ["mahi", "tuna", "roosterfish"],
+  },
+  {
+    id: "la-paz",
+    theater: "mexico",
+    name: "La Paz / Espíritu Santo",
+    shortName: "La Paz",
+    lat: 24.142,
+    lon: -110.311,
+    timezone: "America/Mazatlan",
+    noaaStation: null,
+    summary:
+      "Sea of Cortez. Espíritu Santo, El Bajo when the season is on, rooster along the rocky beaches. A town to sleep in. Tide is modeled. CONAPESCA license required.",
+    tideCharacter: "pass-current",
+    meanRangeFt: 3.0,
+    modeledTideOffsetHours: -0.8,
+    leadSpecies: ["roosterfish", "mahi", "tuna"],
+    offshoreLead: ["mahi", "tuna", "roosterfish"],
   },
 ];
 
@@ -336,4 +414,23 @@ export const AREA_BY_ID = Object.fromEntries(AREAS.map((a) => [a.id, a]));
 
 export function getArea(id?: string | null) {
   return AREA_BY_ID[id ?? ""] ?? AREA_BY_ID.galveston;
+}
+
+export function defaultOffshoreLeads(area: Area): SpeciesId[] {
+  return SPECIES.filter(
+    (s) =>
+      s.theaters.includes(area.theater) &&
+      (s.role === "bluewater" || (s.role === "pacific" && area.theater === "mexico")),
+  ).map((s) => s.id);
+}
+
+export function leadsFor(area: Area, activity: ActivityId | "all"): SpeciesId[] {
+  if (activity === "offshore") {
+    return area.offshoreLead?.length ? area.offshoreLead : defaultOffshoreLeads(area);
+  }
+  return area.leadSpecies;
+}
+
+export function usesModeledOcean(area: Area) {
+  return area.theater === "bahamas" || area.theater === "mexico";
 }

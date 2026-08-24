@@ -5,6 +5,7 @@ export const THEATER_META: { id: TheaterId; label: string; short: string }[] = [
   { id: "louisiana", label: "Louisiana", short: "Louisiana" },
   { id: "florida", label: "Florida", short: "Florida" },
   { id: "bahamas", label: "Bahamas", short: "Bahamas" },
+  { id: "mexico", label: "Mexico", short: "Mexico" },
 ];
 
 export const THEATER_IDS = THEATER_META.map((t) => t.id);

@@ -34,7 +34,8 @@ export type WaterTypeId =
   | "skiff"
   | "structure"
   | "marsh"
-  | "skinny";
+  | "skinny"
+  | "offshore";
 
 export const WATER_TYPES: {
   id: WaterTypeId;
@@ -116,7 +117,16 @@ export const WATER_TYPES: {
     habitats: ["hard-flat", "grass-flat", "serpulid-reef"],
     species: ["bonefish", "permit", "redfish", "speckled-trout"],
     essay:
-      "Inches. Baffin, Lower Laguna, Keys oceanside banks, Andros west-side sand. Tide character is sight-skinny: a huge range can empty the flat; a dead-small range can leave fish in a bathtub with no refresh. Push too far and you are walking the boat home. Trophy trout on serpulid rock is not the same as a school of 3-pound bones — same depth, different fish, different mistake.",
+      "Inches. Baffin, Lower Laguna, Keys oceanside banks, Andros west-side sand, Ascension Bay. Tide character is sight-skinny: a huge range can empty the flat; a dead-small range can leave fish in a bathtub with no refresh. Push too far and you are walking the boat home. Trophy trout on serpulid rock is not the same as a school of 3-pound bones — same depth, different fish, different mistake.",
+  },
+  {
+    id: "offshore",
+    label: "Offshore",
+    short: "Offshore",
+    activities: ["offshore"],
+    species: ["mahi", "sailfish", "tuna", "roosterfish"],
+    essay:
+      "Trolling, the edge, and deep jigging. This is not the grass brief. Weedlines, humps, and named banks — Islamorada Hump, Flower Garden, Gordo, El Bajo, the Cancún sailfish current. Fly-and-teaser when the wind allows it. A heavy jig when it does not. Switch the method filter to Offshore or the engine will hide these marks on purpose. Roosterfish is Baja. Do not invent him on a Galveston morning.",
   },
 ];
 
@@ -139,6 +149,11 @@ export const REGION_ESSAYS: Record<
     dek: "Wind and the Mississippi move more water than the printed tide.",
     body: "Venice is the birdfoot — South and Southwest Pass, ponds on the west bank, bulls in the throats, school reds and trout inside, tarpon in the heat on the south passes. Grand Isle is a different desk: one inhabited barrier island, Caminada, Barataria, a state-park surf. Calcasieu is the Texas-border cousin under LDWF rules — same fish, different bag, not Sabine Lake. Reds are 4 a day, 18–27, none over 27. Trout are a slot. Flounder typically close Oct 15–Nov 30. Do not put a Texas tag on a Cameron fish.",
   },
+  mexico: {
+    title: "Mexico — two oceans, do not mix them",
+    dek: "Yucatan is bones and sail. Baja is rooster and dorado. Neither is Texas.",
+    body: "Ascension Bay / Sian Ka’an is the Caribbean flat — Punta Allen, permit and bones, biosphere rules, a modeled tide. Isla Mujeres is the other Yucatan desk: winter sailfish on the current, summer mahi, a troll-and-kite day. Cross the country and you are in another fishery. East Cape is rooster in the wash and Gordo Banks when the blue water is in. La Paz is Espíritu Santo and El Bajo. CONAPESCA license. No NOAA gauge. Roosterfish does not live in the Gulf of Mexico.",
+  },
   bahamas: {
     title: "Bahamas — bonefish country",
     dek: "Winter singles. Summer schools. Permit on the west sides when it lays down.",
@@ -156,6 +171,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Cold fronts thin the bones, then hand you a bluebird day. Snook closed on both coasts this month. Boca Pass is a winter red and a closed snook. Jupiter too.",
     bahamas:
       "Single-bone season. Fewer fish, bigger shoulders, longer leaders. Dress for the front. The school of 3-pounders is a summer story.",
+    mexico:
+      "Yucatan sail peak off Mujeres. Ascension bones if the front missed you. Baja rooster still eat; dress for the norther that was a Texas story yesterday.",
   },
   2: {
     texas:
@@ -166,6 +183,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Bones and permit if the front missed you. Tarpon are a rumor that becomes a fish in March. Boca snook still closed through the end of the month.",
     bahamas:
       "The last honest month of winter singles. Book the wade. West-side permit are still early.",
+    mexico:
+      "Sail still on the Cancún bank. Ascension starts to feel like the photograph. East Cape rooster on warm afternoons.",
   },
   3: {
     texas:
@@ -176,6 +195,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Permit opens its shoulders. Boca tarpon start to stack. Jupiter snook reopen on the typical SE calendar — verify FWC.",
     bahamas:
       "Transition. Winter singles mix with the first schools. A good month to have both a shrimp and a crab tied.",
+    mexico:
+      "Sail taper. Ascension permit and bones. Baja water starts to look like spring.",
   },
   4: {
     texas:
@@ -186,6 +207,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Tarpon month. Boca Grande Pass is why the rest of the year exists. Keys migration. Jupiter inlet. Permit still in play.",
     bahamas:
       "Bones through the spring. Tarpon in the bights. The week starts to feel like the photograph.",
+    mexico:
+      "Ascension grand-slam month. Mujeres mahi start. East Cape rooster and the first dorado.",
   },
   5: {
     texas:
@@ -196,6 +219,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Boca tarpon still the headline — then Gulf snook close May 1. Keys tarpon peak. Afternoon storms rewrite the flat.",
     bahamas:
       "West-side permit turn on. Bones still school. This is the grand-slam calendar month if the wind allows the fly.",
+    mexico:
+      "Baja turns on. Dorado, tuna on Gordo, rooster in the wash. Yucatan flats still honest if you beat the heat.",
   },
   6: {
     texas:
@@ -206,6 +231,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Snook closed on both coasts. Boca still a tarpon argument. Jupiter is catch-and-release. Do not harvest a snook because the brief scored an 8.",
     bahamas:
       "Summer schools of 3–5 lb bones. Permit on the west sides. Bring the buff and the 8-weight and go early.",
+    mexico:
+      "Heat. Ascension early. Mujeres mahi. East Cape is a dawn rooster and a midday bank.",
   },
   7: {
     texas:
@@ -216,6 +243,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Snook still closed. Boca Pass is a heat-and-current problem. Summer showers can switch a Key West flat on once they clear.",
     bahamas:
       "Schoolie bones and resident tarpon. The lodge week is a heat-management problem as much as a fish problem.",
+    mexico:
+      "Baja peak offshore. Dorado and tuna. Rooster at first light. Yucatan is a shade problem.",
   },
   8: {
     texas:
@@ -226,6 +255,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Snook still closed — Boca through September, Jupiter through August. Bones at first light. Thunder by two.",
     bahamas:
       "Summer pattern holds. Smaller packs, honest shots, west-side permit if it lays down. Fly in the morning. Shade at noon.",
+    mexico:
+      "Same heat. Gordo if the water is right. Ascension at dawn. Sail are a winter story.",
   },
   9: {
     texas:
@@ -236,6 +267,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Jupiter snook typically reopen Sept 1. Boca stays closed through the 30th — Charlotte Harbor / Southwest. Verify FWC. Keys permit still around.",
     bahamas:
       "Bones and permit both still in play. The first cool nights are a rumor that becomes a fish in November.",
+    mexico:
+      "Baja still has dorado. Yucatan flats exhale. The sail fleet is still months away.",
   },
   10: {
     texas:
@@ -246,6 +279,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Boca snook typically reopen Oct 1. Jupiter still open. Keys backcountry gets its color back.",
     bahamas:
       "Permit taper on the west sides. Bones start to look like winter again. A lovely shoulder week.",
+    mexico:
+      "Shoulder. Ascension bones look like winter. Baja dorado taper. Book Mujeres for January, not now.",
   },
   11: {
     texas:
@@ -256,6 +291,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Bones like the cooler water. Backcountry reds. Boca and Jupiter snook still typically open — verify FWC. Tarpon are mostly gone.",
     bahamas:
       "Winter singles begin. This is why people book Andros in November. Long leaders. Soft landings. Fewer boats.",
+    mexico:
+      "Ascension winter bones. Mujeres sail start to show. Baja rooster still eat on a warm afternoon.",
   },
   12: {
     texas:
@@ -266,6 +303,8 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
       "Boca snook close Dec 1. Jupiter closes Dec 15. Bones if the front missed you. Sailfish live on the edge — not in this brief.",
     bahamas:
       "Peak winter bonefishing. Schools give way to singles. Permit are a maybe. You came for the grey ghost.",
+    mexico:
+      "Sail peak off Isla Mujeres. Ascension singles. Baja is a coat and a rooster. This is why the fleet is here.",
   },
 };
 
@@ -279,6 +318,7 @@ export function areasForType(type: WaterTypeId, theater?: TheaterId | "all") {
     if (theater && theater !== "all" && a.theater !== theater) return false;
     if (type === "marsh") return a.tideCharacter === "marsh-current";
     if (type === "skinny" || type === "sight") return a.tideCharacter === "sight-skinny";
+    if (type === "offshore") return Boolean(a.offshoreLead?.length) || a.tideCharacter === "blue-water";
     if (type === "structure")
       return a.tideCharacter === "pass-current" || a.theater === "texas" || a.theater === "louisiana";
     if (type === "fly" || type === "spin" || type === "wade" || type === "skiff") {
@@ -296,7 +336,11 @@ export function speciesForFilters(opts: {
 }) {
   const type = opts.type && opts.type !== "all" ? waterTypeById(opts.type) : null;
   return SPECIES.filter((s) => {
-    if (s.role === "bluewater" || s.role === "pacific") return false;
+    if (s.role === "bluewater" || s.role === "pacific") {
+      if (opts.type === "offshore") return true;
+      if (s.role === "pacific" && opts.theater === "mexico") return true;
+      return false;
+    }
     if (opts.speciesId && opts.speciesId !== "all" && s.id !== opts.speciesId) return false;
     if (opts.theater && opts.theater !== "all" && !s.theaters.includes(opts.theater)) return false;
     if (type && !type.species.includes(s.id)) return false;
@@ -307,7 +351,8 @@ export function speciesForFilters(opts: {
 
 export function peaksThisMonth(month: number, theater?: TheaterId | "all") {
   return SPECIES.filter((s) => {
-    if (s.role !== "primary") return false;
+    if (s.role !== "primary" && !(s.role === "pacific" && (theater === "mexico" || theater === "all" || !theater)))
+      return false;
     if (!s.peakMonths.includes(month)) return false;
     if (theater && theater !== "all" && !s.theaters.includes(theater)) return false;
     return true;

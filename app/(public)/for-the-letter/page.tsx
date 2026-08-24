@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Waterline } from "@/components/viz/waterline";
 
 export const metadata: Metadata = {
-  title: "For the Field Letter bots",
+  title: "For Field Letter and Twitter bots",
   description:
-    "Substack and writing agents may only reprint Field Brief. These are the allowed URLs and the hard rules.",
+    "Substack and X agents may only reprint Field Brief. Morning and calendar pictures are screenshots of this site.",
 };
 
 const ORIGIN = "https://field-brief-app.vercel.app";
@@ -25,7 +25,7 @@ export default function ForTheLetterPage() {
       <header>
         <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Source of truth</p>
         <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">
-          For Substack bots
+          For Substack and Twitter bots
         </h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/65">
           You may reprint Field Brief. You may not invent weather, tides, scores, or water. If a
@@ -79,6 +79,12 @@ export default function ForTheLetterPage() {
               {ORIGIN}/newsletter
             </a>
           </li>
+          <li>
+            Twitter JSON —{" "}
+            <a className="underline" href="/api/tweets">
+              {ORIGIN}/api/tweets
+            </a>
+          </li>
         </ol>
         <p className="mt-3 text-sm text-[color:var(--cream)]/65">
           If the JSON errors or a desk is quiet, do not publish. Do not fill gaps from memory.
@@ -118,13 +124,38 @@ export default function ForTheLetterPage() {
         </ul>
       </section>
 
+      <section className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5 text-sm text-[color:var(--cream)]/80">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">Twitter / X</p>
+        <p className="mt-3">
+          Morning: seven posts, one theater each, text from <code>/api/tweets</code> mornings[],
+          picture = screenshot of{" "}
+          <a className="underline" href="/card?area=galveston&amp;theater=texas">
+            /card
+          </a>{" "}
+          (score ring, wind compass, moon, tide curve, sky). Calendar: seven posts from calendars[],
+          picture = screenshot of{" "}
+          <a className="underline" href="/card/calendar?area=galveston&amp;theater=texas">
+            /card/calendar
+          </a>{" "}
+          (the month grid on this site). No AI images. No other weather sites. Skip any desk with
+          skip=true.
+        </p>
+      </section>
+
       <p className="text-sm text-[color:var(--cream)]/50">
-        Full prompt for agents:{" "}
+        Full prompts:{" "}
         <a
           className="underline decoration-[color:var(--copper)]/40"
           href="https://github.com/rmcnally11/field-brief-app/blob/main/SUBSTACK.md"
         >
-          SUBSTACK.md on GitHub
+          SUBSTACK.md
+        </a>
+        {" · "}
+        <a
+          className="underline decoration-[color:var(--copper)]/40"
+          href="https://github.com/rmcnally11/field-brief-app/blob/main/TWITTER.md"
+        >
+          TWITTER.md
         </a>
         .
       </p>

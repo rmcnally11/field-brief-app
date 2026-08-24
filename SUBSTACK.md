@@ -4,6 +4,8 @@ Paste the block below into every Substack / writing agent as the system prompt. 
 
 The live instrument is the only source. If a number is not on this site, it does not go in the letter.
 
+Twitter / X bots use [TWITTER.md](./TWITTER.md) — morning and calendar posts, screenshots of `/card` only.
+
 ---
 
 ## PASTE THIS INTO EVERY BOT

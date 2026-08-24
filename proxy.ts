@@ -13,7 +13,9 @@ export function proxy(request: NextRequest) {
     pathname === "/favicon.ico" ||
     pathname === "/newsletter" ||
     pathname.startsWith("/newsletter/") ||
-    pathname === "/for-the-letter";
+    pathname === "/for-the-letter" ||
+    pathname === "/card" ||
+    pathname.startsWith("/card/");
 
   if (open) return NextResponse.next();
   if (isValidGateToken(request.cookies.get(GATE_COOKIE)?.value)) {

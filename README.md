@@ -36,7 +36,7 @@ npm install
 npm run dev -- --port 43217 --hostname 127.0.0.1
 ```
 
-Open [http://127.0.0.1:43217](http://127.0.0.1:43217).
+Open [http://127.0.0.1:43217](http://127.0.0.1:43217). A shared-word door sits in front of the brief (Hobby-friendly — not Vercel’s paid Password Protection). Set `SITE_PASSWORD` to change the word. Leave it unset and the shipped default is used.
 
 No API keys. NOAA, NWS, USGS, and Open-Meteo are public. NWS requires a User-Agent, which the app sends.
 
@@ -45,7 +45,7 @@ No API keys. NOAA, NWS, USGS, and Open-Meteo are public. NWS requires a User-Age
 This repo does **not** auto-deploy. The Preview you see in Cursor is this cloud VM. To get an `https://….vercel.app` link:
 
 1. Import `rmcnally11/field-brief-app` in [vercel.com](https://vercel.com). Production branch is `main`.
-2. Framework: Next.js. No environment variables.
+2. Framework: Next.js. Optional: `SITE_PASSWORD` to change the shared door word.
 3. After the first deploy, every `git push` to the connected branch rebuilds the site.
 
 There is no nightly site rebuild. Code updates when someone pushes. Conditions update when someone opens a page (see below).

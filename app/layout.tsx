@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,14 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <TooltipProvider>
-          <SiteHeader />
-          <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 md:px-6">{children}</main>
-          <footer className="border-t border-[color:var(--line)] px-4 py-6 text-center text-xs text-[color:var(--cream)]/40">
-            Field Brief is a conditions instrument, not a guarantee and not a chart for navigation.
-            Verify TPWD, FWC, Bahamas, FKNMS, and NPS rules before you fish. Tight lines.
-          </footer>
-        </TooltipProvider>
+        <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
   );

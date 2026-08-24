@@ -2,8 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getArea } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
 import { buildCalendarRange } from "@/lib/calendar";
+import { denyIfClosed } from "@/lib/gate";
 
 export async function GET(request: NextRequest) {
+  const closed = denyIfClosed(request);
+  if (closed) return closed;
   const area = getArea(request.nextUrl.searchParams.get("area"));
   const activity = parseActivity(request.nextUrl.searchParams.get("activity"));
   const now = new Date();

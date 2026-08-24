@@ -1761,7 +1761,9 @@ function speciesFor(pin: SavedPin, area: Area): SpeciesId[] {
 
 /** Fishing / access marks from your My Maps, near this micro-area. Closed polygons stay off the brief. */
 export function savedSpotsNear(area: Area, maxMiles?: number): Spot[] {
-  const radius = maxMiles ?? (area.theater === "florida" ? 26 : area.theater === "bahamas" ? 40 : 42);
+  const radius =
+    maxMiles ??
+    (area.id === "florida-bay" ? 18 : area.theater === "florida" ? 22 : area.theater === "bahamas" ? 40 : 42);
   return SAVED_PINS.filter((p) => p.kind === "fish" || p.kind === "access")
     .filter((p) => {
       const n = `${p.name} ${p.folder}`.toLowerCase();

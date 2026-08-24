@@ -119,7 +119,8 @@ const ZONE_LABEL: Record<number, string> = {
 
 export async function fetchFknmsZones(area: Area): Promise<OfficialPoint[]> {
   if (area.theater !== "florida") return [];
-  const { xmin, ymin, xmax, ymax } = bbox(area, 0.38);
+  const pad = area.id === "florida-bay" ? 0.2 : 0.32;
+  const { xmin, ymin, xmax, ymax } = bbox(area, pad);
   const url =
     `https://gis.ngdc.noaa.gov/arcgis/rest/services/nccos/BenthicMapping_FKNMS_Dataviewer/MapServer/52/query` +
     `?geometry=${xmin},${ymin},${xmax},${ymax}&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326` +

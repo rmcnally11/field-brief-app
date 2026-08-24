@@ -260,6 +260,14 @@ export function pickSpots(
         score -= 0.7;
         why.push("Skiff may be off plane / off the flat at dead low.");
       }
+      if (
+        area.tideCharacter === "sight-skinny" &&
+        spot.habitat === "wreck-edge" &&
+        spot.depth === "deep"
+      ) {
+        score -= 2.4;
+        why.push("Offshore wreck or hump — secondary to the flat on this brief.");
+      }
 
       return { spot, score: Number(clamp(score, 0, 10).toFixed(1)), why };
     })
@@ -337,9 +345,15 @@ export function buildBriefing(
   const why: string[] = [];
   const warnings: string[] = [];
 
-  why.push(
-    `Tide is ${conditions.tides.stage.replace("-", " ")}${conditions.tides.source === "modeled" ? " (modeled — no NOAA gauge on this island)" : " from NOAA"}.`,
-  );
+  const modeledNote =
+    conditions.tides.source !== "modeled"
+      ? " from NOAA"
+      : area.noaaStation
+        ? " (modeled — the NOAA gauge did not answer)"
+        : area.theater === "bahamas"
+          ? " (modeled — no NOAA gauge on this island)"
+          : " (modeled — no NOAA gauge on this water)";
+  why.push(`Tide is ${conditions.tides.stage.replace("-", " ")}${modeledNote}.`);
   if (conditions.tides.anomalyFt != null) {
     const a = conditions.tides.anomalyFt;
     const signed = `${a > 0 ? "+" : ""}${a.toFixed(2)}`;

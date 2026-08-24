@@ -57,9 +57,9 @@ export default async function SubscribersPage() {
       ) : null}
       {!airtableConfigured() ? (
         <p className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--panel)] p-4 text-sm text-[color:var(--cream)]/70">
-          Add <code className="text-[color:var(--copper)]">AIRTABLE_API_KEY</code> on Vercel (token
-          scoped to the Field Brief base) so production signups land in the table. Until then this
-          page shows the local / env list only.
+          Add <code className="text-[color:var(--copper)]">AIRTABLE_API_KEY</code> on Vercel and
+          redeploy — full steps in AIRTABLE.md. Until then this page shows the local / env list
+          only. Resend is the stamp, not the list.
         </p>
       ) : null}
       {rows.length === 0 ? (

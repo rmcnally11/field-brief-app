@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { ListSource } from "@/lib/airtable-list";
+import { airtableConfigured, listAirtableSubscribers, type ListSource } from "@/lib/airtable-list";
 import { addSubscriber, parseDesks, validEmail } from "@/lib/subscribers";
 import { sendWelcomeEmails } from "@/lib/samples";
 import {
@@ -11,6 +11,31 @@ import {
 } from "@/lib/coasts";
 
 const SOURCES = new Set<ListSource>(["Brief", "Letter", "Morning", "Operator"]);
+
+export async function GET() {
+  if (!airtableConfigured()) {
+    return NextResponse.json({ list: "unlinked", airtable: false, ok: false });
+  }
+  try {
+    const rows = await listAirtableSubscribers();
+    return NextResponse.json({
+      list: "airtable",
+      airtable: true,
+      ok: true,
+      count: rows.length,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        list: "airtable",
+        airtable: true,
+        ok: false,
+        error: error instanceof Error ? error.message : "Airtable did not answer.",
+      },
+      { status: 502 },
+    );
+  }
+}
 
 export async function POST(request: NextRequest) {
   let body: { email?: string; desks?: unknown; cadence?: unknown; source?: string };
@@ -47,9 +72,9 @@ export async function POST(request: NextRequest) {
     const note = sentNow
       ? `You're on the list for ${coasts.join(", ")}. Tonight’s water is on the way.`
       : needsDomain
-        ? "You're saved. Mail to anyone but the operator needs a verified domain on Resend and RESEND_FROM on Vercel."
+        ? "You're on the Airtable list. Mail to anyone but the operator still needs a verified domain on Resend."
         : result.via === "local"
-          ? "Saved on this machine only. The operator still needs the list wired for tomorrow’s 5am."
+          ? "Saved on this machine only. Production still needs AIRTABLE_API_KEY on Vercel — see AIRTABLE.md."
           : `You're on the Field Brief list for ${coasts.join(", ")}.`;
     const res = NextResponse.json({
       ok: true,

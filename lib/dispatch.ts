@@ -115,6 +115,7 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
     at: (opts?.at ?? new Date()).toISOString(),
     mode: hourly && !forceAll ? "local-5am" : "all-desks",
     configured: {
+      airtable: Boolean(process.env.AIRTABLE_API_KEY?.trim() || process.env.AIRTABLE_TOKEN?.trim()),
       resend: Boolean(process.env.RESEND_API_KEY?.trim()),
       subscribers: Boolean(process.env.SUBSCRIBER_EMAILS?.trim()),
     },

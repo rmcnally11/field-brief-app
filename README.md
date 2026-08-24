@@ -74,9 +74,9 @@ The page stays live. Texas wind versus the table changes inside a morning. The 5
 
 ## The list — signup, the table, and the 5am email
 
-Others can subscribe. The family door is [`/join`](https://field-brief-app.vercel.app/join?coasts=texas). The same form is on the brief and the letter (`/newsletter`). `/morning` still sits behind the hobby door. Join writes the address to the Resend list (and Airtable when that token is on Vercel) and sends tonight’s pack immediately.
+Others can subscribe. The family door is [`/join`](https://field-brief-app.vercel.app/join?coasts=texas). The same form is on the brief and the letter (`/newsletter`). `/morning` still sits behind the hobby door. Join writes a row on the Airtable Subscribers table. Resend only sends the mail — it is not the list. Full click-by-click link: [AIRTABLE.md](./AIRTABLE.md).
 
-There **is** a managed table: [Field Brief → Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) in the Costal Cavaliers workspace. Columns: Email, Desks, Cadence (`Daily` / `Weekly` / `Calendar` / `Seasonal`), Status (`Active` / `Paid` / `Unsubscribed`), Source, Joined, Notes. `Paid` is the monetize hook — same list, later a charge. A gated `/subscribers` page in the app shows the same rows.
+There **is** a managed table: [Field Brief → Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) in the Costal Cavaliers workspace. Columns: Email, Desks, Cadence (`Daily` / `Weekly` / `Calendar` / `Seasonal`), Status (`Active` / `Paid` / `Unsubscribed`), Source, Joined, Notes. `Paid` is the monetize hook — same list, later a charge. A gated `/subscribers` page in the app shows the same rows. Production cannot read or write that table until `AIRTABLE_API_KEY` is on Vercel and you redeploy.
 
 Signup elects **coasts** and **cadence**. Default is the water on the page (Texas / Galveston on a cold letter visit), not all seven desks. A Texas-only fisherman does not get Andros or Seychelles in the 5am line, the Saturday letter, Sunday’s calendar, or the season page. `fb_coasts` remembers that election the same way `fb_water` remembers the last desk. Letter chips (`/newsletter?coasts=texas`) and `?theater=` on `/fundamentals` write the cookie.
 

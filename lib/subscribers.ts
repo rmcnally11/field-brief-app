@@ -13,7 +13,6 @@ import {
   upsertAirtableSubscriber,
   type ListSource,
 } from "@/lib/airtable-list";
-import { resendAudienceId } from "@/lib/resend-list";
 
 export const DESK_IDS: string[] = DESKS.map((d) => d.areaId);
 
@@ -72,67 +71,6 @@ function envSubscribers(): Subscriber[] {
     }));
 }
 
-function encodeResendMeta(sub: Subscriber) {
-  return `fb:${sub.desks.join(",")}|${sub.cadence.join(",")}`;
-}
-
-function parseResendMeta(lastName?: string): Pick<Subscriber, "desks" | "cadence"> {
-  if (!lastName?.startsWith("fb:")) return { desks: [], cadence: [...CADENCES] };
-  const [deskPart, cadencePart] = lastName.slice(3).split("|");
-  return {
-    desks: parseDesks(deskPart),
-    cadence: parseCadence(cadencePart),
-  };
-}
-
-async function addResendContact(sub: Subscriber) {
-  const key = process.env.RESEND_API_KEY?.trim();
-  const audience = await resendAudienceId();
-  if (!key || !audience) return false;
-  const res = await fetch(`https://api.resend.com/audiences/${audience}/contacts`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: sub.email,
-      first_name: "Field Brief",
-      last_name: encodeResendMeta(sub),
-      unsubscribed: false,
-    }),
-  });
-  if (!res.ok && res.status !== 409) {
-    const text = await res.text();
-    throw new Error(`Resend contact ${res.status}: ${text.slice(0, 200)}`);
-  }
-  return true;
-}
-
-async function listResendContacts(): Promise<Subscriber[]> {
-  const key = process.env.RESEND_API_KEY?.trim();
-  const audience = key ? await resendAudienceId() : "";
-  if (!key || !audience) return [];
-  const res = await fetch(`https://api.resend.com/audiences/${audience}/contacts`, {
-    headers: { Authorization: `Bearer ${key}` },
-  });
-  if (!res.ok) return [];
-  const json = (await res.json()) as {
-    data?: Array<{ email?: string; last_name?: string; unsubscribed?: boolean }>;
-  };
-  return (json.data ?? [])
-    .filter((c) => c.email && !c.unsubscribed)
-    .map((c) => {
-      const meta = parseResendMeta(c.last_name);
-      return {
-        email: normalizeEmail(c.email!),
-        desks: meta.desks,
-        cadence: meta.cadence,
-        createdAt: "resend",
-      };
-    });
-}
-
 export async function addSubscriber(
   email: string,
   desks: string[],
@@ -154,29 +92,19 @@ export async function addSubscriber(
   } catch {
     // Vercel filesystem is ephemeral — Airtable is the list that survives.
   }
-  let via: "airtable" | "resend" | "local" = "local";
   if (airtableConfigured()) {
-    try {
-      await upsertAirtableSubscriber({
-        email: sub.email,
-        desks: sub.desks,
-        source,
-        cadence: cadenceLabels(sub.cadence),
-      });
-      via = "airtable";
-    } catch {
-      via = "local";
-    }
-  }
-  try {
-    if (await addResendContact(sub) && via !== "airtable") via = "resend";
-  } catch {
-    // keep via
+    await upsertAirtableSubscriber({
+      email: sub.email,
+      desks: sub.desks,
+      source,
+      cadence: cadenceLabels(sub.cadence),
+    });
+    return { subscriber: sub, persisted: true, via: "airtable" as const };
   }
   return {
     subscriber: sub,
-    persisted: via !== "local" || Boolean(process.env.SUBSCRIBER_EMAILS),
-    via,
+    persisted: Boolean(process.env.SUBSCRIBER_EMAILS),
+    via: "local" as const,
   };
 }
 
@@ -204,7 +132,7 @@ export async function listSubscribers(): Promise<Subscriber[]> {
       airtable = [];
     }
   }
-  for (const sub of [...envSubscribers(), ...airtable, ...(await listResendContacts()), ...(await readLocal())]) {
+  for (const sub of [...envSubscribers(), ...airtable, ...(await readLocal())]) {
     byEmail.set(sub.email, mergeSubscriber(byEmail.get(sub.email), sub));
   }
   return [...byEmail.values()];

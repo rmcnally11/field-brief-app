@@ -23,7 +23,7 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   title: "Field Brief — Texas, Miami & the Keys, Bahamas",
   description:
-    "Where, when, and why inshore fish should be on the water. Live NOAA tides, official sanctuary and chart layers, monthly 1–10 calendars by micro-area.",
+    "Where, when, and why inshore fish should be on the water. Live NOAA tides, a weekly Field Letter, seasonal fundamentals by coast and species, and monthly 1–10 calendars.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -16,6 +16,8 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - **Wind versus the table**: observed minus predicted water. On the Texas coast the wind often *is* the tide.
 - **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas).
 - Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**.
+- **Weekly Field Letter** (`/newsletter`) — one live desk per theater (Galveston, Islamorada, Andros), this month’s peaks, and harvest closures, in the Field Manual voice.
+- **Seasonal fundamentals** (`/fundamentals`) — doctrine by region, water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next, with a drawn moon and tide range on every day. Copper outline = amazing day.
 - Satellite chart (Esri imagery) with official layers and your My Maps.
 - Filters for **wade / skiff / kayak / fly / spin / jetty**.

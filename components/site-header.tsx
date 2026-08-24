@@ -4,6 +4,8 @@ const LINKS = [
   { href: "/map", label: "Map" },
   { href: "/species", label: "Species" },
   { href: "/method", label: "Method" },
+  { href: "/newsletter", label: "Letter" },
+  { href: "/fundamentals", label: "Season" },
 ];
 
 export function SiteHeader() {

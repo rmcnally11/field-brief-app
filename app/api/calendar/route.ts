@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getArea } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
-import { buildCalendar } from "@/lib/calendar";
+import { buildCalendarRange } from "@/lib/calendar";
 
 export async function GET(request: NextRequest) {
   const area = getArea(request.nextUrl.searchParams.get("area"));
@@ -15,13 +15,14 @@ export async function GET(request: NextRequest) {
     month = Number(monthParam.slice(5, 7));
   }
   try {
-    const days = await buildCalendar(area, year, month, activity);
+    const months = await buildCalendarRange(area, year, month, activity, 2);
     return NextResponse.json({
       area,
       activity,
       year,
       month,
-      days,
+      months,
+      days: months[0]?.days ?? [],
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Calendar failed";

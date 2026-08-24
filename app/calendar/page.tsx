@@ -3,8 +3,9 @@ import { getArea } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
 import { buildCalendarRange } from "@/lib/calendar";
 import { FilterBar } from "@/components/filters";
-import { MonthGrid } from "@/components/month-grid";
+import { AmazingChip, MonthGrid } from "@/components/month-grid";
 import { clockParts } from "@/lib/time";
+import { Waterline } from "@/components/viz/waterline";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -51,12 +52,13 @@ export default async function CalendarPage({
         <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
           This month and next · {area.name}
         </p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)]">Amazing-day calendar</h1>
+        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Amazing-day calendar</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
-          Two months for this micro-area. Each cell is moon phase, NOAA high/low (or modeled tide),
-          and a 1–10. Copper outline = book it. Wind is only inside the forecast; farther out is tide
-          + moon + season. Station {area.noaaStation ?? "modeled M2"}.
+          Two months for this micro-area. Each cell is a moon disk, tide range, and a 1–10. Copper
+          outline = book it. Wind is only inside the forecast; farther out is tide + moon + season.
+          Station {area.noaaStation ?? "modeled M2"}.
         </p>
+        <Waterline className="mt-3" />
       </div>
       <Suspense>
         <FilterBar areaId={area.id} activity={activity} theater={q.theater ?? area.theater} />
@@ -70,18 +72,13 @@ export default async function CalendarPage({
         </Link>
       </div>
       {amazing.length > 0 && (
-        <section className="rounded-2xl border border-[color:var(--copper)]/40 bg-[color:var(--copper)]/10 p-4">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">Amazing days on {area.shortName}</p>
+        <section>
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">
+            Amazing days on {area.shortName}
+          </p>
           <ul className="mt-3 grid gap-2 sm:grid-cols-2">
             {amazing.map((d) => (
-              <li key={d.date} className="text-sm text-[color:var(--cream)]/85">
-                <span className="font-medium">
-                  {d.date.slice(5)} · {d.score.toFixed(1)}
-                </span>{" "}
-                {d.moon.glyph} {d.moon.name.toLowerCase()} · {d.moon.springNeap}
-                {d.tides.length ? ` · ${d.tides.map((t) => `${t.type} ${t.time}`).join(", ")}` : ""}
-                {d.tideRangeFt != null ? ` · Δ ${d.tideRangeFt.toFixed(1)} ft` : ""}
-              </li>
+              <AmazingChip key={d.date} day={d} />
             ))}
           </ul>
         </section>
@@ -89,7 +86,7 @@ export default async function CalendarPage({
       {error || !months ? (
         <p className="text-rose-200">{error}</p>
       ) : (
-        <div className="grid gap-10 lg:grid-cols-2">
+        <div className="grid gap-10 xl:grid-cols-2">
           {months.map((m) => (
             <MonthGrid
               key={`${m.year}-${m.month}`}

@@ -67,12 +67,17 @@ export function CoastMap({
     <MapContainer
       center={center}
       zoom={6}
-      className="h-[min(72vh,720px)] w-full rounded-2xl"
+      className="h-[min(80vh,860px)] w-full rounded-2xl ring-1 ring-[color:var(--line)]"
       scrollWheelZoom
     >
       <TileLayer
-        attribution='&copy; OpenStreetMap &copy; CARTO'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        attribution="Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics"
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+      />
+      <TileLayer
+        attribution="&copy; OpenStreetMap &copy; CARTO"
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png"
+        opacity={0.85}
       />
       <Fit spots={spots} extras={extras} />
       {spots.map((s) => (

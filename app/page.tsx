@@ -1,7 +1,10 @@
 import { Suspense } from "react";
-import { getBriefing } from "@/lib/briefing";
+import { getBriefing, parseActivity } from "@/lib/briefing";
+import { buildCalendarRange, upcomingDays } from "@/lib/calendar";
 import { FilterBar } from "@/components/filters";
 import { BriefingPanel } from "@/components/briefing-panel";
+import { clockParts, ymdInZone } from "@/lib/time";
+import type { CalendarDay } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +15,23 @@ export default async function Home({
 }) {
   const q = await searchParams;
   let briefing;
+  let upcoming: CalendarDay[] = [];
   let error: string | null = null;
   try {
     briefing = await getBriefing(q.area, q.activity);
+    const now = clockParts(new Date(), briefing.area.timezone);
+    try {
+      const months = await buildCalendarRange(
+        briefing.area,
+        now.year,
+        now.month,
+        parseActivity(q.activity),
+        2,
+      );
+      upcoming = upcomingDays(months, ymdInZone(new Date(), briefing.area.timezone), 14);
+    } catch {
+      upcoming = [];
+    }
   } catch (e) {
     error = e instanceof Error ? e.message : "Could not build the briefing.";
   }
@@ -34,7 +51,7 @@ export default async function Home({
           <p className="mt-2 text-sm opacity-80">{error}</p>
         </div>
       ) : (
-        <BriefingPanel briefing={briefing} />
+        <BriefingPanel briefing={briefing} upcoming={upcoming} />
       )}
     </div>
   );

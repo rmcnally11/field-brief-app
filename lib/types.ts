@@ -212,6 +212,7 @@ export type CalendarDay = {
   moon: {
     name: string;
     glyph: string;
+    phase: number;
     illumination: number;
     springNeap: "spring" | "neap" | "mid";
   };

@@ -192,6 +192,7 @@ export async function buildCalendar(
       moon: {
         name: moon.name,
         glyph: moonGlyph(moon.phase),
+        phase: moon.phase,
         illumination: moon.illumination,
         springNeap: moon.springNeap,
       },
@@ -203,6 +204,10 @@ export async function buildCalendar(
 
   void end;
   return days;
+}
+
+export function upcomingDays(months: { days: CalendarDay[] }[], fromYmd: string, count = 14) {
+  return months.flatMap((m) => m.days).filter((d) => d.date >= fromYmd).slice(0, count);
 }
 
 export async function buildCalendarRange(

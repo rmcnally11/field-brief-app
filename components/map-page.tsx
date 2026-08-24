@@ -6,15 +6,25 @@ import type { OfficialPoint } from "@/lib/layers";
 import { FilterBar } from "@/components/filters";
 import { SAVED_MAPS, savedMarksNear } from "@/lib/data/saved-maps";
 import { getArea } from "@/lib/data/areas";
+import { Waterline } from "@/components/viz/waterline";
 
 const CoastMap = dynamic(() => import("@/components/coast-map").then((m) => m.CoastMap), {
   ssr: false,
   loading: () => (
-    <div className="flex h-[min(72vh,720px)] items-center justify-center rounded-2xl border border-[color:var(--line)] text-[color:var(--cream)]/50">
-      Loading chart…
+    <div className="flex h-[min(80vh,860px)] items-center justify-center rounded-2xl border border-[color:var(--line)] bg-[#0b1620] text-[color:var(--cream)]/50">
+      Loading satellite chart…
     </div>
   ),
 });
+
+const LEGEND = [
+  { color: "#c2542a", label: "Field Manual / public structure" },
+  { color: "#e8d5a3", label: "Your My Maps" },
+  { color: "#7eb8c9", label: "USGS GNIS hydro" },
+  { color: "#3f7a4e", label: "NOAA ENC wreck" },
+  { color: "#c43c32", label: "FKNMS / closed / caution" },
+  { color: "#d6b56a", label: "TPWD / GLO / NPS access" },
+];
 
 export function MapPageClient({
   areaId,
@@ -52,18 +62,24 @@ export function MapPageClient({
     ? [...layers.zones, ...layers.wrecks, ...layers.access, ...layers.gnis, ...atlas]
     : atlas;
 
+  const counts = [
+    { n: layers?.gnis.length ?? null, label: "GNIS names" },
+    { n: layers?.wrecks.length ?? null, label: "ENC wrecks" },
+    { n: layers?.zones.length ?? null, label: "FKNMS zones" },
+    { n: layers?.access.length ?? null, label: "Public access" },
+    { n: atlas.length, label: "My Maps" },
+  ];
+
   return (
     <div className="space-y-5">
       <div>
         <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Chart</p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)]">Marks and legal water</h1>
-        <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
-          Copper pins are Field Manual / public structure — named passes are snapped to USGS GNIS
-          where the gazetteer has them. Red rings are FKNMS no-take zones (legal NOAA polygons).
-          Green are NOAA ENC wrecks. Sand are TPWD / GLO / NPS access, including GLO drive-on
-          corridors and PINS 4WD rules. Teal are live GNIS hydro features. TPWD coastal REST and
-          the GLO Hub query still need agency tokens; TxGIO is the clearinghouse those inventories
-          flow through. Cream pins are your My Maps:{" "}
+        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Marks and legal water</h1>
+        <p className="mt-2 max-w-3xl text-sm text-[color:var(--cream)]/65">
+          Satellite first. Copper pins are Field Manual / public structure — named passes snapped to
+          USGS GNIS where the gazetteer has them. Red rings are FKNMS no-take zones. Green are NOAA
+          ENC wrecks. Sand are TPWD / GLO / NPS access. Teal are live GNIS hydro features. Cream pins
+          are your My Maps:{" "}
           {SAVED_MAPS.map((m, i) => (
             <span key={m.id}>
               {i > 0 ? " · " : ""}
@@ -72,22 +88,37 @@ export function MapPageClient({
               </a>
             </span>
           ))}
-          . Red rings from your Keys map are no-take / caution.
+          . Not for navigation.
         </p>
+        <Waterline className="mt-3" />
       </div>
       <FilterBar areaId={areaId} activity={activity} theater={theater} />
-      <CoastMap
-        theater={theater === "all" ? "all" : (theater as "texas" | "florida" | "bahamas" | undefined)}
-        activity={activity === "all" ? "all" : (activity as "fly")}
-        areaId={areaId}
-        extras={extras}
-      />
-      <ul className="grid gap-2 text-xs text-[color:var(--cream)]/55 md:grid-cols-2">
-        <li>USGS GNIS — {layers?.gnis.length ?? "…"} named features in the box</li>
-        <li>NOAA ENC wrecks — {layers?.wrecks.length ?? "…"} charted</li>
-        <li>FKNMS zones — {layers?.zones.length ?? "…"} (Florida only)</li>
-        <li>Public access — {layers?.access.length ?? "…"} TPWD / GLO / NPS</li>
-        <li>Your My Maps — {atlas.length} marks in this box</li>
+      <div className="relative">
+        <CoastMap
+          theater={theater === "all" ? "all" : (theater as "texas" | "florida" | "bahamas" | undefined)}
+          activity={activity === "all" ? "all" : (activity as "fly")}
+          areaId={areaId}
+          extras={extras}
+        />
+        <ul className="mt-3 flex flex-wrap gap-2">
+          {LEGEND.map((l) => (
+            <li
+              key={l.label}
+              className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--panel)] px-2.5 py-1 text-[11px] text-[color:var(--cream)]/70"
+            >
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: l.color }} />
+              {l.label}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+        {counts.map((c) => (
+          <li key={c.label} className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--panel)] px-3 py-3 text-center">
+            <p className="font-heading text-2xl text-[color:var(--cream)]">{c.n ?? "…"}</p>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-[color:var(--cream)]/45">{c.label}</p>
+          </li>
+        ))}
       </ul>
     </div>
   );

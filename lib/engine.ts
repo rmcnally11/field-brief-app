@@ -167,7 +167,15 @@ export function pickSpots(
 
   const catalog = [
     ...spotsForArea(area.id),
-    ...wrecks.filter((w) => w.name && w.name !== "Charted wreck").slice(0, 8).map((w) => wreckMarkToSpot(w, area)),
+    ...wrecks
+      .filter((w) => {
+        const n = w.name.trim();
+        if (!n || n === "Charted wreck") return false;
+        if (/test/i.test(n) || /dangerous wreck/i.test(n)) return false;
+        return true;
+      })
+      .slice(0, 8)
+      .map((w) => wreckMarkToSpot(w, area)),
   ];
 
   return catalog

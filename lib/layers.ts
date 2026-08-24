@@ -86,7 +86,7 @@ export async function fetchEncWrecks(area: Area): Promise<OfficialPoint[]> {
       .filter((f) => f.geometry?.x != null)
       .map((f, i) => ({
         id: `enc-${area.id}-${i}-${f.geometry!.x}`,
-        name: String(f.attributes.OBJNAM || f.attributes.CATWRK || "Charted wreck"),
+        name: String(f.attributes.OBJNAM || "").trim() || "Charted wreck",
         lat: f.geometry!.y!,
         lon: f.geometry!.x!,
         kind: "enc-wreck" as const,
@@ -501,10 +501,11 @@ const ACCESS: OfficialPoint[] = [
 ];
 
 export function accessNear(area: Area): OfficialPoint[] {
+  const maxDeg = area.theater === "florida" ? 0.36 : area.theater === "texas" ? 0.55 : 0.9;
   return ACCESS.filter((p) => {
     const dlat = p.lat - area.lat;
-    const dlon = p.lon - area.lon;
-    return Math.hypot(dlat, dlon) < 1.6;
+    const dlon = (p.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180);
+    return Math.hypot(dlat, dlon) < maxDeg;
   });
 }
 

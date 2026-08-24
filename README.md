@@ -2,7 +2,7 @@
 
 Inshore conditions for three theaters: the **Texas coast**, **Miami & the Florida Keys**, and the **Bahamas**. The brief tells you **where**, **when**, and **why** fish should be on a given piece of water — and which species are actually in play.
 
-GitHub: [rmcnally11/field-brief](https://github.com/rmcnally11/field-brief) — public is the intent; this environment cannot flip GitHub visibility, so toggle it in the repo settings if it is still private. Your three My Maps are imported as cream pins:
+GitHub: [rmcnally11/field-brief-app](https://github.com/rmcnally11/field-brief-app). Live site: [field-brief-app.vercel.app](https://field-brief-app.vercel.app). Your three My Maps are imported as cream pins:
 
 - [GULF ATLAS! - FISH](https://www.google.com/maps/d/u/0/edit?mid=1eqN2MMRViRbG4xwKDcL0Tzotogjcktw&usp=sharing)
 - [FL Keys — zones, wrecks, humps, bridges](https://www.google.com/maps/d/u/0/edit?mid=1nn7DQ_IHmDLXRUFsatM4hj9zIqmaUg4&usp=sharing)
@@ -42,7 +42,7 @@ No API keys. NOAA, NWS, USGS, and Open-Meteo are public. NWS requires a User-Age
 
 This repo does **not** auto-deploy. The Preview you see in Cursor is this cloud VM. To get an `https://….vercel.app` link:
 
-1. Import `rmcnally11/field-brief` in [vercel.com](https://vercel.com) (private GitHub is fine).
+1. Import `rmcnally11/field-brief-app` in [vercel.com](https://vercel.com). Production branch is `main`.
 2. Framework: Next.js. No environment variables.
 3. After the first deploy, every `git push` to the connected branch rebuilds the site.
 

@@ -1,4 +1,4 @@
-import type { Species } from "@/lib/types";
+import type { Species, TheaterId } from "@/lib/types";
 
 export const SPECIES: Species[] = [
   {
@@ -280,7 +280,51 @@ export const SPECIES: Species[] = [
   },
 ];
 
-export const SPECIES_BY_ID = Object.fromEntries(SPECIES.map((s) => [s.id, s]));
+export const SPECIES_BY_ID = Object.fromEntries(SPECIES.map((s) => [s.id, s])) as Record<
+  Species["id"],
+  Species
+>;
+
+/** Briefing cards show the rule for this water, not a Texas + Florida mash. */
+export function regulationFor(species: Species, theater: TheaterId) {
+  const byTheater: Partial<Record<Species["id"], Partial<Record<TheaterId, string>>>> = {
+    redfish: {
+      texas: "Texas (Sep 1 2025–Aug 31 2026): 3/day, 20–28 in slot. One over 28 in per license year with a Red Drum Tag.",
+      florida: "Florida SE: typically 18–27 in, 1/person, 2/vessel. Harvest banned in federal waters. Keys backcountry, not oceanside.",
+    },
+    "black-drum": {
+      texas: "Texas: 5/day, 14–30 in. One over 52 in allowed as part of the bag.",
+      florida: "Florida: check FWC regional rules before you keep a drum.",
+    },
+    sheepshead: {
+      texas: "Texas: 5/day, 15 in minimum.",
+      florida: "Florida: check FWC regional sheepshead rules.",
+    },
+    snook: {
+      texas: "Texas: 1/day, 24–28 in. Rare this far west — verify before you keep one.",
+      florida: "Florida SE/Atlantic: typically 28–32 in, 1/day, snook permit required. Closed in the summer spawn window — verify FWC.",
+    },
+    tarpon: {
+      texas: "Texas: treat as catch-and-release.",
+      florida: "Florida: catch-and-release. Fish over 40 in must stay in the water. One harvest tag/year only for a potential IGFA record.",
+      bahamas: "Bahamas: treat as catch-and-release.",
+    },
+    bonefish: {
+      florida: "Florida: catch-and-release only, hook-and-line only.",
+      bahamas: "Bahamas: treat as C&R. Flats licensing has been tightening — verify before you wade.",
+    },
+    permit: {
+      florida: "Florida: hook-and-line. Special Permit Zone (Keys) is tighter than the rest of the state — typically C&R. Verify FWC.",
+      bahamas: "Bahamas: catch-and-release.",
+    },
+    jacks: {
+      texas: "Generally unregulated. Still, do not leave a pile.",
+      florida: "Generally unregulated. Still, do not leave a pile.",
+      bahamas: "Treat as incidental. Not why you booked the flat.",
+    },
+  };
+  return byTheater[species.id]?.[theater] ?? species.regulation;
+}
 
 export function flounderClosed(date: Date, timezone: string) {
   const parts = new Intl.DateTimeFormat("en-US", {

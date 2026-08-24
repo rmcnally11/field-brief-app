@@ -23,7 +23,7 @@ const LEGEND = [
   { color: "#7eb8c9", label: "USGS GNIS hydro" },
   { color: "#3f7a4e", label: "NOAA ENC wreck" },
   { color: "#c43c32", label: "FKNMS / closed / caution" },
-  { color: "#d6b56a", label: "TPWD / GLO / NPS access" },
+  { color: "#d6b56a", label: "Public access" },
 ];
 
 export function MapPageClient({
@@ -78,7 +78,7 @@ export function MapPageClient({
         <p className="mt-2 max-w-3xl text-sm text-[color:var(--cream)]/65">
           Satellite first. Copper pins are Field Manual / public structure — named passes snapped to
           USGS GNIS where the gazetteer has them. Red rings are FKNMS no-take zones. Green are NOAA
-          ENC wrecks. Sand are TPWD / GLO / NPS access. Teal are live GNIS hydro features. Cream pins
+          ENC wrecks. Sand are public ramps and beach access. Teal are live GNIS hydro features. Cream pins
           are your My Maps:{" "}
           {SAVED_MAPS.map((m, i) => (
             <span key={m.id}>

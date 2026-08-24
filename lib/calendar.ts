@@ -143,7 +143,7 @@ export async function buildCalendar(
         (0.28 * season +
           0.32 * tide.score +
           0.15 * spring +
-          0.15 * (hasWind ? windScore : 0.7) +
+          0.15 * (hasWind ? windScore : 0.5) +
           0.1 * tod),
       1,
       10,
@@ -174,10 +174,14 @@ export async function buildCalendar(
       tides.length >= 2 ? Math.max(...tides.map((t) => t.height)) - Math.min(...tides.map((t) => t.height)) : tide.range;
 
     const amazing =
-      score >= 8 ||
-      (score >= 7.4 &&
-        (area.tideCharacter === "sight-skinny" ? moon.springNeap !== "spring" : moon.springNeap === "spring") &&
-        (wind == null || wind <= 14));
+      hasWind &&
+      wind != null &&
+      wind <= 14 &&
+      (score >= 8.2 ||
+        (score >= 7.6 &&
+          (area.tideCharacter === "sight-skinny"
+            ? moon.springNeap !== "spring"
+            : moon.springNeap === "spring")));
 
     days.push({
       date: ymd,

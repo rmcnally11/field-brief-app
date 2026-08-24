@@ -119,28 +119,34 @@ const ZONE_LABEL: Record<number, string> = {
 
 export async function fetchFknmsZones(area: Area): Promise<OfficialPoint[]> {
   if (area.theater !== "florida") return [];
-  const { xmin, ymin, xmax, ymax } = bbox(area, 0.7);
+  const { xmin, ymin, xmax, ymax } = bbox(area, 0.38);
   const url =
     `https://gis.ngdc.noaa.gov/arcgis/rest/services/nccos/BenthicMapping_FKNMS_Dataviewer/MapServer/52/query` +
     `?geometry=${xmin},${ymin},${xmax},${ymax}&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326` +
     `&spatialRel=esriSpatialRelIntersects&outFields=NAME,ZONE_&returnGeometry=true&resultRecordCount=40&f=json`;
   try {
     const json = await arcgisQuery(url);
-    return (json.features ?? []).map((f, i) => {
-      const c = centroid(f.geometry?.rings) ?? { lat: area.lat, lon: area.lon };
-      const zone = Number(f.attributes.ZONE_);
-      return {
-        id: `fknms-${f.attributes.NAME}-${i}`,
-        name: String(f.attributes.NAME),
-        lat: c.lat,
-        lon: c.lon,
-        kind: "fknms-zone" as const,
-        source: "NOAA FKNMS management zones",
-        sourceUrl: "https://sanctuaries.noaa.gov/library/imast_gis.html",
-        detail: ZONE_LABEL[zone] ?? `Zone type ${zone}`,
-        legal: true,
-      };
-    });
+    return (json.features ?? [])
+      .map((f, i) => {
+        const c = centroid(f.geometry?.rings) ?? { lat: area.lat, lon: area.lon };
+        const zone = Number(f.attributes.ZONE_);
+        return {
+          id: `fknms-${f.attributes.NAME}-${i}`,
+          name: String(f.attributes.NAME),
+          lat: c.lat,
+          lon: c.lon,
+          kind: "fknms-zone" as const,
+          source: "NOAA FKNMS management zones",
+          sourceUrl: "https://sanctuaries.noaa.gov/library/imast_gis.html",
+          detail: ZONE_LABEL[zone] ?? `Zone type ${zone}`,
+          legal: true,
+        };
+      })
+      .sort((a, b) => {
+        const da = Math.hypot(a.lat - area.lat, (a.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180));
+        const db = Math.hypot(b.lat - area.lat, (b.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180));
+        return da - db;
+      });
   } catch {
     return [];
   }

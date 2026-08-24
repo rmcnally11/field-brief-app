@@ -102,7 +102,7 @@ export default async function CalendarPage({
         <span className="rounded bg-rose-400/90 px-2 py-0.5 text-rose-950">1–3 stay home / structure</span>
         <span className="rounded bg-orange-400 px-2 py-0.5 text-orange-950">4–5 workable if you pick water</span>
         <span className="rounded bg-amber-300 px-2 py-0.5 text-amber-950">6–7 go</span>
-        <span className="rounded bg-teal-400 px-2 py-0.5 text-teal-950">8–10 / copper outline = amazing</span>
+        <span className="rounded bg-teal-400 px-2 py-0.5 text-teal-950">8–10 with a wind forecast + copper = amazing</span>
       </div>
     </div>
   );

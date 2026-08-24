@@ -11,7 +11,7 @@ import type {
   TideStage,
   WindowPick,
 } from "@/lib/types";
-import { SPECIES } from "@/lib/data/species";
+import { SPECIES, SPECIES_BY_ID } from "@/lib/data/species";
 import { spotsForArea } from "@/lib/data/spots";
 import { flounderClosed, seFloridaSnookClosed } from "@/lib/data/species";
 import { clockParts, hourInZone } from "@/lib/time";
@@ -127,7 +127,7 @@ export function scoreSpecies(
     return {
       species: s,
       score: Number(clamp(score, 0, 10).toFixed(1)),
-      inPlay: score >= 5 && present && s.role === "primary",
+      inPlay: score >= 5 && present && s.role === "primary" && area.leadSpecies.includes(s.id),
       closed,
       why: bits.join(" "),
     };
@@ -186,7 +186,12 @@ export function pickSpots(
   ];
 
   return catalog
-    .filter((spot) => spotMatchesActivity(spot, activity))
+    .filter((spot) => {
+      if (!spotMatchesActivity(spot, activity)) return false;
+      const n = spot.name.toLowerCase();
+      if (n.includes("troll") || n.includes("color change") || n.includes("blue water") || n.includes("hump")) return false;
+      return true;
+    })
     .map((spot) => {
       const why: string[] = [];
       let score = 4;
@@ -198,7 +203,11 @@ export function pickSpots(
 
       const speciesHit = spot.species.filter((id) => inPlay.has(id));
       score += Math.min(2, speciesHit.length * 0.7);
-      if (speciesHit.length) why.push(`In-play: ${speciesHit.join(", ")}.`);
+      if (speciesHit.length) {
+        why.push(
+          `In-play: ${speciesHit.map((id) => SPECIES_BY_ID[id]?.commonName ?? id).join(", ")}.`,
+        );
+      }
 
       if (hot && spot.depth === "deep") {
         score += 1.2;
@@ -214,13 +223,22 @@ export function pickSpots(
       }
 
       const anomaly = conditions.tides.anomalyFt;
+      const texasMarsh = area.theater === "texas" && area.tideCharacter === "marsh-current";
       if (anomaly != null && anomaly < -0.4 && (spot.depth === "deep" || spot.habitat === "channel-gut" || spot.habitat === "marsh-drain")) {
         score += 1;
-        why.push(`Observed water is ${anomaly.toFixed(1)} ft below the tide table — wind is pulling water out.`);
+        why.push(
+          texasMarsh
+            ? `Observed water is ${anomaly.toFixed(1)} ft below the tide table — wind is pulling water out.`
+            : `Observed water is ${anomaly.toFixed(1)} ft below the tide table — sit the remaining guts.`,
+        );
       }
       if (anomaly != null && anomaly > 0.4 && (spot.habitat === "grass-flat" || spot.habitat === "hard-flat" || spot.habitat === "marsh-drain")) {
         score += 0.8;
-        why.push(`Observed water is ${anomaly.toFixed(1)} ft above the table — the marsh and flats are wetter than printed.`);
+        why.push(
+          texasMarsh
+            ? `Observed water is ${anomaly.toFixed(1)} ft above the table — the marsh and flats are wetter than printed.`
+            : `Observed water is ${anomaly.toFixed(1)} ft above the table — the banks are wetter than printed.`,
+        );
       }
 
       if (wind != null && wind >= 15 && spot.protectedFrom && windDir != null) {
@@ -304,7 +322,13 @@ export function buildBriefing(
   now = new Date(),
   official?: { wrecks?: OfficialMark[]; zones?: OfficialMark[]; access?: OfficialMark[] },
 ): Omit<Briefing, "generatedAt"> {
-  const species = scoreSpecies(area, conditions, now);
+  const species = scoreSpecies(area, conditions, now)
+    .filter((s) => s.species.role === "primary" || s.species.role === "incidental")
+    .filter((s) => s.species.role === "incidental" || area.leadSpecies.includes(s.species.id))
+    .sort((a, b) => {
+      if (a.species.role !== b.species.role) return a.species.role === "primary" ? -1 : 1;
+      return b.score - a.score;
+    });
   const where = pickSpots(area, conditions, activity, species, official?.wrecks ?? []).slice(0, 6);
   const when = pickWindows(area, conditions, activity, now);
   const month = clockParts(now, area.timezone).month;
@@ -318,10 +342,21 @@ export function buildBriefing(
   );
   if (conditions.tides.anomalyFt != null) {
     const a = conditions.tides.anomalyFt;
+    const signed = `${a > 0 ? "+" : ""}${a.toFixed(2)}`;
     if (Math.abs(a) >= 0.35) {
-      why.push(
-        `On this coast the wind often outruns the printed tide. Observed water is ${a > 0 ? "+" : ""}${a.toFixed(2)} ft versus the prediction.`,
-      );
+      if (area.theater === "texas") {
+        why.push(
+          `On this coast the wind often outruns the printed tide. Observed water is ${signed} ft versus the prediction.`,
+        );
+      } else if (area.theater === "florida") {
+        why.push(
+          `The gauge is ${signed} ft off the predicted table — read the water, not just the printout.`,
+        );
+      } else {
+        why.push(
+          `The model is ${signed} ft off the harmonic table. Treat it as setup, not a guarantee.`,
+        );
+      }
     } else {
       why.push("Observed water is close to the astronomical prediction — the table is telling the truth today.");
     }
@@ -350,11 +385,17 @@ export function buildBriefing(
   if (seFloridaSnookClosed(now, area.timezone) && area.theater === "florida") {
     warnings.push("Snook are typically closed to harvest on the SE/Atlantic coast in this month. Verify FWC.");
   }
-  const zones = official?.zones ?? [];
-  if (zones.length) {
-    const names = zones.slice(0, 3).map((z) => z.name).join(", ");
+  const zones = [...(official?.zones ?? [])].sort((a, b) => {
+    const da = Math.hypot(a.lat - area.lat, (a.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180));
+    const db = Math.hypot(b.lat - area.lat, (b.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180));
+    return da - db;
+  });
+  const legal = zones.slice(0, 6);
+  const extraLegal = Math.max(0, zones.length - legal.length);
+  if (legal.length) {
+    const names = legal.slice(0, 3).map((z) => z.name).join(", ");
     warnings.push(
-      `FKNMS no-take water in this box: ${names}${zones.length > 3 ? ` + ${zones.length - 3} more` : ""}. The red polygons are the legal source — do not fish them.`,
+      `FKNMS no-take water in this box: ${names}${extraLegal ? ` + ${extraLegal} more on the map` : ""}. The red polygons are the legal source — do not fish them.`,
     );
   }
 
@@ -388,7 +429,8 @@ export function buildBriefing(
     conditions,
     warnings,
     access: (official?.access ?? []).slice(0, 6),
-    legal: zones,
+    legal,
+    extraLegal,
   };
 }
 

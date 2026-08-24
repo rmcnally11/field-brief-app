@@ -203,6 +203,8 @@ export type Briefing = {
   access: OfficialMark[];
   /** FKNMS no-take polygons and other legal closures in the box. */
   legal: OfficialMark[];
+  /** Zones in the GIS box beyond the six shown on the brief. */
+  extraLegal?: number;
 };
 
 export type CalendarTide = {

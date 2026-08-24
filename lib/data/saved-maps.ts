@@ -1724,6 +1724,9 @@ function miles(aLat: number, aLon: number, bLat: number, bLon: number) {
 
 function habitatFor(pin: SavedPin): Habitat {
   const n = `${pin.name} ${pin.note} ${pin.folder}`.toLowerCase();
+  if (n.includes("troll") || n.includes("offshore") || n.includes("color change") || n.includes("weedline")) {
+    return "wreck-edge";
+  }
   if (n.includes("wreck") || n.includes("hump")) return "wreck-edge";
   if (n.includes("jetty") || n.includes("pass") || n.includes("inlet") || n.includes("bridge")) return "pass-jetty";
   if (n.includes("beach") || n.includes("surf") || n.includes("2wd") || n.includes("4wd")) return "sand-dropoff";
@@ -1743,19 +1746,29 @@ function activitiesFor(pin: SavedPin): ActivityId[] {
 }
 
 function speciesFor(pin: SavedPin, area: Area): SpeciesId[] {
-  const n = `${pin.name} ${pin.note}`.toLowerCase();
-  if (area.theater === "florida" || n.includes("bonefish") || n.includes("permit") || n.includes("tarpon")) {
-    if (n.includes("tarpon") || n.includes("bridge")) return ["tarpon", "permit", "jacks"];
-    if (n.includes("wreck") || n.includes("hump")) return ["permit", "tarpon", "jacks"];
-    return ["bonefish", "permit", "redfish", "snook"];
+  const n = `${pin.name} ${pin.note} ${pin.folder}`.toLowerCase();
+  if (n.includes("troll") || n.includes("offshore") || n.includes("color change")) {
+    return ["mahi", "tuna", "sailfish"];
   }
-  return ["redfish", "speckled-trout", "flounder"];
+  if (area.id === "florida-bay") return ["redfish", "snook", "tarpon"];
+  if (area.theater === "florida" || area.theater === "bahamas") {
+    if (n.includes("tarpon") || n.includes("bridge")) return ["tarpon", "permit"];
+    if (n.includes("wreck") || n.includes("hump")) return ["permit", "tarpon"];
+    return [...area.leadSpecies];
+  }
+  return area.leadSpecies.length ? [...area.leadSpecies] : ["redfish", "speckled-trout"];
 }
 
 /** Fishing / access marks from your My Maps, near this micro-area. Closed polygons stay off the brief. */
-export function savedSpotsNear(area: Area, maxMiles = 48): Spot[] {
-  return SAVED_PINS.filter((p) => p.kind === "fish" || p.kind === "access" || p.kind === "route")
-    .filter((p) => miles(area.lat, area.lon, p.lat, p.lon) <= maxMiles)
+export function savedSpotsNear(area: Area, maxMiles?: number): Spot[] {
+  const radius = maxMiles ?? (area.theater === "florida" ? 26 : area.theater === "bahamas" ? 40 : 42);
+  return SAVED_PINS.filter((p) => p.kind === "fish" || p.kind === "access")
+    .filter((p) => {
+      const n = `${p.name} ${p.folder}`.toLowerCase();
+      if (n.includes("troll") || n.includes("color change") || n.includes("offshore run") || n.includes("hump")) return false;
+      return true;
+    })
+    .filter((p) => miles(area.lat, area.lon, p.lat, p.lon) <= radius)
     .map((p) => ({
       id: p.id,
       areaId: area.id,
@@ -1779,15 +1792,22 @@ function nDepth(p: SavedPin): "skinny" | "mid" | "deep" {
 }
 
 export function savedMarksNear(area: Area, maxMiles = 55): OfficialMark[] {
-  return SAVED_PINS.filter((p) => miles(area.lat, area.lon, p.lat, p.lon) <= maxMiles).map((p) => ({
-    id: p.id,
-    name: p.name,
-    lat: p.lat,
-    lon: p.lon,
-    kind: p.kind === "closed" || p.kind === "caution" ? ("fknms-zone" as const) : ("saved-map" as const),
-    source: p.mapTitle,
-    sourceUrl: p.mapUrl,
-    detail: [p.folder, p.note].filter(Boolean).join(" · "),
-    legal: p.kind === "closed" || p.kind === "caution",
-  }));
+  return SAVED_PINS.filter((p) => miles(area.lat, area.lon, p.lat, p.lon) <= maxMiles)
+    .filter((p) => p.kind !== "route")
+    .map((p) => {
+      const n = `${p.name} ${p.folder}`.toLowerCase();
+      const troll = n.includes("troll") || n.includes("color change");
+      const legal = !troll && (p.kind === "closed" || p.kind === "caution");
+      return {
+        id: p.id,
+        name: p.name,
+        lat: p.lat,
+        lon: p.lon,
+        kind: legal ? ("fknms-zone" as const) : ("saved-map" as const),
+        source: p.mapTitle,
+        sourceUrl: p.mapUrl,
+        detail: [p.folder, p.note].filter(Boolean).join(" · "),
+        legal,
+      };
+    });
 }

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Briefing, CalendarDay } from "@/lib/types";
+import { regulationFor } from "@/lib/data/species";
 import { ScorePip } from "@/components/score-pip";
 import { ScoreRing } from "@/components/viz/score-ring";
 import { MoonDisk } from "@/components/viz/moon-disk";
@@ -140,7 +141,12 @@ export function BriefingPanel({
             {conditions.tides.anomalyFt > 0 ? "+" : ""}
             {conditions.tides.anomalyFt.toFixed(2)} ft
           </strong>{" "}
-          from the NOAA prediction. On the Texas coast this is often the real tide.
+          from the NOAA prediction.{" "}
+          {area.theater === "texas"
+            ? "On the Texas coast this is often the real tide."
+            : area.theater === "florida"
+              ? "Read the water, not just the printout."
+              : "Bahamas tides are modeled — treat a miss as setup, not a guarantee."}
         </p>
       )}
 
@@ -225,7 +231,11 @@ export function BriefingPanel({
           <div>
             <h2 className="font-heading text-2xl text-[color:var(--cream)]">Launch and beach access</h2>
             <p className="mt-1 text-xs text-[color:var(--cream)]/45">
-              Cited to TPWD, Texas GLO beach-access plans, and NPS. 2WD/4WD is the county plan, not a guess.
+              {area.theater === "texas"
+                ? "Cited to TPWD, Texas GLO beach-access plans, and NPS. 2WD/4WD is the county plan, not a guess."
+                : area.theater === "florida"
+                  ? "County and state ramps near this water. FKNMS no-take is on the legal list, not here."
+                  : "Settlement and lodge launches. There is no TPWD-style ramp inventory on this island."}
             </p>
             {briefing.access.length === 0 ? (
               <p className="mt-3 text-sm text-[color:var(--cream)]/55">No public access pin in this box.</p>
@@ -247,7 +257,9 @@ export function BriefingPanel({
           <div>
             <h2 className="font-heading text-2xl text-[color:var(--cream)]">Legal water</h2>
             <p className="mt-1 text-xs text-[color:var(--cream)]/45">
-              NOAA FKNMS management zones — Sanctuary Preservation Areas, Ecological Reserves, Research-Only.
+              {area.theater === "florida"
+                ? "NOAA FKNMS management zones — Sanctuary Preservation Areas, Ecological Reserves, Research-Only."
+                : "No-take and closed water cited to the agency that owns it. Texas and Bahamas are not FKNMS."}
             </p>
             {briefing.legal.length === 0 ? (
               <p className="mt-3 text-sm text-[color:var(--cream)]/55">
@@ -266,6 +278,15 @@ export function BriefingPanel({
                 ))}
               </ul>
             )}
+            {briefing.extraLegal ? (
+              <p className="mt-2 text-xs text-[color:var(--cream)]/45">
+                + {briefing.extraLegal} more zones on the{" "}
+                <a className="underline decoration-[color:var(--copper)]/50" href={`/map?area=${area.id}&theater=${area.theater}`}>
+                  map
+                </a>
+                .
+              </p>
+            ) : null}
           </div>
         </section>
       )}
@@ -296,7 +317,7 @@ export function BriefingPanel({
                 opt={s.species.tempOpt}
                 detail={s.why}
               />
-              <p className="mt-2 text-xs text-[color:var(--cream)]/45">{s.species.regulation}</p>
+              <p className="mt-2 text-xs text-[color:var(--cream)]/45">{regulationFor(s.species, area.theater)}</p>
             </article>
           ))}
         </div>

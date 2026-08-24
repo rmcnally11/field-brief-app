@@ -7,10 +7,14 @@ function pickLead(area: Area, species: SpeciesPick[]): SpeciesPick | undefined {
   return ranked.find((s) => s.inPlay) ?? ranked[0] ?? species.find((s) => s.species.role === "primary");
 }
 
-function heatNote(water: number | null, wind: number | null) {
+function heatNote(area: Area, water: number | null, wind: number | null) {
   if (water != null && water >= 88) return "Heat is the clock — first light or last light.";
   if (water != null && water <= 58) return "Cold fish slide to guts and mud. Midday sun is legal.";
-  if (wind != null && wind >= 18) return "The wind is the tide. Work the leeward shore.";
+  if (wind != null && wind >= 18) {
+    return area.theater === "texas"
+      ? "The wind is the tide. Work the leeward shore."
+      : "Work the leeward shore — fly gets harder.";
+  }
   return null;
 }
 
@@ -129,6 +133,6 @@ export function composeHeadline(
   const verb =
     lead && lead.score >= 6.5 ? "should be the day" : lead && lead.inPlay ? "are the hunt" : "are in the mix";
   const place = PLACE[area.id]?.[conditions.tides.stage] ?? "wait for moving water on this micro-area";
-  const extra = heatNote(conditions.waterTempF, conditions.weather.windMph);
+  const extra = heatNote(area, conditions.waterTempF, conditions.weather.windMph);
   return extra ? `${fish} ${verb} — ${place}. ${extra}` : `${fish} ${verb} — ${place}.`;
 }

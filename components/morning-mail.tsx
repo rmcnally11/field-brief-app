@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { DESKS, deskChoiceLabel } from "@/lib/desks";
+import { AREAS, areasInTheater, waterChipLabel } from "@/lib/data/areas";
+import { THEATER_IDS, THEATER_META } from "@/lib/data/theaters";
 import { CADENCE_META, letterDeskForArea, type Cadence } from "@/lib/coasts";
+import type { TheaterId } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,6 +33,14 @@ export function MorningMail({
 
   function toggleDesk(id: string) {
     setDesks((cur) => (cur.includes(id) ? cur.filter((d) => d !== id) : [...cur, id]));
+  }
+
+  function toggleTheater(theater: TheaterId) {
+    const ids = areasInTheater(theater).map((a) => a.id);
+    setDesks((cur) => {
+      const allOn = ids.every((id) => cur.includes(id));
+      return allOn ? cur.filter((id) => !ids.includes(id)) : [...new Set([...cur, ...ids])];
+    });
   }
 
   function toggleCadence(id: Cadence) {
@@ -79,8 +89,8 @@ export function MorningMail({
       </h2>
       <p className="mt-2 text-sm text-[color:var(--cream)]/65">
         {join
-          ? "Texas is selected. Change it if you fish somewhere else. Leave every mail on unless you do not want it. Name and home ZIP stay on the list with the address."
-          : "Name and home ZIP first, then the coasts you actually fish. A Texas-only list does not get Andros or Seychelles — not in the 5am line, not in Saturday’s letter, not in Sunday’s calendar."}
+          ? "Texas water is selected. Take the whole coast, or only the bays you fish. Florida is not just Islamorada — you can leave Key Largo, Flamingo, Jupiter, or the rest on. Each water you leave on gets its own 5am line."
+          : "Name and home ZIP first, then the water you actually fish. Take a whole coast or only the subsections. A Texas-only list does not get Andros or Seychelles."}
       </p>
       <div className={`mt-4 grid gap-3 ${compact ? "" : "sm:grid-cols-2"}`}>
         <div className="space-y-2">
@@ -135,28 +145,56 @@ export function MorningMail({
           Water you want mail for
         </legend>
         <p className="mt-1 text-xs text-[color:var(--cream)]/50">
-          One desk per coast. Pick every coast you fish. Leave the rest off.
+          Take a whole coast, or only the subsections. Each water you leave on gets its own 5am
+          brief and Sunday calendar. Saturday’s letter follows the coasts you touched.
         </p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {DESKS.map((d) => {
-            const on = desks.includes(d.areaId);
+        <div className="mt-3 space-y-3">
+          {THEATER_IDS.map((theater) => {
+            const meta = THEATER_META.find((t) => t.id === theater);
+            const waters = AREAS.filter((a) => a.theater === theater);
+            const selected = waters.filter((a) => desks.includes(a.id)).length;
+            const allOn = selected === waters.length && waters.length > 0;
             return (
-              <label
-                key={d.areaId}
-                className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs ${
-                  on
-                    ? "border-[color:var(--copper)] bg-[color:var(--copper)]/15 text-[color:var(--cream)]"
-                    : "border-[color:var(--line)] text-[color:var(--cream)]/55"
-                }`}
+              <div
+                key={theater}
+                className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--ink)]/40 p-3"
               >
-                <input
-                  type="checkbox"
-                  className="sr-only"
-                  checked={on}
-                  onChange={() => toggleDesk(d.areaId)}
-                />
-                {deskChoiceLabel(d)}
-              </label>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-sm font-medium text-[color:var(--cream)]">{meta?.label}</p>
+                  <label className="flex cursor-pointer items-center gap-2 text-xs text-[color:var(--cream)]/60">
+                    <input
+                      type="checkbox"
+                      className="size-3.5 accent-[color:var(--copper)]"
+                      checked={allOn}
+                      onChange={() => toggleTheater(theater)}
+                    />
+                    {allOn ? `All ${meta?.label}` : selected ? `${selected} of ${waters.length}` : `All ${meta?.label}`}
+                  </label>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {waters.map((a) => {
+                    const on = desks.includes(a.id);
+                    return (
+                      <label
+                        key={a.id}
+                        className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs ${
+                          on
+                            ? "border-[color:var(--copper)] bg-[color:var(--copper)]/15 text-[color:var(--cream)]"
+                            : "border-[color:var(--line)] text-[color:var(--cream)]/55"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="sr-only"
+                          checked={on}
+                          onChange={() => toggleDesk(a.id)}
+                        />
+                        {waterChipLabel(a)}
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </div>

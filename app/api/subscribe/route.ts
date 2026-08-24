@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
   }
   const desks = parseDesks(body.desks);
   if (!desks.length) {
-    return NextResponse.json({ error: "Pick at least one coast." }, { status: 400 });
+    return NextResponse.json({ error: "Pick at least one piece of water." }, { status: 400 });
   }
   const cadence = parseCadence(body.cadence);
   const source = SOURCES.has(body.source as ListSource) ? (body.source as ListSource) : "Brief";

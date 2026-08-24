@@ -30,9 +30,9 @@ export default async function JoinPage({
           Get tonight’s water
         </h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/65">
-          Name, home ZIP, and the coast you fish. You get today’s brief, this month’s calendar,
-          and the letter for that water now — then the 5am line after that. A Texas signup does not
-          get Andros or Seychelles.
+          Name, home ZIP, and the water you fish. Take a whole coast or only the subsections —
+          Florida is Key Largo, Islamorada, Flamingo, Marathon, Key West, Boca Grande, Jupiter,
+          and Biscayne, not Islamorada alone. A Texas-only list does not get Andros or Seychelles.
         </p>
         <Waterline className="mt-4" />
       </header>

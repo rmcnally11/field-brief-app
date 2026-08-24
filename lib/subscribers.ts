@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { AREA_IDS } from "@/lib/data/areas";
 import { DESKS } from "@/lib/desks";
 import {
   cadenceLabels,
@@ -15,6 +16,7 @@ import {
 } from "@/lib/airtable-list";
 
 export const DESK_IDS: string[] = DESKS.map((d) => d.areaId);
+export const WATER_IDS: string[] = AREA_IDS;
 
 export type Subscriber = {
   name: string;
@@ -47,7 +49,7 @@ export function validPostal(raw: string) {
 }
 
 export function parseDesks(raw: unknown): string[] {
-  const wanted = new Set(DESK_IDS);
+  const wanted = new Set(WATER_IDS);
   const list = Array.isArray(raw) ? raw : typeof raw === "string" ? raw.split(",") : [];
   return [...new Set(list.map((d) => String(d).trim()).filter((d) => wanted.has(d)))];
 }
@@ -111,7 +113,7 @@ export async function addSubscriber(
   if (!validName(sub.name)) throw new Error("Leave the name you go by.");
   if (!validEmail(sub.email)) throw new Error("That is not an email.");
   if (!validPostal(sub.zip)) throw new Error("Leave a home ZIP or postal code.");
-  if (!sub.desks.length) throw new Error("Pick at least one coast.");
+  if (!sub.desks.length) throw new Error("Pick at least one piece of water.");
   const local = await readLocal();
   const next = [...local.filter((s) => s.email !== sub.email), sub];
   try {

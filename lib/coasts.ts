@@ -1,5 +1,5 @@
 import type { TheaterId } from "@/lib/types";
-import { AREA_BY_ID } from "@/lib/data/areas";
+import { AREA_BY_ID, AREAS } from "@/lib/data/areas";
 import { THEATER_IDS, THEATER_META } from "@/lib/data/theaters";
 import { DESKS } from "@/lib/desks";
 
@@ -13,7 +13,7 @@ export const CADENCE_META: { id: Cadence; label: string; title: string; blurb: s
     id: "daily",
     label: "Daily",
     title: "5am morning brief",
-    blurb: "Every morning at 5, the live line for the water you elected — wind, tide, score, and what is actually in play.",
+    blurb: "Every morning at 5, a live line for each piece of water you leave on — wind, tide, score, and what is actually in play.",
   },
   {
     id: "weekly",
@@ -66,12 +66,18 @@ export function cadenceLabels(cadence: Cadence[]) {
 }
 
 export function desksForCoasts(coasts: TheaterId[]): string[] {
-  if (!coasts.length) return DESKS.map((d) => d.areaId);
-  return DESKS.filter((d) => coasts.includes(d.theater)).map((d) => d.areaId);
+  if (!coasts.length) return AREAS.map((a) => a.id);
+  return AREAS.filter((a) => coasts.includes(a.theater)).map((a) => a.id);
 }
 
 export function coastsForDesks(desks: string[]): TheaterId[] {
-  return [...new Set(DESKS.filter((d) => desks.includes(d.areaId)).map((d) => d.theater))];
+  return [
+    ...new Set(
+      desks
+        .map((id) => AREA_BY_ID[id]?.theater)
+        .filter((theater): theater is TheaterId => Boolean(theater)),
+    ),
+  ];
 }
 
 export function letterDeskForArea(areaId?: string | null) {

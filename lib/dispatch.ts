@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { getBriefing } from "@/lib/briefing";
 import { getYoloDay } from "@/lib/calendar";
-import { AREA_BY_ID } from "@/lib/data/areas";
+import { AREAS } from "@/lib/data/areas";
 import {
   buildSeasonIssue,
   calendarEmailHtml,
@@ -18,7 +18,6 @@ import {
   seasonalEmailText,
   seasonalSubject,
 } from "@/lib/mail";
-import { DESKS } from "@/lib/desks";
 import { listSubscribers, subscribersForDesk } from "@/lib/subscribers";
 import { coastsForDesks } from "@/lib/coasts";
 import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
@@ -37,11 +36,7 @@ export function localHour(timeZone: string, at = new Date()) {
 }
 
 export function desksDue(at = new Date(), forceAll = false) {
-  return DESKS.filter((desk) => {
-    if (forceAll) return true;
-    const area = AREA_BY_ID[desk.areaId];
-    return area ? localHour(area.timezone, at) === 5 : false;
-  });
+  return AREAS.filter((area) => (forceAll ? true : localHour(area.timezone, at) === 5));
 }
 
 async function writeOutbox(areaId: string, payload: unknown) {
@@ -55,7 +50,7 @@ async function writeOutbox(areaId: string, payload: unknown) {
 export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string; at?: Date }) {
   const hourly = process.env.CRON_HOURLY === "1";
   const forceAll = opts?.forceAll ?? !hourly;
-  const due = desksDue(opts?.at, forceAll).filter((d) => !opts?.desk || d.areaId === opts.desk);
+  const due = desksDue(opts?.at, forceAll).filter((d) => !opts?.desk || d.id === opts.desk);
   const subscribers = await listSubscribers();
   const results: Array<{
     areaId: string;
@@ -67,19 +62,17 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
     why?: string;
   }> = [];
 
-  for (const desk of due) {
-    const area = AREA_BY_ID[desk.areaId];
-    if (!area) continue;
-    const recipients = subscribersForDesk(subscribers, desk.areaId, "daily");
+  for (const area of due) {
+    const recipients = subscribersForDesk(subscribers, area.id, "daily");
     try {
       const [briefing, yolo] = await Promise.all([getBriefing(area.id), getYoloDay(area, "all")]);
       const subject = morningSubject(briefing);
       const html = morningEmailHtml(briefing, yolo);
       const text = morningEmailText(briefing, yolo);
       if (!recipients.length) {
-        const outbox = await writeOutbox(desk.areaId, { subject, text, recipients: [] }).catch(() => undefined);
+        const outbox = await writeOutbox(area.id, { subject, text, recipients: [] }).catch(() => undefined);
         results.push({
-          areaId: desk.areaId,
+          areaId: area.id,
           subject,
           recipients: 0,
           sent: false,
@@ -91,9 +84,9 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
       const remote = await sendResend(recipients, subject, html, text);
       const outbox = remote.sent
         ? undefined
-        : await writeOutbox(desk.areaId, { subject, text, recipients, html }).catch(() => undefined);
+        : await writeOutbox(area.id, { subject, text, recipients, html }).catch(() => undefined);
       results.push({
-        areaId: desk.areaId,
+        areaId: area.id,
         subject,
         recipients: recipients.length,
         sent: remote.sent,
@@ -102,8 +95,8 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
       });
     } catch (error) {
       results.push({
-        areaId: desk.areaId,
-        subject: desk.desk,
+        areaId: area.id,
+        subject: area.shortName,
         recipients: recipients.length,
         sent: false,
         error: error instanceof Error ? error.message : "Dispatch failed",
@@ -113,7 +106,7 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
 
   return {
     at: (opts?.at ?? new Date()).toISOString(),
-    mode: hourly && !forceAll ? "local-5am" : "all-desks",
+    mode: hourly && !forceAll ? "local-5am" : "all-water",
     configured: {
       airtable: Boolean(process.env.AIRTABLE_API_KEY?.trim() || process.env.AIRTABLE_TOKEN?.trim()),
       resend: Boolean(process.env.RESEND_API_KEY?.trim()),
@@ -207,7 +200,7 @@ export async function dispatchCalendar(opts?: { force?: boolean; desk?: string; 
     return { skipped: true as const, reason: "not Sunday in Chicago", results: [] as const };
   }
   const subscribers = await listSubscribers();
-  const due = DESKS.filter((d) => !opts?.desk || d.areaId === opts.desk);
+  const due = AREAS.filter((d) => !opts?.desk || d.id === opts.desk);
   const results: Array<{
     areaId: string;
     subject: string;
@@ -217,10 +210,8 @@ export async function dispatchCalendar(opts?: { force?: boolean; desk?: string; 
     error?: string;
     why?: string;
   }> = [];
-  for (const desk of due) {
-    const area = AREA_BY_ID[desk.areaId];
-    if (!area) continue;
-    const recipients = subscribersForDesk(subscribers, desk.areaId, "calendar");
+  for (const area of due) {
+    const recipients = subscribersForDesk(subscribers, area.id, "calendar");
     try {
       const now = clockParts(at, area.timezone);
       const months = await buildCalendarRange(area, now.year, now.month, "all", 1);
@@ -230,16 +221,16 @@ export async function dispatchCalendar(opts?: { force?: boolean; desk?: string; 
       const html = calendarEmailHtml(area, month);
       const text = calendarEmailText(area, month);
       if (!recipients.length) {
-        const outbox = await writeOutbox(`cal-${desk.areaId}`, { subject, text, recipients: [] }).catch(() => undefined);
-        results.push({ areaId: desk.areaId, subject, recipients: 0, sent: false, outbox, why: "no address on the list" });
+        const outbox = await writeOutbox(`cal-${area.id}`, { subject, text, recipients: [] }).catch(() => undefined);
+        results.push({ areaId: area.id, subject, recipients: 0, sent: false, outbox, why: "no address on the list" });
         continue;
       }
       const remote = await sendResend(recipients, subject, html, text);
       const outbox = remote.sent
         ? undefined
-        : await writeOutbox(`cal-${desk.areaId}`, { subject, text, recipients, html }).catch(() => undefined);
+        : await writeOutbox(`cal-${area.id}`, { subject, text, recipients, html }).catch(() => undefined);
       results.push({
-        areaId: desk.areaId,
+        areaId: area.id,
         subject,
         recipients: recipients.length,
         sent: remote.sent,
@@ -248,8 +239,8 @@ export async function dispatchCalendar(opts?: { force?: boolean; desk?: string; 
       });
     } catch (error) {
       results.push({
-        areaId: desk.areaId,
-        subject: `${desk.desk} calendar`,
+        areaId: area.id,
+        subject: `${area.shortName} calendar`,
         recipients: recipients.length,
         sent: false,
         error: error instanceof Error ? error.message : "Calendar mail failed",

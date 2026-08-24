@@ -1,6 +1,7 @@
 import { airtableConfigured, AIRTABLE_TABLE_URL, listAirtableSubscribers } from "@/lib/airtable-list";
 import { listSubscribers } from "@/lib/subscribers";
-import { DESKS } from "@/lib/desks";
+import { AREA_BY_ID, waterChipLabel } from "@/lib/data/areas";
+import { theaterLabel } from "@/lib/data/theaters";
 
 export const dynamic = "force-dynamic";
 
@@ -91,7 +92,10 @@ export default async function SubscribersPage() {
                   <td className="px-4 py-3 text-[color:var(--cream)]/70">{r.zip || "—"}</td>
                   <td className="px-4 py-3 text-[color:var(--cream)]/70">
                     {r.desks
-                      .map((id) => DESKS.find((d) => d.areaId === id)?.desk.replace(" desk", "") ?? id)
+                      .map((id) => {
+                        const area = AREA_BY_ID[id];
+                        return area ? `${theaterLabel(area.theater)} — ${waterChipLabel(area)}` : id;
+                      })
                       .join(", ")}
                   </td>
                   <td className="px-4 py-3 text-[color:var(--cream)]/70">

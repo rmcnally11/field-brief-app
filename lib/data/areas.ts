@@ -530,6 +530,18 @@ export const AREAS: Area[] = [
 ];
 
 export const AREA_BY_ID = Object.fromEntries(AREAS.map((a) => [a.id, a]));
+export const AREA_IDS = AREAS.map((a) => a.id);
+
+export function areasInTheater(theater: Area["theater"]) {
+  return AREAS.filter((a) => a.theater === theater);
+}
+
+export function waterChipLabel(area: Area) {
+  if (area.id === "lower-laguna") return "Lower Laguna";
+  if (area.id === "grand-bahama") return "Grand Bahama";
+  if (area.id === "isla-mujeres") return "Isla Mujeres";
+  return area.shortName;
+}
 
 export function getArea(id?: string | null) {
   return AREA_BY_ID[id ?? ""] ?? AREA_BY_ID.galveston;

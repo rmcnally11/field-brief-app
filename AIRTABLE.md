@@ -131,7 +131,7 @@ You do not have to wait for `/join` if you want names on the list now. After the
 | Name | The name they go by |
 | Email | Their real address |
 | Home ZIP | Home ZIP or postal code |
-| Coasts they fish | `galveston` for Texas. Add `venice`, `islamorada`, `andros`, `ascension`, `san-juan`, `alphonse` only if they fish that water. |
+| Coasts they fish | Micro-areas. Texas `galveston` or the whole set (`sabine`, `galveston`, `matagorda`, `aransas`, `corpus`, `baffin`, `lower-laguna`). Florida is not only `islamorada` — add `biscayne`, `key-largo`, `florida-bay`, `marathon`, `key-west`, `boca-grande`, `jupiter`. |
 | What they receive | `Daily` (5am brief), `Weekly` (Saturday letter), `Calendar` (Sunday month grid), `Seasonal` (1st fundamentals) |
 | Status | **Active** |
 | How they joined | `Operator` if you typed it; `/join` writes `Letter` |
@@ -189,7 +189,7 @@ You should not have to change these. They live in `lib/airtable-list.ts`.
 | Name | `fld3dNtADK32TeRYD` | text |
 | Email | `fldxbuLSA1abol1QD` | email |
 | Home ZIP | `fld5CbrwcpJwkubQ4` | text |
-| Coasts they fish | `fldfp7bhxDuVsvLDs` | multiple select: `galveston`, `venice`, `islamorada`, `andros`, `ascension`, `san-juan`, `alphonse` |
+| Coasts they fish | `fldfp7bhxDuVsvLDs` | multiple select of micro-areas (`galveston`, `islamorada`, `florida-bay`, `jupiter`, …). New ids typecast on write. |
 | Status | `fldNvuox5pwxbDc9i` | single select: `Active`, `Paid`, `Unsubscribed` |
 | How they joined | `fldCrpEUBV2t9a5oh` | single select: `Brief`, `Letter`, `Morning`, `Operator` |
 | Joined on | `fldTQcD4XDpVsdy6f` | date |

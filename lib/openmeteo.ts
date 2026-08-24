@@ -8,7 +8,7 @@ export async function fetchOpenMeteo(lat: number, lon: number) {
   url.searchParams.set("wind_speed_unit", "mph");
   url.searchParams.set("temperature_unit", "fahrenheit");
   url.searchParams.set("timezone", "UTC");
-  const res = await fetch(url, { next: { revalidate: 600 } });
+  const res = await fetch(url, { next: { revalidate: 600 }, signal: AbortSignal.timeout(2500) });
   if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
   return res.json() as Promise<{
     current: {

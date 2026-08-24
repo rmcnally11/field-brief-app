@@ -6,31 +6,46 @@ export async function fetchNwsPoint(lat: number, lon: number) {
   const res = await fetch(`https://api.weather.gov/points/${lat.toFixed(3)},${lon.toFixed(3)}`, {
     headers: { "User-Agent": UA, Accept: "application/geo+json" },
     next: { revalidate: 1800 },
+    signal: AbortSignal.timeout(2200),
   });
   if (!res.ok) throw new Error(`NWS points ${res.status}`);
   return res.json();
 }
 
-export async function fetchNwsForecast(lat: number, lon: number) {
-  const point = await fetchNwsPoint(lat, lon);
-  const hourlyUrl = point.properties?.forecastHourly as string | undefined;
-  if (!hourlyUrl) return { periods: [], office: null };
-  const res = await fetch(hourlyUrl, {
+type NwsPeriod = {
+  startTime: string;
+  temperature: number;
+  windSpeed: string;
+  windDirection: string;
+  shortForecast: string;
+};
+
+async function fetchNwsPeriods(url: string | undefined, label: string) {
+  if (!url) return { periods: [] as NwsPeriod[], office: null as string | null };
+  const res = await fetch(url, {
     headers: { "User-Agent": UA, Accept: "application/geo+json" },
     next: { revalidate: 600 },
+    signal: AbortSignal.timeout(2200),
   });
-  if (!res.ok) throw new Error(`NWS hourly ${res.status}`);
+  if (!res.ok) throw new Error(`NWS ${label} ${res.status}`);
   const json = await res.json();
   return {
-    periods: (json.properties?.periods ?? []) as {
-      startTime: string;
-      temperature: number;
-      windSpeed: string;
-      windDirection: string;
-      shortForecast: string;
-    }[],
-    office: point.properties?.cwa ?? null,
+    periods: (json.properties?.periods ?? []) as NwsPeriod[],
+    office: null as string | null,
   };
+}
+
+export async function fetchNwsForecast(lat: number, lon: number) {
+  const point = await fetchNwsPoint(lat, lon);
+  const result = await fetchNwsPeriods(point.properties?.forecastHourly as string | undefined, "hourly");
+  return { ...result, office: point.properties?.cwa ?? null };
+}
+
+/** 12-hour grid forecast — enough for a calendar day’s max wind, much smaller than hourly. */
+export async function fetchNwsDayWinds(lat: number, lon: number) {
+  const point = await fetchNwsPoint(lat, lon);
+  const result = await fetchNwsPeriods(point.properties?.forecast as string | undefined, "forecast");
+  return { ...result, office: point.properties?.cwa ?? null };
 }
 
 function parseWindMph(text: string | undefined) {

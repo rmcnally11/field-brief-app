@@ -84,7 +84,9 @@ export function MonthGrid({
                 </span>
               </div>
               <div className="mt-0.5 flex items-center justify-between">
-                <MoonDisk phase={day.moon.phase} illumination={day.moon.illumination} size={28} />
+                <span className="text-lg leading-none" aria-hidden>
+                  {day.moon.glyph}
+                </span>
                 {day.windMph != null ? (
                   <span className="text-[9px] opacity-70">{Math.round(day.windMph)}mph</span>
                 ) : null}

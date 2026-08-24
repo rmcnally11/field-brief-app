@@ -167,3 +167,16 @@
 .waterline-svg .waterline-b {
   animation: waterline-drift 22s linear infinite reverse;
 }
+
+@keyframes nav-busy-slide {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+.nav-busy-bar {
+  animation: nav-busy-slide 1.05s ease-in-out infinite;
+}

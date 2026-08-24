@@ -7,6 +7,7 @@ async function getJson(url: string) {
   const res = await fetch(url, {
     headers: { "User-Agent": APP },
     next: { revalidate: 300 },
+    signal: AbortSignal.timeout(2800),
   });
   if (!res.ok) throw new Error(`NOAA ${res.status}`);
   return res.json();

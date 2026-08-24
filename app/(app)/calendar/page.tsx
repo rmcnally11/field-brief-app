@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 import { getArea } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
-import { buildCalendarRange } from "@/lib/calendar";
 import { FilterBar } from "@/components/filters";
-import { AmazingChip, MonthGrid } from "@/components/month-grid";
+import { CalendarBody, CalendarSkeleton } from "@/components/calendar-body";
 import { clockParts } from "@/lib/time";
 import { Waterline } from "@/components/viz/waterline";
 
@@ -35,16 +34,6 @@ export default async function CalendarPage({
     return `/calendar?${p}`;
   };
 
-  let months;
-  let error: string | null = null;
-  try {
-    months = await buildCalendarRange(area, year, month, activity, 2);
-  } catch (e) {
-    error = e instanceof Error ? e.message : "Calendar failed.";
-  }
-
-  const amazing = (months ?? []).flatMap((m) => m.days.filter((d) => d.amazing));
-
   return (
     <div className="space-y-6">
       <div>
@@ -53,7 +42,7 @@ export default async function CalendarPage({
         </p>
         <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Amazing-day calendar</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
-          Two months for this micro-area. Each cell is a moon disk, tide range, and a 1–10. Copper
+          Two months for this micro-area. Each cell is a moon, tide range, and a 1–10. Copper
           outline = book it. Wind is only inside the forecast; farther out is tide + moon + season.
           Station {area.noaaStation ?? "modeled M2"}.
         </p>
@@ -70,34 +59,9 @@ export default async function CalendarPage({
           Next pair →
         </a>
       </div>
-      {amazing.length > 0 && (
-        <section>
-          <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">
-            Amazing days on {area.shortName}
-          </p>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-            {amazing.map((d) => (
-              <AmazingChip key={d.date} day={d} />
-            ))}
-          </ul>
-        </section>
-      )}
-      {error || !months ? (
-        <p className="text-rose-800">{error}</p>
-      ) : (
-        <div className="grid gap-10 xl:grid-cols-2">
-          {months.map((m) => (
-            <MonthGrid
-              key={`${m.year}-${m.month}`}
-              year={m.year}
-              month={m.month}
-              days={m.days}
-              timezone={area.timezone}
-              title={m.label}
-            />
-          ))}
-        </div>
-      )}
+      <Suspense fallback={<CalendarSkeleton />}>
+        <CalendarBody area={area} activity={activity} year={year} month={month} />
+      </Suspense>
       <div className="flex flex-wrap gap-3 text-xs text-[color:var(--cream)]/50">
         <span className="rounded bg-rose-400/90 px-2 py-0.5 text-rose-950">1–3 stay home / structure</span>
         <span className="rounded bg-orange-400 px-2 py-0.5 text-orange-950">4–5 workable if you pick water</span>

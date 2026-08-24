@@ -1,9 +1,11 @@
+import { unstable_cache } from "next/cache";
 import type { ActivityId, Area, CalendarDay } from "@/lib/types";
 import { clockParts, ymdInZone } from "@/lib/time";
 import { moonGlyph, moonPhase, modeledHourlyTide } from "@/lib/moon";
 import { SPECIES } from "@/lib/data/species";
-import { fetchHiLo, fetchHourly } from "@/lib/noaa";
-import { fetchNwsForecast } from "@/lib/nws";
+import { getArea } from "@/lib/data/areas";
+import { fetchHiLo } from "@/lib/noaa";
+import { fetchNwsDayWinds } from "@/lib/nws";
 import { fetchOpenMeteo } from "@/lib/openmeteo";
 import { activityWindPenalty, timeOfDayScore } from "@/lib/engine";
 
@@ -16,40 +18,74 @@ function parseStamp(stamp: string) {
   return new Date(`${stamp.replace(" ", "T")}:00Z`);
 }
 
+type HiLoRow = { time: string; height: number; type: "H" | "L"; at: Date };
+
 type CalendarInputs = {
   hourly: { time: string; height: number }[];
-  hilo: { time: string; height: number; type: "H" | "L"; at: Date }[];
+  hilo: HiLoRow[];
   windByDay: Map<string, number>;
 };
 
-function dayTideQuality(
-  hourly: { time: string; height: number }[],
-  ymd: string,
-  area: Area,
-) {
+function rangeScoreFor(area: Area, range: number) {
+  if (area.tideCharacter === "sight-skinny") {
+    return range < 0.4 ? 0.4 : range < 2.4 ? 1 : 0.65;
+  }
+  if (area.tideCharacter === "blue-water") return 0.75;
+  return clamp(range / Math.max(1.2, area.meanRangeFt * 1.4), 0.3, 1);
+}
+
+function deriveHiLo(hourly: { time: string; height: number }[]): HiLoRow[] {
+  const out: HiLoRow[] = [];
+  for (let i = 1; i < hourly.length - 1; i++) {
+    const prev = hourly[i - 1].height;
+    const cur = hourly[i].height;
+    const next = hourly[i + 1].height;
+    if (cur >= prev && cur > next) {
+      out.push({ time: hourly[i].time, height: cur, type: "H", at: parseStamp(hourly[i].time) });
+    }
+    if (cur <= prev && cur < next) {
+      out.push({ time: hourly[i].time, height: cur, type: "L", at: parseStamp(hourly[i].time) });
+    }
+  }
+  return out;
+}
+
+function dayTideQuality(hourly: { time: string; height: number }[], hilo: HiLoRow[], ymd: string, area: Area) {
   const dayPts = hourly.filter((h) => ymdInZone(parseStamp(h.time), area.timezone) === ymd);
-  if (dayPts.length < 4) return { score: 0.45, range: area.meanRangeFt, bestHour: null as number | null };
-  const heights = dayPts.map((p) => p.height);
+  if (dayPts.length >= 4) {
+    const heights = dayPts.map((p) => p.height);
+    const range = Math.max(...heights) - Math.min(...heights);
+    let bestMove = 0;
+    let bestHour: number | null = null;
+    for (let i = 1; i < dayPts.length; i++) {
+      const move = Math.abs(dayPts[i].height - dayPts[i - 1].height);
+      if (move > bestMove) {
+        bestMove = move;
+        bestHour = clockParts(parseStamp(dayPts[i].time), area.timezone).hour;
+      }
+    }
+    return { score: 0.55 * rangeScoreFor(area, range) + 0.45 * clamp(bestMove / 0.15, 0.3, 1), range, bestHour };
+  }
+
+  const extremes = hilo.filter((h) => ymdInZone(h.at, area.timezone) === ymd);
+  if (extremes.length < 2) return { score: 0.45, range: area.meanRangeFt, bestHour: null as number | null };
+  const heights = extremes.map((p) => p.height);
   const range = Math.max(...heights) - Math.min(...heights);
   let bestMove = 0;
   let bestHour: number | null = null;
-  for (let i = 1; i < dayPts.length; i++) {
-    const move = Math.abs(dayPts[i].height - dayPts[i - 1].height);
+  for (let i = 1; i < extremes.length; i++) {
+    const move = Math.abs(extremes[i].height - extremes[i - 1].height);
     if (move > bestMove) {
       bestMove = move;
-      bestHour = clockParts(parseStamp(dayPts[i].time), area.timezone).hour;
+      const mid = new Date((extremes[i].at.getTime() + extremes[i - 1].at.getTime()) / 2);
+      bestHour = clockParts(mid, area.timezone).hour;
     }
   }
-  let rangeScore: number;
-  if (area.tideCharacter === "sight-skinny") {
-    rangeScore = range < 0.4 ? 0.4 : range < 2.4 ? 1 : 0.65;
-  } else if (area.tideCharacter === "blue-water") {
-    rangeScore = 0.75;
-  } else {
-    rangeScore = clamp(range / Math.max(1.2, area.meanRangeFt * 1.4), 0.3, 1);
-  }
-  const moveScore = clamp(bestMove / 0.15, 0.3, 1);
-  return { score: 0.55 * rangeScore + 0.45 * moveScore, range, bestHour };
+  return {
+    score: 0.55 * rangeScoreFor(area, range) + 0.45 * clamp(bestMove / Math.max(0.35, area.meanRangeFt * 0.4), 0.3, 1),
+    range,
+    bestHour,
+  };
 }
 
 function seasonalForArea(area: Area, month: number, activity: ActivityId | "all") {
@@ -71,23 +107,22 @@ function seasonalForArea(area: Area, month: number, activity: ActivityId | "all"
 }
 
 async function loadCalendarInputs(area: Area, start: Date, dayCount: number): Promise<CalendarInputs> {
-  const [hourlySettled, hiloSettled, windSettled] = await Promise.allSettled([
-    area.noaaStation
-      ? fetchHourly(area.noaaStation, new Date(start.getTime() - 86400000), dayCount + 2)
-      : Promise.resolve([]),
+  const [hiloSettled, windSettled] = await Promise.allSettled([
     area.noaaStation
       ? fetchHiLo(area.noaaStation, new Date(start.getTime() - 86400000), dayCount + 2)
       : Promise.resolve([]),
     area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles"
       ? fetchOpenMeteo(area.lat, area.lon)
-      : fetchNwsForecast(area.lat, area.lon),
+      : fetchNwsDayWinds(area.lat, area.lon),
   ]);
 
-  let hourly: { time: string; height: number }[] =
-    hourlySettled.status === "fulfilled"
-      ? hourlySettled.value.map((r) => ({ time: r.time, height: r.height }))
+  const hilo: HiLoRow[] =
+    hiloSettled.status === "fulfilled"
+      ? hiloSettled.value.map((h) => ({ ...h, at: h.at ?? parseStamp(h.time) }))
       : [];
-  if (!hourly.length) {
+
+  let hourly: { time: string; height: number }[] = [];
+  if (!hilo.length) {
     hourly = modeledHourlyTide(
       new Date(start.getTime() - 12 * 3600000),
       (dayCount + 3) * 24,
@@ -96,10 +131,7 @@ async function loadCalendarInputs(area: Area, start: Date, dayCount: number): Pr
     );
   }
 
-  const hilo =
-    hiloSettled.status === "fulfilled"
-      ? hiloSettled.value.map((h) => ({ ...h, at: h.at ?? parseStamp(h.time) }))
-      : [];
+  const resolvedHiLo = hilo.length ? hilo : deriveHiLo(hourly);
 
   const windByDay = new Map<string, number>();
   if (windSettled.status === "fulfilled") {
@@ -119,19 +151,14 @@ async function loadCalendarInputs(area: Area, start: Date, dayCount: number): Pr
     }
   }
 
-  return { hourly, hilo, windByDay };
+  return { hourly, hilo: resolvedHiLo, windByDay };
 }
 
-function scoreDay(
-  area: Area,
-  activity: ActivityId | "all",
-  ymd: string,
-  inputs: CalendarInputs,
-): CalendarDay {
+function scoreDay(area: Area, activity: ActivityId | "all", ymd: string, inputs: CalendarInputs): CalendarDay {
   const [year, month] = [Number(ymd.slice(0, 4)), Number(ymd.slice(5, 7))];
   const noon = new Date(Date.UTC(year, month - 1, Number(ymd.slice(8, 10)), 16, 0));
   const moon = moonPhase(noon);
-  const tide = dayTideQuality(inputs.hourly, ymd, area);
+  const tide = dayTideQuality(inputs.hourly, inputs.hilo, ymd, area);
   const season = seasonalForArea(area, month, activity);
   const wind = inputs.windByDay.get(ymd) ?? null;
   const windScore = activityWindPenalty(activity, wind);
@@ -210,55 +237,14 @@ function daysInMonth(year: number, month: number) {
   return new Date(Date.UTC(year, month, 0)).getUTCDate();
 }
 
-export async function buildCalendar(
+function monthsFromInputs(
   area: Area,
+  activity: ActivityId | "all",
   year: number,
   month: number,
-  activity: ActivityId | "all",
-): Promise<CalendarDay[]> {
-  const start = new Date(Date.UTC(year, month - 1, 1, 6, 0));
-  const inputs = await loadCalendarInputs(area, start, daysInMonth(year, month));
-  const days: CalendarDay[] = [];
-  for (let d = 1; d <= daysInMonth(year, month); d++) {
-    days.push(scoreDay(area, activity, `${year}-${String(month).padStart(2, "0")}-${String(d).padStart(2, "0")}`, inputs));
-  }
-  return days;
-}
-
-export function upcomingDays(months: { days: CalendarDay[] }[], fromYmd: string, count = 14) {
-  return months.flatMap((m) => m.days).filter((d) => d.date >= fromYmd).slice(0, count);
-}
-
-export async function buildUpcoming(
-  area: Area,
-  activity: ActivityId | "all",
-  fromYmd: string,
-  count = 14,
-): Promise<CalendarDay[]> {
-  const start = new Date(`${fromYmd}T12:00:00Z`);
-  const inputs = await loadCalendarInputs(area, start, count + 2);
-  const days: CalendarDay[] = [];
-  const cursor = new Date(Date.UTC(Number(fromYmd.slice(0, 4)), Number(fromYmd.slice(5, 7)) - 1, Number(fromYmd.slice(8, 10))));
-  for (let i = 0; i < count; i++) {
-    const y = cursor.getUTCFullYear();
-    const m = cursor.getUTCMonth() + 1;
-    const d = cursor.getUTCDate();
-    days.push(scoreDay(area, activity, `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`, inputs));
-    cursor.setUTCDate(cursor.getUTCDate() + 1);
-  }
-  return days;
-}
-
-export async function buildCalendarRange(
-  area: Area,
-  year: number,
-  month: number,
-  activity: ActivityId | "all",
-  count = 2,
+  count: number,
+  inputs: CalendarInputs,
 ) {
-  const start = new Date(Date.UTC(year, month - 1, 1, 6, 0));
-  const span = count * 32;
-  const inputs = await loadCalendarInputs(area, start, span);
   const months: { year: number; month: number; label: string; days: CalendarDay[] }[] = [];
   for (let i = 0; i < count; i++) {
     const d = new Date(Date.UTC(year, month - 1 + i, 1));
@@ -276,4 +262,77 @@ export async function buildCalendarRange(
     });
   }
   return months;
+}
+
+export async function buildCalendar(
+  area: Area,
+  year: number,
+  month: number,
+  activity: ActivityId | "all",
+): Promise<CalendarDay[]> {
+  const start = new Date(Date.UTC(year, month - 1, 1, 6, 0));
+  const inputs = await loadCalendarInputs(area, start, daysInMonth(year, month));
+  return monthsFromInputs(area, activity, year, month, 1, inputs)[0].days;
+}
+
+export function upcomingDays(months: { days: CalendarDay[] }[], fromYmd: string, count = 14) {
+  return months.flatMap((m) => m.days).filter((d) => d.date >= fromYmd).slice(0, count);
+}
+
+async function computeUpcoming(areaId: string, activity: ActivityId | "all", fromYmd: string, count: number) {
+  const area = getArea(areaId);
+  const start = new Date(`${fromYmd}T12:00:00Z`);
+  const inputs = await loadCalendarInputs(area, start, count + 2);
+  const days: CalendarDay[] = [];
+  const cursor = new Date(
+    Date.UTC(Number(fromYmd.slice(0, 4)), Number(fromYmd.slice(5, 7)) - 1, Number(fromYmd.slice(8, 10))),
+  );
+  for (let i = 0; i < count; i++) {
+    const y = cursor.getUTCFullYear();
+    const m = cursor.getUTCMonth() + 1;
+    const d = cursor.getUTCDate();
+    days.push(scoreDay(area, activity, `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`, inputs));
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+  return days;
+}
+
+const cachedUpcoming = unstable_cache(computeUpcoming, ["field-calendar-upcoming-v1"], {
+  revalidate: 180,
+});
+
+export async function buildUpcoming(
+  area: Area,
+  activity: ActivityId | "all",
+  fromYmd: string,
+  count = 14,
+): Promise<CalendarDay[]> {
+  return cachedUpcoming(area.id, activity, fromYmd, count);
+}
+
+async function computeCalendarRange(
+  areaId: string,
+  year: number,
+  month: number,
+  activity: ActivityId | "all",
+  count: number,
+) {
+  const area = getArea(areaId);
+  const start = new Date(Date.UTC(year, month - 1, 1, 6, 0));
+  const inputs = await loadCalendarInputs(area, start, count * 32);
+  return monthsFromInputs(area, activity, year, month, count, inputs);
+}
+
+const cachedCalendarRange = unstable_cache(computeCalendarRange, ["field-calendar-v1"], {
+  revalidate: 300,
+});
+
+export async function buildCalendarRange(
+  area: Area,
+  year: number,
+  month: number,
+  activity: ActivityId | "all",
+  count = 2,
+) {
+  return cachedCalendarRange(area.id, year, month, activity, count);
 }

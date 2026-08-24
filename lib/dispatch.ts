@@ -27,7 +27,7 @@ export function desksDue(at = new Date(), forceAll = false) {
 
 async function sendResend(to: string[], subject: string, html: string, text: string) {
   const key = process.env.RESEND_API_KEY?.trim();
-  if (!key) return { sent: false as const, id: null as string | null };
+  if (!key) return { sent: false as const, id: null as string | null, why: "missing RESEND_API_KEY" };
   const from = process.env.RESEND_FROM?.trim() || "Field Brief <onboarding@resend.dev>";
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -39,7 +39,7 @@ async function sendResend(to: string[], subject: string, html: string, text: str
   });
   const json = (await res.json()) as { id?: string; message?: string };
   if (!res.ok) throw new Error(json.message ?? `Resend ${res.status}`);
-  return { sent: true as const, id: json.id ?? null };
+  return { sent: true as const, id: json.id ?? null, why: null as string | null };
 }
 
 async function writeOutbox(areaId: string, payload: unknown) {
@@ -62,6 +62,7 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
     sent: boolean;
     outbox?: string;
     error?: string;
+    why?: string;
   }> = [];
 
   for (const desk of due) {
@@ -75,7 +76,14 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
       const text = morningEmailText(briefing, yolo);
       if (!recipients.length) {
         const outbox = await writeOutbox(desk.areaId, { subject, text, recipients: [] }).catch(() => undefined);
-        results.push({ areaId: desk.areaId, subject, recipients: 0, sent: false, outbox });
+        results.push({
+          areaId: desk.areaId,
+          subject,
+          recipients: 0,
+          sent: false,
+          outbox,
+          why: "no address on the list",
+        });
         continue;
       }
       const remote = await sendResend(recipients, subject, html, text);
@@ -88,6 +96,7 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
         recipients: recipients.length,
         sent: remote.sent,
         outbox,
+        why: remote.why ?? undefined,
       });
     } catch (error) {
       results.push({
@@ -103,6 +112,10 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
   return {
     at: (opts?.at ?? new Date()).toISOString(),
     mode: hourly && !forceAll ? "local-5am" : "all-desks",
+    configured: {
+      resend: Boolean(process.env.RESEND_API_KEY?.trim()),
+      subscribers: Boolean(process.env.SUBSCRIBER_EMAILS?.trim()),
+    },
     results,
   };
 }

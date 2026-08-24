@@ -10,7 +10,10 @@ export function proxy(request: NextRequest) {
     pathname === GATE_PATH ||
     pathname.startsWith("/api/") ||
     pathname.startsWith("/_next") ||
-    pathname === "/favicon.ico";
+    pathname === "/favicon.ico" ||
+    pathname === "/newsletter" ||
+    pathname.startsWith("/newsletter/") ||
+    pathname === "/for-the-letter";
 
   if (open) return NextResponse.next();
   if (isValidGateToken(request.cookies.get(GATE_COOKIE)?.value)) {

@@ -37,6 +37,12 @@ function bbox(area: Area, pad = 0.35) {
   };
 }
 
+function nearDesk(area: Area, lat: number, lon: number, pad = deskPad(area)) {
+  const dlat = lat - area.lat;
+  const dlon = (lon - area.lon) * Math.cos((area.lat * Math.PI) / 180);
+  return Math.hypot(dlat, dlon) <= pad;
+}
+
 export async function fetchGnisNear(area: Area): Promise<OfficialPoint[]> {
   const { xmin, ymin, xmax, ymax } = bbox(area, deskPad(area));
   const names = [
@@ -73,6 +79,7 @@ export async function fetchGnisNear(area: Area): Promise<OfficialPoint[]> {
     const json = await arcgisQuery(url);
     return (json.features ?? [])
       .filter((f) => f.geometry?.x != null && f.geometry?.y != null)
+      .filter((f) => nearDesk(area, f.geometry!.y!, f.geometry!.x!))
       .map((f) => ({
         id: `gnis-${f.attributes.gaz_id}`,
         name: String(f.attributes.gaz_name),
@@ -82,7 +89,12 @@ export async function fetchGnisNear(area: Area): Promise<OfficialPoint[]> {
         source: "USGS GNIS",
         sourceUrl: `https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/${f.attributes.gaz_id}`,
         detail: `${f.attributes.gaz_featureclass} · ${f.attributes.county_name}, ${f.attributes.state_alpha} · Feature ID ${f.attributes.gaz_id}`,
-      }));
+      }))
+      .sort((a, b) => {
+        const da = Math.hypot(a.lat - area.lat, (a.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180));
+        const db = Math.hypot(b.lat - area.lat, (b.lon - area.lon) * Math.cos((area.lat * Math.PI) / 180));
+        return da - db;
+      });
   } catch {
     return [];
   }
@@ -100,6 +112,7 @@ export async function fetchEncWrecks(area: Area): Promise<OfficialPoint[]> {
     const json = await arcgisQuery(url);
     return (json.features ?? [])
       .filter((f) => f.geometry?.x != null)
+      .filter((f) => nearDesk(area, f.geometry!.y!, f.geometry!.x!, Math.min(0.28, deskPad(area) + 0.04)))
       .map((f, i) => ({
         id: `enc-${area.id}-${i}-${f.geometry!.x}`,
         name: String(f.attributes.OBJNAM || "").trim() || "Charted wreck",

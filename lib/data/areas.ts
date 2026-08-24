@@ -14,6 +14,7 @@ export const AREAS: Area[] = [
       "Brackish border estuary. Sabine and Neches river water, pass current at Texas Point, marsh drains after a blow.",
     tideCharacter: "marsh-current",
     meanRangeFt: 1.6,
+    leadSpecies: ["redfish", "speckled-trout", "flounder"],
   },
   {
     id: "galveston",
@@ -29,6 +30,7 @@ export const AREAS: Area[] = [
       "Largest Texas estuary. Trinity, East, West, and Christmas bays. Wind often moves more water than the tide table. Home water for drum, sheep, trout, and reds.",
     tideCharacter: "marsh-current",
     meanRangeFt: 1.4,
+    leadSpecies: ["redfish", "speckled-trout", "black-drum"],
   },
   {
     id: "matagorda",
@@ -43,6 +45,7 @@ export const AREAS: Area[] = [
       "East Matagorda has almost no Gulf inlet — ICW and Mitchell's Cut do the exchanging. Mid-bay reefs in winter. Port O'Connor jetties and the ship channel on the west side.",
     tideCharacter: "marsh-current",
     meanRangeFt: 1.2,
+    leadSpecies: ["redfish", "speckled-trout", "flounder"],
   },
   {
     id: "aransas",
@@ -57,6 +60,7 @@ export const AREAS: Area[] = [
       "Grass-and-oyster working water. Lydia Ann, Copano reefs, Redfish Bay. The mid-coast skiff and wade theater.",
     tideCharacter: "marsh-current",
     meanRangeFt: 0.8,
+    leadSpecies: ["redfish", "speckled-trout"],
   },
   {
     id: "corpus",
@@ -71,6 +75,7 @@ export const AREAS: Area[] = [
       "Packery, Shamrock, Nueces, Mustang backside. Pass water at Port Aransas. Bull reds on the jetties in fall.",
     tideCharacter: "pass-current",
     meanRangeFt: 0.5,
+    leadSpecies: ["redfish", "tarpon", "speckled-trout"],
   },
   {
     id: "baffin",
@@ -85,6 +90,7 @@ export const AREAS: Area[] = [
       "Hypersaline, clear, seagrass and serpulid rock. Trophy trout water. Land Cut, Nine Mile Hole, Badlands. Not Rockport — do not fish it like Rockport.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 0.4,
+    leadSpecies: ["speckled-trout", "redfish"],
   },
   {
     id: "lower-laguna",
@@ -100,6 +106,7 @@ export const AREAS: Area[] = [
       "The clear-water classroom. South Bay, spoil banks, Brazos Santiago. Sight-casting reds in inches. Often the warmest Texas winter water.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 1.2,
+    leadSpecies: ["redfish", "speckled-trout"],
   },
   {
     id: "biscayne",
@@ -115,6 +122,7 @@ export const AREAS: Area[] = [
       "North end of the grand-slam stage. Bones and permit on the oceanside flats and ocean banks, baby tarpon and snook in the west-side mangroves. Educated fish, short windows, boat traffic.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 2.1,
+    leadSpecies: ["bonefish", "permit", "snook", "tarpon"],
   },
   {
     id: "islamorada",
@@ -130,6 +138,7 @@ export const AREAS: Area[] = [
       "The mecca. Oceanside bones and permit, bayside backcountry, Channel 2 / Channel 5 current, wrecks for permit. Most pressured fish in the hemisphere.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 1.8,
+    leadSpecies: ["permit", "bonefish", "tarpon"],
   },
   {
     id: "florida-bay",
@@ -144,6 +153,7 @@ export const AREAS: Area[] = [
       "Backcountry. Reds and snook live here, not on the oceanside. Snake Bight, First National, the banks west of Flamingo. Wind and water color decide the day.",
     tideCharacter: "marsh-current",
     meanRangeFt: 1.6,
+    leadSpecies: ["redfish", "snook", "tarpon"],
   },
   {
     id: "marathon",
@@ -159,6 +169,7 @@ export const AREAS: Area[] = [
       "Vaca Key gauge. Oceanside wrecks and patch reefs, bayside basins, Seven Mile Bridge current. Permit and tarpon more than bones.",
     tideCharacter: "pass-current",
     meanRangeFt: 1.7,
+    leadSpecies: ["permit", "tarpon", "bonefish"],
   },
   {
     id: "key-west",
@@ -173,6 +184,7 @@ export const AREAS: Area[] = [
       "Marquesas, Harbor Key, oceanside wrecks, the contentment of long runs. Permit and tarpon country. Summer showers can switch a flat on once it clears.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 1.4,
+    leadSpecies: ["permit", "tarpon", "bonefish"],
   },
   {
     id: "andros",
@@ -188,6 +200,7 @@ export const AREAS: Area[] = [
     tideCharacter: "sight-skinny",
     meanRangeFt: 2.8,
     modeledTideOffsetHours: 1.2,
+    leadSpecies: ["bonefish", "permit", "tarpon"],
   },
   {
     id: "abaco",
@@ -203,6 +216,7 @@ export const AREAS: Area[] = [
     tideCharacter: "sight-skinny",
     meanRangeFt: 2.6,
     modeledTideOffsetHours: 0.6,
+    leadSpecies: ["bonefish", "permit"],
   },
   {
     id: "grand-bahama",
@@ -218,6 +232,7 @@ export const AREAS: Area[] = [
     tideCharacter: "sight-skinny",
     meanRangeFt: 2.7,
     modeledTideOffsetHours: 0.4,
+    leadSpecies: ["bonefish"],
   },
   {
     id: "eleuthera",
@@ -233,6 +248,7 @@ export const AREAS: Area[] = [
     tideCharacter: "pass-current",
     meanRangeFt: 2.9,
     modeledTideOffsetHours: 0.2,
+    leadSpecies: ["permit", "bonefish"],
   },
 ];
 

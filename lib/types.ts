@@ -60,6 +60,8 @@ export type Area = {
   tideCharacter: "marsh-current" | "sight-skinny" | "pass-current";
   meanRangeFt: number;
   modeledTideOffsetHours?: number;
+  /** Species that may own this micro-area's headline, in preference order. */
+  leadSpecies: SpeciesId[];
 };
 
 export type Spot = {

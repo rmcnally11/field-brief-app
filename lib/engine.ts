@@ -15,6 +15,7 @@ import { SPECIES } from "@/lib/data/species";
 import { spotsForArea } from "@/lib/data/spots";
 import { flounderClosed, seFloridaSnookClosed } from "@/lib/data/species";
 import { clockParts, hourInZone } from "@/lib/time";
+import { composeHeadline, pickHeadlineSpecies } from "@/lib/headline";
 
 function clamp(n: number, lo: number, hi: number) {
   return Math.max(lo, Math.min(hi, n));
@@ -357,10 +358,7 @@ export function buildBriefing(
     );
   }
 
-  const top =
-    species.find((s) => s.species.role === "primary" && s.inPlay) ??
-    species.find((s) => s.species.role === "primary") ??
-    species[0];
+  const top = pickHeadlineSpecies(area, species);
   const overall = clamp(
     0.4 * (where[0]?.score ?? 4) +
       0.3 * (top?.score ?? 4) +
@@ -369,13 +367,7 @@ export function buildBriefing(
     10,
   );
 
-  const headline = `${top?.species.commonName ?? "Fish"} ${top && top.score >= 6.5 ? "should be the day" : "are in the mix"} — ${
-    conditions.tides.stage === "incoming"
-      ? "push onto the flat with the flood"
-      : conditions.tides.stage === "outgoing"
-        ? "stage on drains, edges, and passes"
-        : "wait for the water to start moving"
-  }.`;
+  const headline = composeHeadline(area, top, conditions);
 
   let confidence: Briefing["confidence"] = "medium";
   if (conditions.tides.source === "noaa" && water != null && wind != null) confidence = "high";

@@ -24,6 +24,27 @@ function blankWeather(source: WeatherNow["source"]): WeatherNow {
   };
 }
 
+function hasSky(w: Pick<WeatherNow, "wx" | "sky" | "precipChance">) {
+  return w.wx != null || w.sky != null || w.precipChance != null;
+}
+
+async function fillSky(at: Date, lat: number, lon: number, weather: WeatherNow): Promise<WeatherNow> {
+  if (hasSky(weather)) return weather;
+  try {
+    const om = openMeteoAt(await fetchOpenMeteo(lat, lon), at);
+    return {
+      ...weather,
+      airF: weather.airF ?? om.airF,
+      precipChance: om.precipChance,
+      precipIn: om.precipIn,
+      sky: om.sky,
+      wx: om.wx,
+    };
+  } catch {
+    return weather;
+  }
+}
+
 function openMeteoAt(
   om: Awaited<ReturnType<typeof fetchOpenMeteo>>,
   at: Date,
@@ -73,7 +94,7 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
     const nwsVal = nws.status === "fulfilled" ? nws.value : null;
     const nwsNow = nwsVal ? nwsWindNow(nwsVal.periods) : null;
     if (wind?.speed != null) {
-      return {
+      return fillSky(at, area.lat, area.lon, {
         airF: nwsNow?.airF ?? null,
         windMph: wind.speed,
         windGustMph: wind.gust,
@@ -86,10 +107,10 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
         wx: nwsNow?.wx ?? null,
         source: "noaa",
         fetchedAt: new Date().toISOString(),
-      };
+      });
     }
     if (nwsNow) {
-      return {
+      return fillSky(at, area.lat, area.lon, {
         airF: nwsNow.airF,
         windMph: nwsNow.windMph,
         windGustMph: null,
@@ -102,7 +123,7 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
         wx: nwsNow.wx,
         source: "nws",
         fetchedAt: new Date().toISOString(),
-      };
+      });
     }
   }
 
@@ -111,7 +132,7 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
       const nws = await fetchNwsForecast(area.lat, area.lon);
       const atHour = nwsWindAt(nws.periods, at);
       if (atHour?.windMph != null) {
-        return {
+        return fillSky(at, area.lat, area.lon, {
           airF: atHour.airF,
           windMph: atHour.windMph,
           windGustMph: null,
@@ -124,7 +145,7 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
           wx: atHour.wx,
           source: "nws",
           fetchedAt: new Date().toISOString(),
-        };
+        });
       }
     } catch {
       // fall through

@@ -7,7 +7,7 @@ export async function fetchNwsPoint(lat: number, lon: number) {
   const res = await fetch(`https://api.weather.gov/points/${lat.toFixed(3)},${lon.toFixed(3)}`, {
     headers: { "User-Agent": UA, Accept: "application/geo+json" },
     next: { revalidate: 1800 },
-    signal: AbortSignal.timeout(2200),
+    signal: AbortSignal.timeout(3500),
   });
   if (!res.ok) throw new Error(`NWS points ${res.status}`);
   return res.json();
@@ -27,7 +27,7 @@ async function fetchNwsPeriods(url: string | undefined, label: string) {
   const res = await fetch(url, {
     headers: { "User-Agent": UA, Accept: "application/geo+json" },
     next: { revalidate: 600 },
-    signal: AbortSignal.timeout(2200),
+    signal: AbortSignal.timeout(3500),
   });
   if (!res.ok) throw new Error(`NWS ${label} ${res.status}`);
   const json = await res.json();

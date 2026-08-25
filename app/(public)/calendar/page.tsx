@@ -101,6 +101,20 @@ export default async function CalendarPage({
           <span className="h-5 w-5 rounded-md border border-dashed border-[color:var(--line)]" />
           dashed = tide + moon only
         </span>
+        <span className="inline-flex items-center gap-1.5">
+          <svg width="16" height="12" viewBox="0 0 18 14" className="text-[color:var(--cream)]/50" aria-hidden>
+            <path d="M1 3.6 C6 2.2, 11 4.6, 17 3.1" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+          </svg>
+          one streamer = light
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <svg width="16" height="12" viewBox="0 0 18 14" className="text-[color:var(--coral)]" aria-hidden>
+            <path d="M1 3.6 C6 2.2, 11 4.6, 17 3.1" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            <path d="M1 7 C6 5.6, 11 8, 17 6.5" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            <path d="M1 10.4 C6 9, 11 11.4, 17 9.9" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+          </svg>
+          three = windy
+        </span>
       </div>
     </div>
   );

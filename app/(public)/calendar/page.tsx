@@ -59,22 +59,48 @@ export default async function CalendarPage({
       <Suspense>
         <FilterBar areaId={area.id} activity={activity} theater={q.theater ?? area.theater} />
       </Suspense>
-      <div className="flex items-center justify-between">
-        <a className="text-sm text-[color:var(--cream)]/70 hover:text-[color:var(--cream)]" href={href(prev.getUTCFullYear(), prev.getUTCMonth() + 1)}>
-          ← Previous pair
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <a
+          className="rounded-full border border-[color:var(--line)] px-3 py-1 text-xs text-[color:var(--cream)]/70 hover:text-[color:var(--cream)]"
+          href={href(prev.getUTCFullYear(), prev.getUTCMonth() + 1)}
+        >
+          Previous pair
         </a>
-        <a className="text-sm text-[color:var(--cream)]/70 hover:text-[color:var(--cream)]" href={href(next.getUTCFullYear(), next.getUTCMonth() + 1)}>
-          Next pair →
+        <a
+          className="rounded-full border border-[color:var(--line)] px-3 py-1 text-xs text-[color:var(--cream)]/70 hover:text-[color:var(--cream)]"
+          href={href(next.getUTCFullYear(), next.getUTCMonth() + 1)}
+        >
+          Next pair
         </a>
       </div>
       <Suspense fallback={<CalendarSkeleton />}>
         <CalendarBody area={area} activity={activity} year={year} month={month} />
       </Suspense>
-      <div className="flex flex-wrap gap-3 text-xs text-[color:var(--cream)]/50">
-        <span className="rounded bg-rose-400/90 px-2 py-0.5 text-rose-950">1–3 stay home / structure</span>
-        <span className="rounded bg-orange-400 px-2 py-0.5 text-orange-950">4–5 workable if you pick water</span>
-        <span className="rounded bg-amber-300 px-2 py-0.5 text-amber-950">6–7 go</span>
-        <span className="rounded bg-teal-400 px-2 py-0.5 text-teal-950">8–10 with a wind forecast + gold = amazing</span>
+      <div className="flex flex-wrap items-center gap-3 text-xs text-[color:var(--cream)]/55">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#e23b3b] font-mono text-[9px] text-white">2</span>
+          stay / structure
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#f0c14b] font-mono text-[9px] text-[#3a2a00]">5</span>
+          pick water
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#2dd4bf] font-mono text-[9px] text-[#042f2e]">8</span>
+          go
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-5 w-5 rounded-md border border-[color:var(--gold)]" />
+          gold = amazing dry day
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-5 w-5 rounded-md border border-[color:var(--copper)]" />
+          copper = YOLO
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-5 w-5 rounded-md border border-dashed border-[color:var(--line)]" />
+          dashed = tide + moon only
+        </span>
       </div>
     </div>
   );

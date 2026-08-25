@@ -12,6 +12,7 @@ export function MoonDisk({
   name,
   springNeap,
   className,
+  uid,
 }: {
   phase: number;
   illumination: number;
@@ -19,11 +20,12 @@ export function MoonDisk({
   name?: string;
   springNeap?: "spring" | "neap" | "mid";
   className?: string;
+  uid?: string;
 }) {
   const waxing = phase < 0.5;
   const lit = Math.max(0.04, Math.min(0.98, illumination));
   const offset = waxing ? (1 - lit) * 36 : -(1 - lit) * 36;
-  const id = `moon-${Math.round(phase * 1000)}-${size}`;
+  const id = `moon-${uid ?? `${Math.round(phase * 1000)}-${size}`}`;
 
   return (
     <div className={cn("flex flex-col items-center", className)}>

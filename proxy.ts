@@ -61,7 +61,17 @@ export function proxy(request: NextRequest) {
     pathname === "/map" ||
     pathname.startsWith("/map/") ||
     pathname === "/join" ||
-    pathname.startsWith("/join/");
+    pathname.startsWith("/join/") ||
+    pathname === "/compare" ||
+    pathname.startsWith("/compare/") ||
+    pathname === "/morning" ||
+    pathname.startsWith("/morning/") ||
+    pathname === "/species" ||
+    pathname.startsWith("/species/") ||
+    pathname === "/method" ||
+    pathname.startsWith("/method/") ||
+    pathname === "/fundamentals" ||
+    pathname.startsWith("/fundamentals/");
 
   if (open) return remember(request, NextResponse.next());
   if (isValidGateToken(request.cookies.get(GATE_COOKIE)?.value)) {

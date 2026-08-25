@@ -1,13 +1,9 @@
 import type { ReactNode } from "react";
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { NavBusy } from "@/components/nav-busy";
-import { GATE_PATH, hasGateCookie } from "@/lib/gate";
 
-export default async function GatedLayout({ children }: { children: ReactNode }) {
-  if (!(await hasGateCookie())) redirect(GATE_PATH);
-
+export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Suspense fallback={null}>

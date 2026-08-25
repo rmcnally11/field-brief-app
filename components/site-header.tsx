@@ -26,7 +26,6 @@ const LINKS = [
   { href: "/newsletter", label: "Letter", dek: "Seven live desks" },
   { href: "/join", label: "Join", dek: "Get tonight’s water" },
   { href: "/fundamentals", label: "Season", dek: "Month and coast" },
-  { href: "/subscribers", label: "List", dek: "Who gets the 5am mail" },
 ];
 
 function activePath(pathname: string, href: string) {

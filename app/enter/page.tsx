@@ -8,8 +8,8 @@ import { Waterline } from "@/components/viz/waterline";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "On This Water — the door",
-  description: "A shared word opens compare, morning, species, method, and season. Ask the person who sent you the link.",
+  title: "On This Water — the list",
+  description: "A shared word opens the operator list. The rest of the instrument is public.",
 };
 
 export default async function EnterPage({
@@ -25,11 +25,11 @@ export default async function EnterPage({
 
   return (
     <div className="mx-auto flex min-h-[70vh] w-full max-w-md flex-col justify-center px-4 py-10 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
-      <p className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--copper)]">Private water</p>
-      <h1 className="mt-2 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">The door</h1>
+      <p className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--copper)]">Operator list</p>
+      <h1 className="mt-2 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">The list</h1>
       <p className="mt-3 text-sm text-[color:var(--cream)]/65">
-        The brief, calendar, and map are open. This word unlocks compare, morning dispatch, species,
-        method, and season. Ask the person who sent you the link.
+        Today, calendar, map, compare, morning, species, method, season, and the letter are open.
+        This word only opens the subscriber table. Family emails stay off the public site.
       </p>
       <Waterline className="mt-5" />
 
@@ -60,7 +60,7 @@ export default async function EnterPage({
           size="lg"
           className="w-full bg-[color:var(--sea)] text-white hover:bg-[color:var(--sea)]/90"
         >
-          Open the brief
+          Open the list
         </Button>
       </form>
     </div>

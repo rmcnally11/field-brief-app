@@ -72,7 +72,7 @@ One post per Saturday, after the live letter has this week’s desks. Do not pos
 
 ### If the site shows a door
 
-`/`, `/calendar`, `/map`, `/newsletter`, `/for-the-letter`, `/card`, and `/api/letter` are public. If you hit “Private water” or `/enter` on those URLs, stop. Do not guess a password. Do not scrape a cached copy from somewhere else.
+`/`, `/calendar`, `/map`, `/compare`, `/morning`, `/species`, `/method`, `/fundamentals`, `/newsletter`, `/join`, `/for-the-letter`, `/card`, and `/api/letter` are public. If you hit `/enter` on those URLs, stop — you are on the wrong page. Do not guess a password. Do not scrape a cached copy from somewhere else.
 
 ---
 

@@ -5,15 +5,9 @@ import { NextRequest, NextResponse } from "next/server";
 export const GATE_COOKIE = "fb_gate";
 export const GATE_PATH = "/enter";
 
-/** Brief, calendar, and map are the public instrument. The rest still sits behind the hobby door. */
+/** The instrument is public. Only the operator list stays behind the door. */
 export function isOpenAppPath(pathname: string) {
-  return (
-    pathname === "/" ||
-    pathname === "/calendar" ||
-    pathname.startsWith("/calendar/") ||
-    pathname === "/map" ||
-    pathname.startsWith("/map/")
-  );
+  return pathname !== "/subscribers" && !pathname.startsWith("/subscribers/");
 }
 
 function sitePassword() {

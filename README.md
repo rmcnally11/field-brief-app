@@ -40,7 +40,7 @@ npm install
 npm run dev -- --port 43217 --hostname 127.0.0.1
 ```
 
-Open [http://127.0.0.1:43217](http://127.0.0.1:43217). The **brief**, **calendar**, and **map** are public. A shared-word door still sits in front of compare, morning, species, method, and season (Hobby-friendly — not Vercel’s paid Password Protection). Set `SITE_PASSWORD` to change the word. Leave it unset and the shipped default is used.
+Open [http://127.0.0.1:43217](http://127.0.0.1:43217). The instrument is public: today, calendar, map, compare, morning, species, method, season, letter, and join. Only `/subscribers` (family emails) stays behind a shared word. Set `SITE_PASSWORD` if you want to change that word.
 
 No API keys for the gauges. NOAA, NWS, USGS, and Open-Meteo are public. NWS requires a User-Agent, which the app sends. The 5am email needs Resend if you want it to leave the machine (see below).
 
@@ -49,7 +49,7 @@ No API keys for the gauges. NOAA, NWS, USGS, and Open-Meteo are public. NWS requ
 This repo does **not** auto-deploy. The Preview you see in Cursor is this cloud VM. To get an `https://….vercel.app` link:
 
 1. Import `rmcnally11/field-brief-app` in [vercel.com](https://vercel.com). Production branch is `main`.
-2. Framework: Next.js. Optional: `SITE_PASSWORD` to change the shared door word (compare / morning / species / method / season / list). For the list and mail: `AIRTABLE_API_KEY` (PAT on the Airtable list base), `RESEND_API_KEY`, `RESEND_FROM`, `SUBSCRIBER_EMAILS`, `CRON_SECRET`. Set `NEXT_PUBLIC_SITE_URL=https://onthiswater.com` so cards and mail links use the brand domain.
+2. Framework: Next.js. Optional: `SITE_PASSWORD` for the operator list only. For the list and mail: `AIRTABLE_API_KEY` (PAT on the Airtable list base), `RESEND_API_KEY`, `RESEND_FROM`, `SUBSCRIBER_EMAILS`, `CRON_SECRET`. Set `NEXT_PUBLIC_SITE_URL=https://onthiswater.com` so cards and mail links use the brand domain.
 3. After the first deploy, every `git push` to the connected branch rebuilds the site.
 
 There is no nightly site rebuild. Code updates when someone pushes. Conditions update when someone opens a page (see below).
@@ -74,7 +74,7 @@ The page stays live. Texas wind versus the table changes inside a morning. The 5
 
 ## The list — signup, the table, and the 5am email
 
-Others can subscribe. The family door is [`/join`](https://onthiswater.com/join?coasts=texas). The same form is on today and the letter (`/newsletter`). `/morning` still sits behind the hobby door. Join writes a row on the Airtable Subscribers table. Resend only sends the mail — it is not the list. Full click-by-click link: [AIRTABLE.md](./AIRTABLE.md).
+Others can subscribe. The family door is [`/join`](https://onthiswater.com/join?coasts=texas). The same form is on today and the letter (`/newsletter`). Join writes a row on the Airtable Subscribers table. Resend only sends the mail — it is not the list. Full click-by-click link: [AIRTABLE.md](./AIRTABLE.md).
 
 There **is** a managed table: [Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) in the Costal Cavaliers workspace (the Airtable base is still named Field Brief until you rename it in Airtable). Columns: Name, Email, Home ZIP, Coasts they fish, What they receive (`Daily` = 5am brief / `Weekly` = Saturday letter / `Calendar` = Sunday month grid / `Seasonal` = first-of-month fundamentals), Status (`Active` / `Paid` / `Unsubscribed`), How they joined, Joined on, Notes. `Paid` is the monetize hook — same list, later a charge. A gated `/subscribers` page in the app shows the same rows. Production cannot read or write that table until `AIRTABLE_API_KEY` is on Vercel and you redeploy.
 

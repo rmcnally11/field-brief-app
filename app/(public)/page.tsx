@@ -3,7 +3,7 @@ import { getBriefing, parseActivity, parseBriefDate } from "@/lib/briefing";
 import { FilterBar } from "@/components/filters";
 import { BriefingPanel } from "@/components/briefing-panel";
 import { UpcomingLoader, UpcomingSkeleton } from "@/components/upcoming-loader";
-import { readWaterPref, resolveDesk } from "@/lib/prefs";
+import { readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
 import { getYoloDay } from "@/lib/calendar";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +15,7 @@ export default async function Home({
 }) {
   const q = await searchParams;
   const pref = await readWaterPref();
-  const desk = resolveDesk(q, pref);
+  const desk = resolveDeskForTheater(q, pref);
   const date = parseBriefDate(q.date);
   let briefing;
   let yolo = null;

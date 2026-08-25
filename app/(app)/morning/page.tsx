@@ -1,7 +1,8 @@
 import { getBriefing, parseBriefDate } from "@/lib/briefing";
 import { getYoloDay } from "@/lib/calendar";
 import { morningLine } from "@/lib/morning";
-import { readWaterPref, resolveDesk } from "@/lib/prefs";
+import { readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
+import { siteOrigin } from "@/lib/brand";
 import { CopyLine } from "@/components/copy-line";
 import { YoloBanner } from "@/components/yolo-banner";
 import { Waterline } from "@/components/viz/waterline";
@@ -21,11 +22,7 @@ export default async function MorningPage({
 }) {
   const q = await searchParams;
   const pref = await readWaterPref();
-  let desk = resolveDesk(q, pref);
-  if (q.theater && q.theater !== "all" && desk.area.theater !== q.theater) {
-    const lead = DESKS.find((d) => d.theater === q.theater)?.areaId;
-    desk = resolveDesk({ ...q, area: q.area ?? lead }, pref);
-  }
+  const desk = resolveDeskForTheater(q, pref);
   const date = parseBriefDate(q.date);
   const coast = areasInTheater(desk.area.theater);
   const [briefing, yolo, coastBriefs] = await Promise.all([
@@ -108,7 +105,15 @@ export default async function MorningPage({
           <ScoreRing score={briefing.overall} size={88} label={briefing.kind === "today" ? "Today" : "Day"} />
         </div>
         <div className="mt-5">
-          <CopyLine text={line} />
+          <CopyLine
+            text={line}
+            url={`${siteOrigin()}${briefHref({
+              areaId: briefing.area.id,
+              theater: briefing.area.theater,
+              activity: briefing.activity,
+              date,
+            })}`}
+          />
         </div>
         <div className="mt-5 flex flex-wrap gap-3 text-sm">
           <a

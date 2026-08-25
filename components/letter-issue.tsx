@@ -218,6 +218,39 @@ export function LetterIssue({
         ))}
       </nav>
 
+      {issue.desks.length > 0 ? (
+        <section>
+          <p className="text-center text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+            This week on your coast
+          </p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+            {issue.desks.map((desk) => {
+              const score = desk.briefing?.overall;
+              const name = desk.briefing?.area.shortName ?? theaterLabel(desk.theater);
+              return (
+                <a
+                  key={`strip-${desk.areaId}`}
+                  href={`/?area=${desk.areaId}&theater=${desk.theater}`}
+                  className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--panel)] px-4 py-3"
+                >
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="font-heading text-xl text-[color:var(--cream)]">{name}</p>
+                    {score != null ? (
+                      <p className="font-mono text-sm text-[color:var(--cream)]/70">{score.toFixed(1)}</p>
+                    ) : (
+                      <p className="text-xs text-[color:var(--cream)]/40">quiet</p>
+                    )}
+                  </div>
+                  <p className="mt-1 line-clamp-2 text-sm text-[color:var(--cream)]/65">
+                    {desk.briefing?.headline ?? desk.error ?? desk.kicker}
+                  </p>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
+
       <article className="mx-auto max-w-3xl">
         <p className="font-heading text-2xl leading-snug text-[color:var(--cream)] md:text-3xl">{issue.letter}</p>
         <p className="mt-4 text-sm text-[color:var(--cream)]/50">

@@ -2,6 +2,7 @@ import { getBriefing, parseActivity, parseBriefDate } from "@/lib/briefing";
 import { AREAS, getArea, neighborArea } from "@/lib/data/areas";
 import { THEATER_META } from "@/lib/data/theaters";
 import { readWaterPref } from "@/lib/prefs";
+import { letterDeskForTheater } from "@/lib/desks";
 import { ScoreRing } from "@/components/viz/score-ring";
 import { Waterline } from "@/components/viz/waterline";
 import { WindTable } from "@/components/wind-table";
@@ -88,11 +89,12 @@ function DeskColumn({ briefing, error }: { briefing?: Briefing; error?: string }
 export default async function ComparePage({
   searchParams,
 }: {
-  searchParams: Promise<{ a?: string; b?: string; activity?: string; date?: string }>;
+  searchParams: Promise<{ a?: string; b?: string; activity?: string; date?: string; theater?: string }>;
 }) {
   const q = await searchParams;
   const pref = await readWaterPref();
-  const left = getArea(q.a ?? pref?.areaId);
+  const theaterLead = q.theater && !q.a ? letterDeskForTheater(q.theater) : undefined;
+  const left = getArea(q.a ?? theaterLead ?? pref?.areaId);
   const right = getArea(q.b && q.b !== left.id ? q.b : neighborArea(left).id);
   const activity = parseActivity(q.activity ?? pref?.activity);
   const date = parseBriefDate(q.date);
@@ -117,14 +119,25 @@ export default async function ComparePage({
         <Waterline className="mt-3" />
       </div>
       <div className="flex flex-wrap gap-1.5">
-        {THEATER_META.filter((t) => t.id === left.theater || t.id === right.theater).map((t) => (
-          <span
-            key={t.id}
-            className="rounded-full border border-[color:var(--sea)] bg-[color:var(--sea)]/15 px-3 py-1 text-xs uppercase tracking-[0.14em]"
-          >
-            {t.label}
-          </span>
-        ))}
+        {THEATER_META.map((t) => {
+          const lead = letterDeskForTheater(t.id);
+          if (!lead) return null;
+          const pair = neighborArea(getArea(lead));
+          const on = left.theater === t.id || right.theater === t.id;
+          return (
+            <a
+              key={t.id}
+              href={compareHref({ a: lead, b: pair.id, activity, date })}
+              className={`rounded-full border px-3 py-1 text-xs uppercase tracking-[0.14em] ${
+                on
+                  ? "border-[color:var(--sea)] bg-[color:var(--sea)]/15 text-[color:var(--cream)]"
+                  : "border-[color:var(--line)] text-[color:var(--cream)]/55"
+              }`}
+            >
+              {t.label}
+            </a>
+          );
+        })}
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <div>

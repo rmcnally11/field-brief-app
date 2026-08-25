@@ -3,6 +3,7 @@ import { AREAS, getArea } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
 import type { ActivityId, TheaterId } from "@/lib/types";
 import { COASTS_COOKIE, parseCoasts } from "@/lib/coasts";
+import { letterDeskForTheater } from "@/lib/desks";
 
 export const WATER_COOKIE = "fb_water";
 export { COASTS_COOKIE };
@@ -56,5 +57,18 @@ export function resolveDesk(
   const activity = parseActivity(query.activity ?? pref?.activity);
   const theater = query.theater ?? pref?.theater ?? area.theater;
   return { area, activity, theater };
+}
+
+/** If the URL names a theater the current water is not on, land on that theater’s letter desk. */
+export function resolveDeskForTheater(
+  query: { area?: string; activity?: string; theater?: string },
+  pref?: WaterPref | null,
+) {
+  const desk = resolveDesk(query, pref);
+  if (query.theater && query.theater !== "all" && desk.area.theater !== query.theater) {
+    const lead = letterDeskForTheater(query.theater);
+    return resolveDesk({ ...query, area: query.area ?? lead }, pref);
+  }
+  return desk;
 }
 

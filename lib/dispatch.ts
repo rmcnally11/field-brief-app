@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { getBriefing } from "@/lib/briefing";
 import { getYoloDay } from "@/lib/calendar";
-import { AREAS } from "@/lib/data/areas";
+import { AREA_BY_ID, AREAS } from "@/lib/data/areas";
 import {
   buildSeasonIssue,
   calendarDigestHtml,
@@ -11,15 +11,14 @@ import {
   letterEmailHtml,
   letterEmailText,
   letterSubject,
-  morningEmailHtml,
-  morningEmailText,
-  morningSubject,
+  morningDigestHtml,
+  morningDigestSubject,
+  morningDigestText,
   seasonalEmailHtml,
   seasonalEmailText,
   seasonalSubject,
 } from "@/lib/mail";
-import { AREA_BY_ID } from "@/lib/data/areas";
-import { listSubscribers, subscribersForDesk } from "@/lib/subscribers";
+import { listSubscribers } from "@/lib/subscribers";
 import { coastsForDesks } from "@/lib/coasts";
 import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
 import { sendResend } from "@/lib/send";
@@ -52,9 +51,34 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
   const hourly = process.env.CRON_HOURLY === "1";
   const forceAll = opts?.forceAll ?? !hourly;
   const due = desksDue(opts?.at, forceAll).filter((d) => !opts?.desk || d.id === opts.desk);
+  const dueIds = new Set(due.map((d) => d.id));
   const subscribers = await listSubscribers();
+  const daily = subscribers.filter((s) => s.cadence.includes("daily") && s.desks.length);
+  const groups = new Map<string, string[]>();
+  for (const sub of daily) {
+    const desks = [...new Set(sub.desks.filter((id) => dueIds.has(id) && AREA_BY_ID[id]))];
+    if (!desks.length) continue;
+    const key = desks.sort().join(",");
+    groups.set(key, [...(groups.get(key) ?? []), sub.email]);
+  }
+  const needed = [...new Set([...groups.keys()].flatMap((key) => key.split(",")))];
+  const order = AREAS.map((a) => a.id);
+  const packs = new Map<string, { briefing: Awaited<ReturnType<typeof getBriefing>>; yolo: Awaited<ReturnType<typeof getYoloDay>> }>();
+  await Promise.all(
+    needed.map(async (id) => {
+      const area = AREA_BY_ID[id];
+      if (!area) return;
+      try {
+        const [briefing, yolo] = await Promise.all([getBriefing(id), getYoloDay(area, "all")]);
+        packs.set(id, { briefing, yolo });
+      } catch {
+        /* one quiet desk does not kill the digest */
+      }
+    }),
+  );
+
   const results: Array<{
-    areaId: string;
+    desks: string[];
     subject: string;
     recipients: number;
     sent: boolean;
@@ -63,46 +87,62 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
     why?: string;
   }> = [];
 
-  for (const area of due) {
-    const recipients = subscribersForDesk(subscribers, area.id, "daily");
+  for (const [key, emails] of groups) {
+    const desks = key.split(",");
+    const rows = desks
+      .map((id) => packs.get(id))
+      .filter((row): row is NonNullable<typeof row> => Boolean(row))
+      .sort(
+        (a, b) =>
+          order.indexOf(a.briefing.area.id) - order.indexOf(b.briefing.area.id),
+      );
+    if (!rows.length) {
+      results.push({
+        desks,
+        subject: `Today · ${desks.join(" · ")}`,
+        recipients: emails.length,
+        sent: false,
+        why: "gauges quiet",
+      });
+      continue;
+    }
+    const subject = morningDigestSubject(rows);
+    const html = morningDigestHtml(rows);
+    const text = morningDigestText(rows);
     try {
-      const [briefing, yolo] = await Promise.all([getBriefing(area.id), getYoloDay(area, "all")]);
-      const subject = morningSubject(briefing);
-      const html = morningEmailHtml(briefing, yolo);
-      const text = morningEmailText(briefing, yolo);
-      if (!recipients.length) {
-        const outbox = await writeOutbox(area.id, { subject, text, recipients: [] }).catch(() => undefined);
-        results.push({
-          areaId: area.id,
-          subject,
-          recipients: 0,
-          sent: false,
-          outbox,
-          why: "no address on the list",
-        });
-        continue;
-      }
-      const remote = await sendResend(recipients, subject, html, text);
+      const remote = await sendResend(emails, subject, html, text);
       const outbox = remote.sent
         ? undefined
-        : await writeOutbox(area.id, { subject, text, recipients, html }).catch(() => undefined);
+        : await writeOutbox(`am-${desks.join("-")}`, { subject, text, recipients: emails, html }).catch(
+            () => undefined,
+          );
       results.push({
-        areaId: area.id,
+        desks,
         subject,
-        recipients: recipients.length,
+        recipients: emails.length,
         sent: remote.sent,
         outbox,
         why: remote.why ?? undefined,
       });
     } catch (error) {
       results.push({
-        areaId: area.id,
-        subject: area.shortName,
-        recipients: recipients.length,
+        desks,
+        subject,
+        recipients: emails.length,
         sent: false,
         error: error instanceof Error ? error.message : "Dispatch failed",
       });
     }
+  }
+
+  if (!groups.size) {
+    results.push({
+      desks: due.map((d) => d.id),
+      subject: "Today",
+      recipients: 0,
+      sent: false,
+      why: "no address on the list",
+    });
   }
 
   return {

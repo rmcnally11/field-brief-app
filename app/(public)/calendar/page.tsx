@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { getArea } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
 import { FilterBar } from "@/components/filters";
 import { CalendarBody, CalendarSkeleton } from "@/components/calendar-body";
 import { clockParts } from "@/lib/time";
 import { Waterline } from "@/components/viz/waterline";
+import { readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
 
 export const dynamic = "force-dynamic";
 
@@ -14,8 +14,10 @@ export default async function CalendarPage({
   searchParams: Promise<{ area?: string; activity?: string; theater?: string; month?: string }>;
 }) {
   const q = await searchParams;
-  const area = getArea(q.area);
-  const activity = parseActivity(q.activity);
+  const pref = await readWaterPref();
+  const desk = resolveDeskForTheater(q, pref);
+  const area = desk.area;
+  const activity = parseActivity(q.activity ?? desk.activity);
   const now = clockParts(new Date(), area.timezone);
   let year = now.year;
   let month = now.month;

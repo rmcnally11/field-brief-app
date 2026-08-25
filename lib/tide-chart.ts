@@ -21,6 +21,7 @@ export type TideChartLayout = {
   dayMarks: { x: number; label: string }[];
   nowX: number;
   nowOn: boolean;
+  samples: { x: number; y: number; t: number; h: number }[];
   fillPath: string;
   strokePath: string;
   fontSize: number;
@@ -68,6 +69,7 @@ export function layoutTideChart(opts: {
     dayMarks: [],
     nowX: 0,
     nowOn: false,
+    samples: [],
     fillPath: "",
     strokePath: "",
     fontSize: 8 * scale,
@@ -94,10 +96,13 @@ export function layoutTideChart(opts: {
   const maxH = hi + padH;
   const range = maxH - minH || 1;
 
-  const mapped = pts.map((p) => ({
+  const samples = pts.map((p) => ({
     x: padL + ((p.t - t0) / span) * innerW,
     y: padT + (1 - (p.h - minH) / range) * innerH,
+    t: p.t,
+    h: p.h,
   }));
+  const mapped = samples.map((p) => ({ x: p.x, y: p.y }));
 
   const now = opts.now ?? Date.now();
   const nowX = padL + ((now - t0) / span) * innerW;
@@ -154,11 +159,35 @@ export function layoutTideChart(opts: {
     dayMarks,
     nowX,
     nowOn,
+    samples,
     fillPath: tidePath(mapped, width - padR, height - padB),
     strokePath: linePath(mapped),
     fontSize: 8 * scale,
     markR: 3.2 * scale,
     strokeWidth: 1.6 * scale,
     nowWidth: 1.2 * scale,
+  };
+}
+
+export function sampleAtX(layout: TideChartLayout, x: number) {
+  const samples = layout.samples;
+  if (!samples.length) return null;
+  const lo = layout.padL;
+  const hi = layout.width - layout.padR;
+  const clamped = Math.max(lo, Math.min(hi, x));
+  if (samples.length === 1 || clamped <= samples[0].x) return samples[0];
+  const last = samples[samples.length - 1];
+  if (clamped >= last.x) return last;
+  let i = 1;
+  while (i < samples.length && samples[i].x < clamped) i += 1;
+  const a = samples[i - 1];
+  const b = samples[i];
+  const span = b.x - a.x || 1;
+  const u = (clamped - a.x) / span;
+  return {
+    x: clamped,
+    y: a.y + (b.y - a.y) * u,
+    t: a.t + (b.t - a.t) * u,
+    h: a.h + (b.h - a.h) * u,
   };
 }

@@ -22,6 +22,7 @@ import {
 import { clockParts, hourInZone, ymdInZone } from "@/lib/time";
 import { composeHeadline, pickHeadlineSpecies } from "@/lib/headline";
 import { isSightSky, precipFishability, skyCopy } from "@/lib/wx";
+import { tideGauge } from "@/lib/data/tide-gauges";
 
 function clamp(n: number, lo: number, hi: number) {
   return Math.max(lo, Math.min(hi, n));
@@ -441,11 +442,14 @@ export function buildBriefing(
   const why: string[] = [];
   const warnings: string[] = [];
 
+  const gauge = tideGauge(area.noaaStation);
   const modeledNote =
     conditions.tides.source !== "modeled"
-      ? " from NOAA"
-      : area.noaaStation
-        ? " (modeled — the NOAA gauge did not answer)"
+      ? gauge
+        ? ` from NOAA ${gauge.id} ${gauge.name}`
+        : " from NOAA"
+      : gauge
+        ? ` (modeled — NOAA ${gauge.id} ${gauge.name} did not answer)`
         : area.theater === "bahamas" || area.theater === "mexico" || area.theater === "seychelles"
           ? " (modeled — no NOAA gauge on this water)"
           : " (modeled — no NOAA gauge on this water)";

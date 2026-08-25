@@ -1,4 +1,4 @@
-import { cream, copper, water } from "@/lib/viz";
+import { cream, copper, gold, water } from "@/lib/viz";
 import type { TideChartLayout } from "@/lib/tide-chart";
 
 export function TideChartGraphic({
@@ -6,11 +6,13 @@ export function TideChartGraphic({
   fillId = "tideFill",
   fit = "fixed",
   labels = true,
+  cursor,
 }: {
   layout: TideChartLayout;
   fillId?: string;
   fit?: "fixed" | "fluid";
   labels?: boolean;
+  cursor?: { x: number; y: number; label: string } | null;
 }) {
   if (!layout.ok) return null;
   const {
@@ -112,6 +114,19 @@ export function TideChartGraphic({
             </text>
           ))
         : null}
+      {cursor ? (
+        <g>
+          <line
+            x1={cursor.x}
+            x2={cursor.x}
+            y1={padT}
+            y2={height - padB}
+            stroke={gold}
+            strokeWidth={nowWidth}
+          />
+          <circle cx={cursor.x} cy={cursor.y} r={markR * 1.15} fill={gold} />
+        </g>
+      ) : null}
       {nowOn ? (
         <line
           x1={nowX}
@@ -123,7 +138,7 @@ export function TideChartGraphic({
           strokeWidth={nowWidth}
         />
       ) : null}
-      {labels && nowOn ? (
+      {labels && nowOn && !cursor ? (
         <text
           x={nowX + fontSize * 0.5}
           y={padT + fontSize * 1.25}
@@ -133,6 +148,18 @@ export function TideChartGraphic({
           fontFamily="ui-sans-serif, system-ui, sans-serif"
         >
           NOW
+        </text>
+      ) : null}
+      {labels && cursor ? (
+        <text
+          x={cursor.x + fontSize * 0.6 < width - padR - 80 ? cursor.x + fontSize * 0.6 : cursor.x - fontSize * 0.6}
+          y={Math.max(padT + fontSize * 1.2, cursor.y - fontSize)}
+          textAnchor={cursor.x + fontSize * 0.6 < width - padR - 80 ? "start" : "end"}
+          fill={gold}
+          fontSize={fontSize * 1.15}
+          fontFamily="ui-sans-serif, system-ui, sans-serif"
+        >
+          {cursor.label}
         </text>
       ) : null}
       {labels

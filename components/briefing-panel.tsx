@@ -98,6 +98,7 @@ export function BriefingPanel({
             nowHeight={conditions.tides.predictedNow}
             stage={conditions.tides.stage}
             source={conditions.tides.source}
+            station={area.noaaStation}
             windows={briefing.when}
             height={190}
           />
@@ -275,6 +276,9 @@ export function BriefingPanel({
       <section className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-4">
           <h2 className="font-heading text-2xl text-[color:var(--cream)]">Where</h2>
+          <p className="text-sm text-[color:var(--cream)]/55">
+            This pip is that mark on this tide — not the day on the ring.
+          </p>
           {briefing.where.length === 0 ? (
             <p className="text-[color:var(--cream)]/55">No marks match this method on this water.</p>
           ) : (
@@ -321,6 +325,12 @@ export function BriefingPanel({
         </div>
         <div className="space-y-4">
           <h2 className="font-heading text-2xl text-[color:var(--cream)]">When</h2>
+          <p className="text-sm text-[color:var(--cream)]/55">
+            When is moving water in a good hour — not the day. Today’s ring mixes the best mark, the
+            lead fish, and the best window, then taxes the sky. A strong incoming can sit under a
+            weak day if the wind or the fish is off. Calendar cells are a third recipe: range, moon,
+            and the day’s forecast.
+          </p>
           <ul className="space-y-2">
             {briefing.when.length === 0 ? (
               <li className="text-sm text-[color:var(--cream)]/55">

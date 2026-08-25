@@ -5,6 +5,7 @@ import { CalendarBody, CalendarSkeleton } from "@/components/calendar-body";
 import { clockParts } from "@/lib/time";
 import { Waterline } from "@/components/viz/waterline";
 import { readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
+import { tideGauge } from "@/lib/data/tide-gauges";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,7 @@ export default async function CalendarPage({
   const pref = await readWaterPref();
   const desk = resolveDeskForTheater(q, pref);
   const area = desk.area;
+  const gauge = tideGauge(area.noaaStation);
   const activity = parseActivity(q.activity ?? desk.activity);
   const now = clockParts(new Date(), area.timezone);
   let year = now.year;
@@ -44,10 +46,13 @@ export default async function CalendarPage({
         </p>
         <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Amazing-day calendar</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
-          Two months for this micro-area. Each cell is a moon, tide range, sky, and a 1–10. Copper
-          outline = book it. Rain and thunderstorms tax the score — a soaker cannot be a copper day.
-          Wind and sky are only inside the forecast; farther out is tide + moon + season.
-          Station {area.noaaStation ?? "modeled M2"}.
+          Two months for this micro-area. Each cell is a moon, tide range, sky, and a 1–10 — the
+          month recipe, not Today’s ring and not a When window. Copper outline = book it. Rain and
+          thunderstorms tax the score — a soaker cannot be a copper day. Wind and sky are only
+          inside the forecast; farther out is tide + moon + season.{" "}
+          {gauge
+            ? `Clock is NOAA ${gauge.id} ${gauge.name} — a tide gauge on the bank, not a weather buoy.`
+            : "Clock is a modeled M2 tide. There is no NOAA gauge on this water."}
         </p>
         <Waterline className="mt-3" />
       </div>

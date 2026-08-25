@@ -79,6 +79,7 @@ export default async function MorningCardPage({
           nowHeight={briefing.conditions.tides.predictedNow}
           stage={briefing.conditions.tides.stage}
           source={briefing.conditions.tides.source}
+          station={area.noaaStation}
           windows={briefing.when}
           height={168}
         />

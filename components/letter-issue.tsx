@@ -8,6 +8,8 @@ import { RegsStamp } from "@/components/regs-stamp";
 import type { DeskIssue } from "@/lib/newsletter";
 import type { TheaterId } from "@/lib/types";
 import { THEATER_IDS, THEATER_META } from "@/lib/data/theaters";
+import { AREA_BY_ID, waterChipLabel } from "@/lib/data/areas";
+import { DESKS } from "@/lib/desks";
 import { coastEditionLabel, isAllCoasts } from "@/lib/coasts";
 
 function tideLabel(desk: DeskIssue) {
@@ -56,7 +58,7 @@ function DeskCard({ desk }: { desk: DeskIssue }) {
         <div>
           <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">{desk.desk}</p>
           <h2 className="mt-1 font-heading text-2xl text-[color:var(--cream)]">
-            {briefing?.area.shortName ?? theaterLabel(desk.theater)}
+            {briefing?.area ? waterChipLabel(briefing.area) : theaterLabel(desk.theater)}
           </h2>
           <p className="text-xs text-[color:var(--cream)]/45">{desk.kicker}</p>
         </div>
@@ -120,7 +122,7 @@ function DeskCard({ desk }: { desk: DeskIssue }) {
         href={href}
         className="mt-5 text-sm text-[color:var(--sea)] underline decoration-[color:var(--sea)]/40 underline-offset-4"
       >
-        Open the {briefing?.area.shortName ?? "desk"} brief
+        Open the {briefing?.area ? waterChipLabel(briefing.area) : "desk"} brief
       </a>
     </article>
   );
@@ -147,7 +149,20 @@ export function LetterIssue({
   const all = isAllCoasts(coasts);
   const weekBase = weekPath ? issue.weekId : null;
   const seasonHref = all || !coasts?.length ? "/fundamentals" : `/fundamentals?theater=${coasts[0]}`;
-  const deskNames = issue.desks.map((d) => d.desk.replace(" desk", "")).join(", ");
+  const waterNames = issue.desks
+    .map((d) => {
+      const area = AREA_BY_ID[d.areaId];
+      return area ? waterChipLabel(area) : d.desk.replace(" desk", "");
+    })
+    .join(", ");
+  const letterDeskNames = (coasts ?? [])
+    .map((t) => {
+      const desk = DESKS.find((d) => d.theater === t);
+      const area = desk ? AREA_BY_ID[desk.areaId] : undefined;
+      return area ? waterChipLabel(area) : null;
+    })
+    .filter(Boolean)
+    .join(", ");
 
   return (
     <div className="space-y-10">
@@ -226,7 +241,9 @@ export function LetterIssue({
           <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
             {issue.desks.map((desk) => {
               const score = desk.briefing?.overall;
-              const name = desk.briefing?.area.shortName ?? theaterLabel(desk.theater);
+              const name = desk.briefing?.area
+                ? waterChipLabel(desk.briefing.area)
+                : theaterLabel(desk.theater);
               return (
                 <a
                   key={`strip-${desk.areaId}`}
@@ -255,8 +272,8 @@ export function LetterIssue({
         <p className="font-heading text-2xl leading-snug text-[color:var(--cream)] md:text-3xl">{issue.letter}</p>
         <p className="mt-4 text-sm text-[color:var(--cream)]/50">
           {all
-            ? "Drawn from Galveston, Venice, Islamorada, Andros, Ascension, San Juan, and Alphonse — one desk per theater, not every micro-area."
-            : `This edition is ${edition} only — ${deskNames}. Coasts you did not elect stay off this letter.`}{" "}
+            ? "Drawn from Galveston, Venice, Islamorada, Andros, Ascension, San Juan, and Alphonse — one letter desk per coast. Open a coast chip for every water on that coast — Texas is Sabine through Lower Laguna, not Galveston only."
+            : `This edition is ${edition} only — ${waterNames}. The Saturday letter still writes from ${letterDeskNames || "the letter desk"}. Coasts you did not elect stay off this letter.`}{" "}
           Scores are 1–10. They are not bite guarantees.{" "}
           <a href={seasonHref} className="text-[color:var(--sea)] underline underline-offset-4">
             Read this month’s seasonal fundamentals
@@ -269,7 +286,9 @@ export function LetterIssue({
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
-              {all ? "Seven desks" : edition}
+              {all
+                ? "Seven desks"
+                : `${issue.desks.length} ${issue.desks.length === 1 ? "water" : "waters"} · ${edition}`}
             </p>
             <h2 className="font-heading text-3xl text-[color:var(--cream)]">
               {issue.frozen ? "That Saturday" : "This week"}

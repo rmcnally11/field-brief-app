@@ -12,6 +12,7 @@ import {
   theaterLabel,
   type ClosureNote,
 } from "@/lib/data/fundamentals";
+import { AREAS } from "@/lib/data/areas";
 import { DESKS } from "@/lib/desks";
 import { isAllCoasts } from "@/lib/coasts";
 
@@ -169,6 +170,16 @@ export async function getNewsletter(weekRaw?: string | null): Promise<Newsletter
   return cachedNewsletter(weekId);
 }
 
+function deskMetaForArea(areaId: string) {
+  const letter = DESKS.find((d) => d.areaId === areaId);
+  const area = AREAS.find((a) => a.id === areaId);
+  if (letter) return { desk: letter.desk, kicker: letter.kicker };
+  return {
+    desk: `${theaterLabel(area?.theater ?? "texas")} water`,
+    kicker: (area?.summary.split(".")[0] ?? area?.name ?? areaId).trim(),
+  };
+}
+
 export function filterNewsletter(issue: NewsletterIssue, coasts: TheaterId[] | null): NewsletterIssue {
   if (isAllCoasts(coasts) || !coasts) return issue;
   const desks = issue.desks.filter((d) => coasts.includes(d.theater));
@@ -190,6 +201,52 @@ export function filterNewsletter(issue: NewsletterIssue, coasts: TheaterId[] | n
     peaks,
     closures: closuresForCoasts(issue.month, coasts),
   };
+}
+
+/** Coast chip: every micro-area on those theaters. All coasts stays the seven letter desks. */
+export async function withCoastWaters(
+  issue: NewsletterIssue,
+  coasts: TheaterId[] | null,
+): Promise<NewsletterIssue> {
+  const filtered = filterNewsletter(issue, coasts);
+  if (isAllCoasts(coasts) || !coasts?.length) return filtered;
+
+  const waters = AREAS.filter((a) => coasts.includes(a.theater));
+  const have = new Map(filtered.desks.map((d) => [d.areaId, d]));
+  const missing = waters.filter((a) => !have.has(a.id));
+  const dateRaw = filtered.frozen ? filtered.weekId : null;
+  const settled = await Promise.allSettled(missing.map((a) => getBriefing(a.id, "all", dateRaw)));
+
+  const desks: DeskIssue[] = waters.map((area) => {
+    const existing = have.get(area.id);
+    if (existing) return existing;
+    const i = missing.findIndex((a) => a.id === area.id);
+    const result = settled[i];
+    const meta = deskMetaForArea(area.id);
+    if (result?.status === "fulfilled") {
+      return {
+        theater: area.theater,
+        areaId: area.id,
+        desk: meta.desk,
+        kicker: meta.kicker,
+        briefing: result.value,
+        error: null,
+        seasonal: MONTH_THEATER[filtered.month][area.theater],
+      };
+    }
+    const reason = result?.status === "rejected" ? result.reason : null;
+    return {
+      theater: area.theater,
+      areaId: area.id,
+      desk: meta.desk,
+      kicker: meta.kicker,
+      briefing: null,
+      error: reason instanceof Error ? reason.message : "The gauge did not answer.",
+      seasonal: MONTH_THEATER[filtered.month][area.theater],
+    };
+  });
+
+  return { ...filtered, desks };
 }
 
 export function incidentalNoise(month: number, coasts?: TheaterId[] | null) {

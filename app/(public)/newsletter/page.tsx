@@ -1,4 +1,4 @@
-import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
+import { getNewsletter, withCoastWaters } from "@/lib/newsletter";
 import { LetterIssue } from "@/components/letter-issue";
 import { resolveElectedCoasts } from "@/lib/coasts";
 import { readCoastsPref } from "@/lib/prefs";
@@ -21,7 +21,7 @@ export default async function NewsletterPage({
   let issue;
   let error: string | null = null;
   try {
-    issue = filterNewsletter(await getNewsletter(), coasts);
+    issue = await withCoastWaters(await getNewsletter(), coasts);
   } catch (e) {
     error = e instanceof Error ? e.message : "The letter did not set.";
   }

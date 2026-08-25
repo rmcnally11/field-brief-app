@@ -1,4 +1,4 @@
-import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
+import { getNewsletter, withCoastWaters } from "@/lib/newsletter";
 import { LetterIssue } from "@/components/letter-issue";
 import { isYmd } from "@/lib/time";
 import { readCoastsPref } from "@/lib/prefs";
@@ -24,7 +24,7 @@ export default async function WeekLetterPage({
   let issue;
   let error: string | null = null;
   try {
-    issue = filterNewsletter(await getNewsletter(isYmd(week) ? week : null), coasts);
+    issue = await withCoastWaters(await getNewsletter(isYmd(week) ? week : null), coasts);
   } catch (e) {
     error = e instanceof Error ? e.message : "The letter did not set.";
   }

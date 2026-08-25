@@ -16,7 +16,7 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - **Wind versus the table**: observed minus predicted water. On the Texas coast the wind often *is* the tide.
 - **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas, Mexico, Seychelles) — wind **and rain / thunderstorms**.
 - Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**. The 5am mail leads with that same tide chart — the curve is the first thing in the inbox.
-- **Saturday Letter** (`/newsletter`) — one live desk per theater you elect (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse). A Texas-only reader does not see Andros or Seychelles. Peaks and harvest closures follow the same coasts.
+- **Saturday Letter** (`/newsletter`) — All coasts is the seven-desk newspaper (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse). Open a coast chip to see every water on that coast — Texas is Sabine through Lower Laguna, not Galveston only. The Saturday email still writes from the letter desk. A Texas-only reader does not see Andros or Seychelles. Peaks and harvest closures follow the same coasts.
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by the coasts you elected, then water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next. Tap a day for that date’s brief. Copper outline = amazing day. The monthly **YOLO** day is the best remaining **dry** day with a real wind forecast. Rain and thunderstorms tax the score; a soaker cannot be a copper day.
 - **Stay or drive** (`/compare`) — two desks, one morning.

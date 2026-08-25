@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { GITHUB_REPO, siteOrigin } from "@/lib/brand";
-import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
+import { getNewsletter, withCoastWaters } from "@/lib/newsletter";
 import { isYmd } from "@/lib/time";
 import { resolveElectedCoasts } from "@/lib/coasts";
 
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     desksQuery: url.searchParams.get("desks"),
   });
   try {
-    const issue = filterNewsletter(await getNewsletter(isYmd(week) ? week : null), coasts);
+    const issue = await withCoastWaters(await getNewsletter(isYmd(week) ? week : null), coasts);
     return NextResponse.json({
       source: `${ORIGIN}/newsletter`,
       permalink: `${ORIGIN}/newsletter/${issue.weekId}`,

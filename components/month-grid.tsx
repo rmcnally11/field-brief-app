@@ -10,35 +10,57 @@ import { Waterline } from "@/components/viz/waterline";
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function TideSpark({ day }: { day: CalendarDay }) {
-  const tides = day.tides.slice(0, 4);
-  if (tides.length >= 2) {
-    const heights = tides.map((t) => t.height);
-    const min = Math.min(...heights);
-    const max = Math.max(...heights);
-    const span = Math.max(0.25, max - min);
-    const w = 52;
-    const h = 16;
-    const pts = tides
-      .map((t, i) => {
-        const x = tides.length === 1 ? w / 2 : (i / (tides.length - 1)) * w;
-        const y = h - 2 - ((t.height - min) / span) * (h - 4);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      })
-      .join(" ");
-    return (
-      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="mt-1.5" aria-hidden>
-        <polyline points={pts} fill="none" stroke={sea} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    );
+  const extrema = day.tides.slice(0, 4).map((t) => t.height);
+  const heights =
+    extrema.length >= 2
+      ? extrema
+      : day.tideRangeFt != null
+        ? [0, day.tideRangeFt]
+        : null;
+  if (!heights) return null;
+
+  const min = Math.min(...heights);
+  const max = Math.max(...heights);
+  const span = Math.max(0.25, max - min);
+  const w = 56;
+  const h = 18;
+  const pad = 1.2;
+  const samples = 28;
+  const last = heights.length - 1;
+  const pts: string[] = [];
+  for (let i = 0; i < samples; i++) {
+    const t = i / (samples - 1);
+    const pos = t * last;
+    const i0 = Math.floor(pos);
+    const i1 = Math.min(last, i0 + 1);
+    const mu = (1 - Math.cos((pos - i0) * Math.PI)) / 2;
+    const height = heights[i0] * (1 - mu) + heights[i1] * mu;
+    const x = pad + t * (w - pad * 2);
+    const y = h - pad - ((height - min) / span) * (h - pad * 2);
+    pts.push(`${x.toFixed(2)},${y.toFixed(2)}`);
   }
-  if (day.tideRangeFt == null) return null;
+  const line = `M${pts[0]} ${pts.slice(1).map((p) => `L${p}`).join(" ")}`;
+  const area = `${line} L${(w - pad).toFixed(2)},${h} L${pad.toFixed(2)},${h} Z`;
+  const fillId = `spark-${day.date}`;
+
   return (
-    <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-[color:var(--cream)]/10">
-      <div
-        className="h-full rounded-full bg-[color:var(--sea)]/70"
-        style={{ width: `${Math.min(100, (day.tideRangeFt / 2.4) * 100)}%` }}
-      />
-    </div>
+    <svg
+      width="100%"
+      height={h}
+      viewBox={`0 0 ${w} ${h}`}
+      preserveAspectRatio="none"
+      className="mt-1.5 block"
+      aria-hidden
+    >
+      <defs>
+        <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={sea} stopOpacity="0.32" />
+          <stop offset="100%" stopColor={sea} stopOpacity="0.02" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#${fillId})`} />
+      <path d={line} fill="none" stroke={sea} strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
   );
 }
 

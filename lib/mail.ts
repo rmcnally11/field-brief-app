@@ -9,6 +9,8 @@ import { skyCopy } from "@/lib/wx";
 import type { NewsletterIssue } from "@/lib/newsletter";
 import { coastEditionLabel } from "@/lib/coasts";
 import { copper, gold, scoreHex, scoreInk } from "@/lib/viz";
+import { feedNotes } from "@/lib/feeds";
+import { windWord } from "@/lib/wind";
 import {
   MONTH_NAMES,
   MONTH_THEATER,
@@ -282,7 +284,8 @@ function morningDeskCard(
               ${kicker(`${theaterLabel(briefing.area.theater)} · ${briefing.area.shortName}${meta ? ` · ${meta.desk}` : ""}`)}
               <p style="margin:8px 0 0;font-size:22px;line-height:1.25;color:${NAVY};font-family:Georgia,'Times New Roman',serif">${escapeHtml(briefing.headline)}</p>
               <p style="margin:8px 0 0;font-size:15px;line-height:1.45;color:${MUTED}">${escapeHtml(line)}</p>
-              <p style="margin:8px 0 0;font-size:12px;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(briefing.confidence)} · ${escapeHtml(formatYmdLong(briefing.forDate, briefing.area.timezone))}${w.windMph != null ? ` · ${Math.round(w.windMph)} mph${w.windCardinal ? ` ${w.windCardinal}` : ""}` : ""}</p>
+              <p style="margin:8px 0 0;font-size:12px;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(briefing.confidence)} · ${escapeHtml(formatYmdLong(briefing.forDate, briefing.area.timezone))} · ${escapeHtml(windWord(w.windMph))}</p>
+              <p style="margin:6px 0 0;font-size:11px;line-height:1.4;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(feedNotes(briefing.area, briefing.conditions).map((n) => n.label).join(" · "))}</p>
             </td>
             <td valign="top" align="right" width="100" style="width:100px;padding-left:10px">${scoreDisc(briefing.overall)}</td>
           </tr>
@@ -392,6 +395,9 @@ export function letterEmailText(issue: NewsletterIssue, coasts: TheaterId[] | nu
     parts.push(
       `${desk.desk.toUpperCase()} · ${name} · ${score}`,
       desk.briefing?.headline ?? desk.error ?? desk.kicker,
+      desk.briefing
+        ? `${windWord(desk.briefing.conditions.weather.windMph)} · ${desk.briefing.when[0]?.label ?? "no window"}`
+        : "",
       desk.seasonal,
       "",
     );
@@ -421,21 +427,32 @@ export function letterEmailHtml(issue: NewsletterIssue, coasts: TheaterId[] | nu
       const head = desk.briefing?.headline ?? desk.error ?? desk.kicker;
       const score = desk.briefing?.overall;
       const w = desk.briefing?.conditions.weather;
-      const wind =
-        w?.windMph != null
-          ? `${Math.round(w.windMph)} mph${w.windCardinal ? ` ${w.windCardinal}` : ""}`
-          : "wind n/a";
+      const wind = windWord(w?.windMph ?? null);
       const sky = w ? skyCopy(w.wx, w.precipChance, w.sky) : "sky n/a";
+      const window = desk.briefing?.when[0];
+      const feeds = desk.briefing
+        ? feedNotes(desk.briefing.area, desk.briefing.conditions)
+            .map((n) => n.label)
+            .join(" · ")
+        : "Gauge quiet";
+      const chart = desk.briefing ? tideImage(desk.briefing, { bleed: true }) : "";
       return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 14px;background:${PAGE};border:1px solid ${LINE};border-radius:18px">
+        ${chart ? `<tr><td style="padding:0;font-size:0;line-height:0">${chart}</td></tr>` : ""}
         <tr>
-          <td style="padding:16px">
+          <td style="padding:${chart ? "12px 16px 16px" : "16px"}">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%">
               <tr>
                 <td valign="top">
                   ${kicker(desk.desk)}
                   <p style="margin:8px 0 0;font-size:22px;line-height:1.25;color:${NAVY};font-family:Georgia,'Times New Roman',serif">${escapeHtml(name)}</p>
                   <p style="margin:8px 0 0;font-size:15px;line-height:1.45;color:${MUTED}">${escapeHtml(head)}</p>
+                  <p style="margin:8px 0 0;font-size:12px;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(feeds)}</p>
                   <p style="margin:8px 0 0;font-size:13px;color:${NAVY};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(wind)} · ${escapeHtml(sky)}</p>
+                  ${
+                    window
+                      ? `<p style="margin:8px 0 0;font-size:13px;color:${MUTED}">Window · ${escapeHtml(window.label)}${window.why ? ` — ${escapeHtml(window.why)}` : ""}</p>`
+                      : ""
+                  }
                   <p style="margin:8px 0 0;font-size:13px;color:${MUTED}">${escapeHtml(desk.seasonal)}</p>
                 </td>
                 <td valign="top" align="right" width="100" style="width:100px;padding-left:10px">${score != null ? scoreDisc(score) : ""}</td>
@@ -491,16 +508,18 @@ function calendarGridHtml(month: CalendarMonth, area: Area) {
   }
   for (const day of month.days) {
     const n = Number(day.date.slice(-2));
-    const bg = scoreHex(day.score);
-    const fg = scoreInk(day.score);
+    const pip = scoreHex(day.score);
+    const pipInk = scoreInk(day.score);
     const ring = day.yolo ? copper : day.amazing ? gold : LINE;
     const ringW = day.yolo || day.amazing ? "2px" : "1px";
-    const wet = day.wx === "storm" ? "T" : day.wx === "rain" ? "R" : "";
+    const wet = day.wx === "storm" ? "storm" : day.wx === "rain" ? "rain" : "";
+    const wind = windWord(day.windMph).split(" · ")[0];
     cells.push(`<td width="14%" align="center" valign="top" style="width:14%;padding:3px 2px">
-      <a href="${ORIGIN}/?area=${area.id}&theater=${area.theater}&date=${day.date}" style="display:block;text-decoration:none;color:${fg};background:${bg};border:${ringW} solid ${ring};border-radius:10px;padding:7px 2px 8px">
-        <div style="font-size:10px;line-height:1;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${n}</div>
-        <div style="font-size:15px;font-weight:700;line-height:1.2;padding-top:3px;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${day.score.toFixed(1)}</div>
-        <div style="font-size:11px;line-height:1.2;padding-top:2px">${escapeHtml(day.moon.glyph)}${wet ? ` ${wet}` : ""}</div>
+      <a href="${ORIGIN}/?area=${area.id}&theater=${area.theater}&date=${day.date}" style="display:block;text-decoration:none;color:${NAVY};background:${PAGE};border:${ringW} solid ${ring};border-radius:12px;padding:6px 2px 8px">
+        <div style="font-size:11px;line-height:1;font-family:Georgia,'Times New Roman',serif">${n}</div>
+        <div style="width:22px;height:22px;margin:5px auto 0;border-radius:11px;background:${pip};color:${pipInk};font-size:10px;font-weight:700;line-height:22px;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${day.score.toFixed(0)}</div>
+        <div style="font-size:9px;line-height:1.2;padding-top:4px;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(wind)}</div>
+        ${wet ? `<div style="font-size:9px;color:${copper};padding-top:2px;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(wet)}</div>` : ""}
       </a>
     </td>`);
   }
@@ -521,7 +540,7 @@ function calendarGridHtml(month: CalendarMonth, area: Area) {
     <tr>${head}</tr>
     ${rows.join("")}
   </table>
-  <p style="margin:10px 0 0;font-size:12px;color:${MUTED};line-height:1.45;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">Gold ring = amazing dry day. Copper = YOLO. T = thunderstorm, R = rain.</p>`;
+  <p style="margin:10px 0 0;font-size:12px;color:${MUTED};line-height:1.45;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">Gold ring = amazing dry day. Copper = YOLO. Pip is the 1–10. Wind is light / breeze / windy — not a direction.</p>`;
 }
 
 function upcomingHtml(days: CalendarDay[], area: Area) {
@@ -532,7 +551,7 @@ function upcomingHtml(days: CalendarDay[], area: Area) {
     .map((d) => {
       const label = formatYmdLong(d.date, area.timezone);
       const sky = skyCopy(d.wx, d.precipChance) || "sky later";
-      const wind = d.windMph != null ? `${Math.round(d.windMph)} mph` : "no wind yet";
+      const wind = windWord(d.windMph);
       const tag = d.yolo ? "YOLO" : d.amazing ? "Amazing" : d.confidence;
       const bg = scoreHex(d.score);
       return `<tr>

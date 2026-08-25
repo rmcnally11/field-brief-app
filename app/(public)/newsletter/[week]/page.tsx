@@ -1,4 +1,4 @@
-import { getNewsletter, withCoastWaters } from "@/lib/newsletter";
+import { getNewsletter, loadLetterTomorrows, withCoastWaters } from "@/lib/newsletter";
 import { LetterIssue } from "@/components/letter-issue";
 import { isYmd } from "@/lib/time";
 import { readCoastsPref } from "@/lib/prefs";
@@ -38,5 +38,6 @@ export default async function WeekLetterPage({
     );
   }
 
-  return <LetterIssue issue={issue} coasts={coasts} weekPath />;
+  const tomorrows = await loadLetterTomorrows(issue);
+  return <LetterIssue issue={issue} coasts={coasts} weekPath tomorrows={tomorrows} />;
 }

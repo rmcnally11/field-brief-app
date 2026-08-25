@@ -20,7 +20,7 @@ import {
 } from "@/lib/mail";
 import { listSubscribers } from "@/lib/subscribers";
 import { coastsForDesks } from "@/lib/coasts";
-import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
+import { filterNewsletter, getNewsletter, hydrateLetterDesks } from "@/lib/newsletter";
 import { sendResend } from "@/lib/send";
 import { buildCalendarRange } from "@/lib/calendar";
 import { clockParts } from "@/lib/time";
@@ -190,7 +190,7 @@ export async function dispatchWeekly(opts?: { force?: boolean; at?: Date }) {
   if (!weekly.length) {
     return { skipped: false as const, reason: "no weekly addresses", results: [] as const };
   }
-  const issue = await getNewsletter();
+  const issue = await hydrateLetterDesks(await getNewsletter());
   const groups = new Map<string, string[]>();
   for (const sub of weekly) {
     const key = [...sub.desks].sort().join(",");

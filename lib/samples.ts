@@ -1,7 +1,7 @@
 import { getBriefing } from "@/lib/briefing";
 import { buildCalendarRange, getYoloDay } from "@/lib/calendar";
 import { AREA_BY_ID } from "@/lib/data/areas";
-import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
+import { filterNewsletter, getNewsletter, hydrateLetterDesks } from "@/lib/newsletter";
 import { clockParts } from "@/lib/time";
 import {
   buildSeasonIssue,
@@ -71,7 +71,8 @@ export async function buildSampleEmails(opts?: {
 }): Promise<SampleMail[]> {
   const desks = opts?.desks?.length ? opts.desks : [opts?.areaId ?? "galveston"];
   const coasts = opts?.coasts ?? coastsForDesks(desks);
-  const [{ mornings, calendars }, issue] = await Promise.all([loadDeskPack(desks), getNewsletter()]);
+  const [{ mornings, calendars }, rawIssue] = await Promise.all([loadDeskPack(desks), getNewsletter()]);
+  const issue = await hydrateLetterDesks(rawIssue);
   if (!mornings.length) throw new Error("No desks answered.");
   if (!calendars.length) throw new Error("Calendar did not set.");
   const letter = filterNewsletter(issue, coasts);

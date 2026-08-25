@@ -1,4 +1,4 @@
-import { getNewsletter, withCoastWaters } from "@/lib/newsletter";
+import { getNewsletter, loadLetterTomorrows, withCoastWaters } from "@/lib/newsletter";
 import { LetterIssue } from "@/components/letter-issue";
 import { resolveElectedCoasts } from "@/lib/coasts";
 import { readCoastsPref } from "@/lib/prefs";
@@ -35,5 +35,6 @@ export default async function NewsletterPage({
     );
   }
 
-  return <LetterIssue issue={issue} coasts={coasts} />;
+  const tomorrows = await loadLetterTomorrows(issue);
+  return <LetterIssue issue={issue} coasts={coasts} tomorrows={tomorrows} />;
 }

@@ -170,6 +170,25 @@ export async function getNewsletter(weekRaw?: string | null): Promise<Newsletter
   return cachedNewsletter(weekId);
 }
 
+/** This week’s desks use the same live briefings as Today. Frozen Saturday issues stay the snapshot. */
+export async function hydrateLetterDesks(issue: NewsletterIssue): Promise<NewsletterIssue> {
+  if (issue.frozen) return issue;
+  const settled = await Promise.allSettled(issue.desks.map((desk) => getBriefing(desk.areaId)));
+  const desks = issue.desks.map((desk, i) => {
+    const result = settled[i];
+    if (result.status === "fulfilled") {
+      return { ...desk, briefing: result.value, error: null };
+    }
+    const reason = result.reason;
+    return {
+      ...desk,
+      briefing: null,
+      error: reason instanceof Error ? reason.message : "The gauge did not answer.",
+    };
+  });
+  return { ...issue, generatedAt: new Date().toISOString(), desks };
+}
+
 function deskMetaForArea(areaId: string) {
   const letter = DESKS.find((d) => d.areaId === areaId);
   const area = AREAS.find((a) => a.id === areaId);
@@ -208,7 +227,7 @@ export async function withCoastWaters(
   issue: NewsletterIssue,
   coasts: TheaterId[] | null,
 ): Promise<NewsletterIssue> {
-  const filtered = filterNewsletter(issue, coasts);
+  const filtered = await hydrateLetterDesks(filterNewsletter(issue, coasts));
   if (isAllCoasts(coasts) || !coasts?.length) return filtered;
 
   const waters = AREAS.filter((a) => coasts.includes(a.theater));
@@ -247,6 +266,18 @@ export async function withCoastWaters(
   });
 
   return { ...filtered, desks };
+}
+
+export async function loadLetterTomorrows(issue: NewsletterIssue) {
+  const pairs = await Promise.all(
+    issue.desks.map(async (desk) => {
+      if (!desk.briefing) return [desk.areaId, null] as const;
+      const ymd = addDaysYmd(desk.briefing.forDate, 1);
+      const next = await getBriefing(desk.areaId, "all", ymd).catch(() => null);
+      return [desk.areaId, next] as const;
+    }),
+  );
+  return Object.fromEntries(pairs) as Record<string, Briefing | null>;
 }
 
 export function incidentalNoise(month: number, coasts?: TheaterId[] | null) {

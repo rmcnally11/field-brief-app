@@ -6,6 +6,7 @@ import { briefHref } from "@/lib/hrefs";
 import { skyWord } from "@/lib/wx";
 import { formatYmdLong } from "@/lib/time";
 import { Waterline } from "@/components/viz/waterline";
+import { WindMark } from "@/components/viz/wind-mark";
 
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -60,43 +61,6 @@ function TideSpark({ day }: { day: CalendarDay }) {
       </defs>
       <path d={area} fill={`url(#${fillId})`} />
       <path d={line} fill="none" stroke={sea} strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function windLevel(mph: number) {
-  if (mph < 8) return 1;
-  if (mph < 16) return 2;
-  return 3;
-}
-
-function WindMark({ mph }: { mph: number | null }) {
-  if (mph == null) {
-    return <span className="text-[9px] uppercase tracking-wide text-[color:var(--cream)]/28">—</span>;
-  }
-  const level = windLevel(mph);
-  const blow = mph >= 22;
-  const windy = mph >= 16;
-  return (
-    <svg
-      width="18"
-      height="14"
-      viewBox="0 0 18 14"
-      aria-label={`${Math.round(mph)} mph`}
-      className={blow ? "text-[color:var(--copper)]" : windy ? "text-[color:var(--coral)]" : "text-[color:var(--cream)]/55"}
-    >
-      <title>{`${Math.round(mph)} mph`}</title>
-      {[0, 1, 2].map((i) => (
-        <path
-          key={i}
-          d={`M1 ${3.6 + i * 3.4} C6 ${2.2 + i * 3.4}, 11 ${4.6 + i * 3.4}, 17 ${3.1 + i * 3.4}`}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          opacity={i < level ? 1 : 0.14}
-        />
-      ))}
     </svg>
   );
 }

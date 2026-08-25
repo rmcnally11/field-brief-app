@@ -32,6 +32,19 @@ export const metadata: Metadata = {
   title: "On This Water — seven saltwater theaters",
   description:
     "The water, as it is this morning. Live NOAA tides, a Saturday Letter, seasonal fundamentals by coast and species, and monthly 1–10 calendars.",
+  openGraph: {
+    title: "On This Water — seven saltwater theaters",
+    description: "The water, as it is this morning. Live NOAA tides, not a bite.",
+    url: `https://${PRODUCT_DOMAIN}`,
+    siteName: "On This Water",
+    images: [{ url: "/api/og/tide?area=galveston", width: 1200, height: 520, alt: "Galveston tide" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "On This Water",
+    description: "The water, as it is this morning.",
+    images: ["/api/og/tide?area=galveston"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

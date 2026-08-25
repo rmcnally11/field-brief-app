@@ -43,6 +43,10 @@ export const DESKS = [
   },
 ] as const;
 
+export function letterDeskForTheater(theater: string) {
+  return DESKS.find((d) => d.theater === theater)?.areaId;
+}
+
 export function deskChoiceLabel(desk: (typeof DESKS)[number]) {
   const place =
     desk.areaId === "san-juan"

@@ -3,6 +3,7 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { SlidersHorizontal } from "lucide-react";
 import { AREAS, getArea } from "@/lib/data/areas";
+import { letterDeskForTheater } from "@/lib/desks";
 import { ACTIVITIES } from "@/lib/data/activities";
 import type { TheaterId } from "@/lib/types";
 import { THEATER_META } from "@/lib/data/theaters";
@@ -58,7 +59,7 @@ export function FilterBar({
               key={t.id}
               href={href({
                 theater: t.id === "all" ? undefined : t.id,
-                area: t.id === "all" ? areaId : AREAS.find((a) => a.theater === t.id)?.id,
+                area: t.id === "all" ? areaId : letterDeskForTheater(t.id) ?? AREAS.find((a) => a.theater === t.id)?.id,
               })}
               className={cn(
                 "cursor-pointer rounded-full border px-3 py-1 text-xs uppercase tracking-[0.14em]",
@@ -200,7 +201,7 @@ function MobileFilterSheet({
                   key={t.id}
                   href={href({
                     theater: t.id === "all" ? undefined : t.id,
-                    area: t.id === "all" ? areaId : AREAS.find((a) => a.theater === t.id)?.id,
+                    area: t.id === "all" ? areaId : letterDeskForTheater(t.id) ?? AREAS.find((a) => a.theater === t.id)?.id,
                   })}
                   className={cn(
                     "touch-manipulation rounded-xl border px-3 py-3 text-sm",

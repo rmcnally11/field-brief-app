@@ -238,7 +238,7 @@ export function MorningMail({
       <Button
         type="submit"
         disabled={status === "loading" || desks.length === 0 || cadence.length === 0}
-        className="mt-5 bg-[color:var(--sea)] text-white hover:bg-[color:var(--sea)]/90"
+        className="mt-5 h-11 bg-[color:var(--copper)] px-5 text-white hover:bg-[color:var(--copper)]/90"
       >
         {status === "loading" ? "Saving…" : "Join the list"}
       </Button>

@@ -106,9 +106,12 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
       });
       continue;
     }
-    const subject = morningDigestSubject(rows);
-    const html = morningDigestHtml(rows);
-    const text = morningDigestText(rows);
+    const quiet = desks
+      .filter((id) => !packs.has(id))
+      .map((id) => AREA_BY_ID[id]?.shortName ?? id);
+    const subject = morningDigestSubject(rows, { quiet });
+    const html = morningDigestHtml(rows, { quiet });
+    const text = morningDigestText(rows, { quiet });
     try {
       const remote = await sendResend(emails, subject, html, text);
       const outbox = remote.sent
@@ -122,7 +125,9 @@ export async function dispatchMorning(opts?: { forceAll?: boolean; desk?: string
         recipients: emails.length,
         sent: remote.sent,
         outbox,
-        why: remote.why ?? undefined,
+        why: quiet.length
+          ? `partial brief — ${quiet.join(", ")} quiet${remote.why ? ` · ${remote.why}` : ""}`
+          : remote.why ?? undefined,
       });
     } catch (error) {
       results.push({

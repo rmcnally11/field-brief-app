@@ -23,6 +23,8 @@ import { clockParts, hourInZone, ymdInZone } from "@/lib/time";
 import { composeHeadline, pickHeadlineSpecies } from "@/lib/headline";
 import { isSightSky, precipFishability, skyCopy } from "@/lib/wx";
 import { tideGauge } from "@/lib/data/tide-gauges";
+import { salinityCoast, salinitySiteFor } from "@/lib/salinity";
+import { riverSiteFor } from "@/lib/rivers";
 
 function clamp(n: number, lo: number, hi: number) {
   return Math.max(lo, Math.min(hi, n));
@@ -379,13 +381,16 @@ export function pickWindows(
       isSightSky(area.tideCharacter, activity),
     );
     const score = clamp(10 * (0.4 * (moving ? 1 : 0.3) + 0.3 * tod + 0.18 * w + 0.12 * sky), 1, 10);
+    const tide = slope > 0 ? "incoming" : "outgoing";
+    const light = hour < 8 ? "First light" : hour >= 17 ? "Last light" : null;
     windows.push({
       start: parsed[i].time,
       end: parsed[Math.min(i + 2, parsed.length - 1)].time,
-      label: slope > 0 ? "Incoming water" : "Outgoing water",
+      label: light ? `${light} · ${tide}` : `${tide === "incoming" ? "Incoming" : "Outgoing"} water`,
       score: Number(score.toFixed(1)),
-      why:
-        tod > 0.8
+      why: light
+        ? `${light} on ${tide} water.`
+        : tod > 0.8
           ? "Moving water in the right part of the day."
           : "Water is moving, but the clock is against you — heat or dark.",
     });
@@ -394,14 +399,27 @@ export function pickWindows(
   const collapsed: WindowPick[] = [];
   for (const w of windows) {
     const last = collapsed[collapsed.length - 1];
-    if (last && last.label === w.label && w.score >= 5) {
+    const sameTide = last && windowTide(last.label) === windowTide(w.label);
+    if (last && sameTide && w.score >= 5) {
       last.end = w.end;
       last.score = Math.max(last.score, w.score);
+      if (isLightWindow(w.label) && !isLightWindow(last.label)) {
+        last.label = w.label;
+        last.why = w.why;
+      }
     } else if (w.score >= 5.2) {
       collapsed.push({ ...w });
     }
   }
   return collapsed.slice(0, 5);
+}
+
+function windowTide(label: string) {
+  return /incoming/i.test(label) ? "incoming" : "outgoing";
+}
+
+function isLightWindow(label: string) {
+  return /first light|last light/i.test(label);
 }
 
 export function buildBriefing(
@@ -559,17 +577,30 @@ export function buildBriefing(
   }
   if (conditions.hab?.hot) {
     warnings.push(
-      `${conditions.hab.source} K. brevis ${conditions.hab.level}${conditions.hab.when ? ` · ${conditions.hab.when}` : ""}. ${conditions.hab.where}. Patchy — not a score.`,
+      `${conditions.hab.source} K. brevis ${conditions.hab.level}${conditions.hab.when ? ` · ${conditions.hab.when}` : ""}. ${conditions.hab.where}. Patchy — not a score. Check the cite before you wade.`,
     );
   }
   if (conditions.sargassum?.elevated) {
-    warnings.push(`${conditions.sargassum.note} Not a GPS weed pin.`);
+    warnings.push(`${conditions.sargassum.note} Not a GPS weed pin. Treat the neighborhood as weedy until you see the water.`);
   }
   if (conditions.salinity) {
     const s = conditions.salinity;
     why.push(
       `Salinity ${s.ppt.toFixed(s.ppt < 10 ? 1 : 0)} ppt at ${s.name} (${s.color}). USGS ${s.site}${s.kind === "river" ? " — river well, not mid-bay" : ""}.`,
     );
+  } else if (salinityCoast(area.theater)) {
+    const well = salinitySiteFor(area.id);
+    why.push(
+      well
+        ? `USGS salinity well ${well.name} is quiet or stale — not all-clear, not a color reading.`
+        : "No USGS 00480 well on this desk. Do not read another bay’s river as this water.",
+    );
+  }
+  if (!conditions.river && (area.theater === "texas" || area.theater === "louisiana")) {
+    const river = riverSiteFor(area.id);
+    if (!river) {
+      why.push("No USGS discharge gauge on this desk. Wind and the tide table still tell the color story.");
+    }
   }
   for (const alert of conditions.alerts ?? []) {
     warnings.push(`NWS ${alert.event}: ${alert.headline}`);

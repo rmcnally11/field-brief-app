@@ -6,6 +6,7 @@ import { AllWaterLoader, AllWaterSkeleton } from "@/components/all-water-board";
 import { UpcomingLoader, UpcomingSkeleton } from "@/components/upcoming-loader";
 import { isAllWaterQuery, readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
 import { getYoloDay } from "@/lib/calendar";
+import { addDaysYmd, ymdInZone } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 
@@ -35,11 +36,17 @@ export default async function Home({
   const desk = resolveDeskForTheater(q, pref);
   let briefing;
   let yolo = null;
+  let tomorrow = null;
   let error: string | null = null;
   try {
-    [briefing, yolo] = await Promise.all([
+    const todayYmd = date ?? ymdInZone(new Date(), desk.area.timezone);
+    const tomorrowYmd = addDaysYmd(todayYmd, 1);
+    [briefing, yolo, tomorrow] = await Promise.all([
       getBriefing(desk.area.id, desk.activity, date),
       getYoloDay(desk.area, desk.activity),
+      date
+        ? Promise.resolve(null)
+        : getBriefing(desk.area.id, desk.activity, tomorrowYmd).catch(() => null),
     ]);
   } catch (e) {
     error = e instanceof Error ? e.message : "Could not build the briefing.";
@@ -63,6 +70,7 @@ export default async function Home({
         <BriefingPanel
           briefing={briefing}
           yolo={yolo}
+          tomorrow={tomorrow}
           upcomingSlot={
             <Suspense fallback={<UpcomingSkeleton />}>
               <UpcomingLoader area={briefing.area} activity={parseActivity(q.activity ?? desk.activity)} />

@@ -1,4 +1,6 @@
 import { getBriefing, parseBriefDate } from "@/lib/briefing";
+import { GoWhen } from "@/components/go-when";
+import { addDaysYmd, ymdInZone } from "@/lib/time";
 import { getYoloDay } from "@/lib/calendar";
 import { morningLine } from "@/lib/morning";
 import { readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
@@ -25,9 +27,14 @@ export default async function MorningPage({
   const desk = resolveDeskForTheater(q, pref);
   const date = parseBriefDate(q.date);
   const coast = areasInTheater(desk.area.theater);
-  const [briefing, yolo, coastBriefs] = await Promise.all([
+  const todayYmd = date ?? ymdInZone(new Date(), desk.area.timezone);
+  const tomorrowYmd = addDaysYmd(todayYmd, 1);
+  const [briefing, yolo, tomorrow, coastBriefs] = await Promise.all([
     getBriefing(desk.area.id, desk.activity, date),
     getYoloDay(desk.area, desk.activity),
+    date
+      ? Promise.resolve(null)
+      : getBriefing(desk.area.id, desk.activity, tomorrowYmd).catch(() => null),
     Promise.allSettled(
       coast.filter((a) => a.id !== desk.area.id).map((a) => getBriefing(a.id, desk.activity, date)),
     ),
@@ -139,6 +146,8 @@ export default async function MorningPage({
           </a>
         </div>
       </article>
+
+      {tomorrow && briefing.kind === "today" ? <GoWhen today={briefing} tomorrow={tomorrow} /> : null}
 
       {yolo ? (
         <YoloBanner

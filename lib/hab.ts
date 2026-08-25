@@ -126,6 +126,10 @@ async function fromTpwd(): Promise<HabNow> {
   };
 }
 
+export function habCovers(area: Area) {
+  return area.theater === "florida" || area.theater === "texas" || area.theater === "louisiana";
+}
+
 export async function fetchHab(area: Area): Promise<HabNow | null> {
   try {
     if (area.theater === "florida") return fromFwc(area, await fwcSamples());

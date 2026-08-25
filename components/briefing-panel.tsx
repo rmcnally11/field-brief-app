@@ -1,5 +1,13 @@
 import type { ReactNode } from "react";
 import type { Briefing, CalendarDay } from "@/lib/types";
+import { FeedNotes } from "@/components/feed-notes";
+import { GoWhen } from "@/components/go-when";
+import { coastExpected } from "@/lib/feeds";
+import { salinityCoast, salinitySiteFor } from "@/lib/salinity";
+import { riverSiteFor } from "@/lib/rivers";
+import { habCovers } from "@/lib/hab";
+import { sargassumCovers } from "@/lib/sargassum";
+import { buoyForArea } from "@/lib/data/buoys";
 import { regulationFor } from "@/lib/data/species";
 import { theaterLabel } from "@/lib/data/theaters";
 import { isKeysFlorida } from "@/lib/data/theaters";
@@ -32,17 +40,22 @@ export function BriefingPanel({
   upcoming,
   upcomingSlot,
   yolo,
+  tomorrow,
 }: {
   briefing: Briefing;
   upcoming?: CalendarDay[];
   upcomingSlot?: ReactNode;
   yolo?: CalendarDay | null;
+  tomorrow?: Briefing | null;
 }) {
   const { area, conditions } = briefing;
   const calHref = `/calendar?area=${area.id}&theater=${area.theater}${briefing.activity !== "all" ? `&activity=${briefing.activity}` : ""}`;
   const neighbor = neighborArea(area);
   const line = morningLine(briefing, yolo);
   const gulf = area.theater === "texas" || area.theater === "louisiana";
+  const buoyMeta = buoyForArea(area.id);
+  const riverMeta = riverSiteFor(area.id);
+  const saltMeta = salinitySiteFor(area.id);
   const showTable =
     gulf || (conditions.tides.anomalyFt != null && Math.abs(conditions.tides.anomalyFt) >= 0.25);
 
@@ -67,6 +80,9 @@ export function BriefingPanel({
                 ))}
               </ul>
             )}
+            <div className="mt-4">
+              <FeedNotes area={area} conditions={conditions} />
+            </div>
           </div>
             <ScoreRing
             score={briefing.overall}
@@ -147,7 +163,18 @@ export function BriefingPanel({
               NDBC {conditions.buoy.id}
             </a>
           </Instrument>
-        ) : null}
+        ) : (
+          <Instrument label="Buoy" source={buoyMeta ? `NDBC ${buoyMeta.id}` : "No station"}>
+            <p className="font-heading text-2xl leading-tight text-[color:var(--cream)]">
+              {buoyMeta ? "Quiet" : "None"}
+            </p>
+            <p className="mt-2 text-sm text-[color:var(--cream)]/65">
+              {buoyMeta
+                ? `${buoyMeta.name} did not report. Witness only — not the tide clock.`
+                : "No honest NDBC or C-MAN near this water. Do not invent a buoy."}
+            </p>
+          </Instrument>
+        )}
         <Instrument
           label="Sky"
           source={
@@ -208,12 +235,12 @@ export function BriefingPanel({
               : conditions.tides.source}
           </p>
         </Instrument>
-        {conditions.hab || conditions.sargassum || conditions.salinity ? (
+        {coastExpected(area) ? (
           <Instrument
             label="Coast"
             source={[conditions.hab?.source, conditions.sargassum?.source, conditions.salinity ? "USGS" : null]
               .filter(Boolean)
-              .join(" · ")}
+              .join(" · ") || "No live coast layer"}
           >
             {conditions.hab ? (
               <p className="text-sm text-[color:var(--cream)]/80">
@@ -235,9 +262,13 @@ export function BriefingPanel({
                   {conditions.hab.source}
                 </a>
               </p>
+            ) : habCovers(area) ? (
+              <p className="text-sm text-amber-900">
+                Red-tide check failed. That is not all-clear — open the agency page before you wade.
+              </p>
             ) : null}
             {conditions.sargassum ? (
-              <p className={`text-sm text-[color:var(--cream)]/80 ${conditions.hab ? "mt-3" : ""}`}>
+              <p className={`text-sm text-[color:var(--cream)]/80 ${conditions.hab || habCovers(area) ? "mt-3" : ""}`}>
                 <span className="text-[10px] uppercase tracking-[0.14em] text-[color:var(--cream)]/40">
                   Sargassum
                 </span>
@@ -264,9 +295,13 @@ export function BriefingPanel({
                   USF SaWS
                 </a>
               </p>
+            ) : sargassumCovers(area) ? (
+              <p className={`text-sm text-amber-900 ${conditions.hab || habCovers(area) ? "mt-3" : ""}`}>
+                Sargassum check failed. Not a GPS pin. Not all-clear.
+              </p>
             ) : null}
             {conditions.salinity ? (
-              <p className={`text-sm text-[color:var(--cream)]/80 ${conditions.hab || conditions.sargassum ? "mt-3" : ""}`}>
+              <p className={`text-sm text-[color:var(--cream)]/80 ${conditions.hab || conditions.sargassum || habCovers(area) || sargassumCovers(area) ? "mt-3" : ""}`}>
                 <span className="text-[10px] uppercase tracking-[0.14em] text-[color:var(--cream)]/40">
                   Salinity / color
                 </span>
@@ -284,6 +319,16 @@ export function BriefingPanel({
                   USGS {conditions.salinity.site}
                 </a>
               </p>
+            ) : salinityCoast(area.theater) ? (
+              <p className={`text-sm text-[color:var(--cream)]/55 ${conditions.hab || conditions.sargassum || habCovers(area) || sargassumCovers(area) ? "mt-3" : ""}`}>
+                <span className="text-[10px] uppercase tracking-[0.14em] text-[color:var(--cream)]/40">
+                  Salinity / color
+                </span>
+                <br />
+                {saltMeta
+                  ? `${saltMeta.name} is quiet or stale. Not a color reading.`
+                  : "No USGS 00480 well on this desk. Do not borrow another bay’s river."}
+              </p>
             ) : null}
           </Instrument>
         ) : null}
@@ -298,6 +343,17 @@ export function BriefingPanel({
               {conditions.river.high
                 ? "High — coffee-colored water is the story. Not a secret hole."
                 : "Discharge into this bay. High water stains the flat."}
+            </p>
+          </Instrument>
+        ) : area.theater === "texas" || area.theater === "louisiana" ? (
+          <Instrument label="River" source={riverMeta ? `USGS ${riverMeta.site}` : "No gauge"}>
+            <p className="font-heading text-2xl leading-tight text-[color:var(--cream)]">
+              {riverMeta ? "Quiet" : "No gauge"}
+            </p>
+            <p className="mt-2 text-sm text-[color:var(--cream)]/65">
+              {riverMeta
+                ? `${riverMeta.river} did not answer. Not a color reading.`
+                : "No USGS discharge gauge on this desk. Wind and the table still tell the color story."}
             </p>
           </Instrument>
         ) : null}
@@ -348,6 +404,8 @@ export function BriefingPanel({
           from the NOAA prediction. Read the water, not just the printout.
         </p>
       )}
+
+      {tomorrow && briefing.kind === "today" ? <GoWhen today={briefing} tomorrow={tomorrow} /> : null}
 
       {yolo ? (
         <YoloBanner
@@ -438,10 +496,10 @@ export function BriefingPanel({
         <div className="space-y-4">
           <h2 className="font-heading text-2xl text-[color:var(--cream)]">When</h2>
           <p className="text-sm text-[color:var(--cream)]/55">
-            When is moving water in a good hour — not the day. Today’s ring mixes the best mark, the
-            lead fish, and the best window, then taxes the sky. A strong incoming can sit under a
-            weak day if the wind or the fish is off. Calendar cells are a third recipe: range, moon,
-            and the day’s forecast.
+            When is moving water in a good hour — not the day. First light and last light are named
+            when the clock is the story. Today’s ring mixes the best mark, the lead fish, and the
+            best window, then taxes the sky. A strong incoming can sit under a weak day if the wind
+            or the fish is off. Calendar cells are a third recipe: range, moon, and the day’s forecast.
           </p>
           <ul className="space-y-2">
             {briefing.when.length === 0 ? (

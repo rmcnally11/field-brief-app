@@ -301,21 +301,40 @@ export function morningEmailHtml(
   return morningDigestHtml([{ briefing, yolo }], opts);
 }
 
-export function morningDigestSubject(rows: Array<{ briefing: Briefing }>) {
-  if (rows.length === 1) return morningSubject(rows[0].briefing);
+export function morningDigestSubject(
+  rows: Array<{ briefing: Briefing }>,
+  opts?: { quiet?: string[] },
+) {
+  const quiet = opts?.quiet?.filter(Boolean) ?? [];
+  const prefix = quiet.length ? "Partial brief · " : "";
+  if (rows.length === 1) return `${prefix}${morningSubject(rows[0].briefing)}`;
   const bits = rows.slice(0, 4).map((r) => `${r.briefing.area.shortName} ${r.briefing.overall.toFixed(1)}`);
   const more = rows.length > 4 ? ` +${rows.length - 4}` : "";
-  return `Today · ${bits.join(" · ")}${more}`;
+  return `${prefix}Today · ${bits.join(" · ")}${more}`;
 }
 
-export function morningDigestText(rows: Array<{ briefing: Briefing; yolo?: CalendarDay | null }>) {
-  return rows.map((r) => morningEmailText(r.briefing, r.yolo)).join("\n\n———\n\n");
+function quietBanner(quiet: string[]) {
+  if (!quiet.length) return "";
+  const names = quiet.join(", ");
+  return `<p style="margin:0 0 16px;padding:12px 14px;background:#fff6e8;border:1px solid #e3b01c;border-radius:14px;font-size:14px;line-height:1.45;color:${NAVY};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif"><strong>Partial brief.</strong> ${escapeHtml(names)} ${quiet.length === 1 ? "is" : "are"} quiet. The desks below answered.</p>`;
+}
+
+export function morningDigestText(
+  rows: Array<{ briefing: Briefing; yolo?: CalendarDay | null }>,
+  opts?: { quiet?: string[] },
+) {
+  const quiet = opts?.quiet?.filter(Boolean) ?? [];
+  const head = quiet.length
+    ? `Partial brief — ${quiet.join(", ")} ${quiet.length === 1 ? "is" : "are"} quiet.\n\n`
+    : "";
+  return `${head}${rows.map((r) => morningEmailText(r.briefing, r.yolo)).join("\n\n———\n\n")}`;
 }
 
 export function morningDigestHtml(
   rows: Array<{ briefing: Briefing; yolo?: CalendarDay | null }>,
-  opts?: { origin?: string },
+  opts?: { origin?: string; quiet?: string[] },
 ) {
+  const quiet = opts?.quiet?.filter(Boolean) ?? [];
   if (!rows.length) {
     return emailDoc({ body: `${heading("Gauges quiet")}${dek("No desks answered this morning.")}` });
   }
@@ -333,17 +352,22 @@ export function morningDigestHtml(
     )
     .join("");
   const hero = single ? tideImage(first.briefing, { origin: opts?.origin, bleed: true }) : undefined;
+  const banner = quietBanner(quiet);
   return emailDoc({
-    preheader: single ? `${first.briefing.area.shortName} ${first.briefing.overall.toFixed(1)} · ${line}` : names,
+    preheader: quiet.length
+      ? `Partial brief · ${quiet.join(", ")} quiet`
+      : single
+        ? `${first.briefing.area.shortName} ${first.briefing.overall.toFixed(1)} · ${line}`
+        : names,
     hero,
     brand: false,
     body: single
-      ? `${cards}
+      ? `${banner}${cards}
     <p style="margin:18px 0 0;font-size:13px;line-height:1.5;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
       Scores are 1–10, not a bite. This mail is a snapshot. The gauges stay live on the page.
     </p>`
       : `
-    ${cards}
+    ${banner}${cards}
     <p style="margin:8px 0 0">${btn(`${mailOrigin(opts?.origin)}/`, "Open the live brief")}</p>
     <p style="margin:18px 0 0;font-size:13px;line-height:1.5;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
       Scores are 1–10, not a bite. This mail is a snapshot. The gauges stay live on the page.

@@ -69,6 +69,10 @@ function offshoreOffsets(area: Area): Array<[number, number]> {
   ];
 }
 
+export function sargassumCovers(area: Area) {
+  return area.theater !== "seychelles";
+}
+
 export async function fetchSargassum(area: Area): Promise<SargassumNow | null> {
   if (area.theater === "seychelles") return null;
   try {

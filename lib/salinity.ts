@@ -1,5 +1,5 @@
 import { USER_AGENT } from "@/lib/brand";
-import type { SalinityNow } from "@/lib/types";
+import type { SalinityNow, TheaterId } from "@/lib/types";
 
 /** Live USGS 00480 wells that actually sit on these desks. River zeros are labeled as river. */
 const SITES: Record<string, { site: string; name: string; kind: "bay" | "river" }> = {
@@ -8,6 +8,14 @@ const SITES: Record<string, { site: string; name: string; kind: "bay" | "river" 
   "grand-isle": { site: "073802516", name: "Barataria Pass at Grand Isle", kind: "bay" },
   calcasieu: { site: "08017095", name: "North Calcasieu Lake near Hackberry", kind: "bay" },
 };
+
+export function salinitySiteFor(areaId: string) {
+  return SITES[areaId] ?? null;
+}
+
+export function salinityCoast(theater: TheaterId) {
+  return theater === "texas" || theater === "louisiana";
+}
 
 function colorOf(ppt: number, kind: "bay" | "river") {
   if (kind === "river" && ppt < 3) return "river-fresh — coffee if the river is up";

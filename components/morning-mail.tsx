@@ -104,7 +104,7 @@ export function MorningMail({
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Robert McNally"
+            placeholder="First last"
             className="h-10 border-[color:var(--line)] bg-[color:var(--ink)] text-[color:var(--cream)]"
           />
         </div>
@@ -119,7 +119,7 @@ export function MorningMail({
             required
             value={zip}
             onChange={(e) => setZip(e.target.value)}
-            placeholder="77550"
+            placeholder="ZIP or postal"
             className="h-10 border-[color:var(--line)] bg-[color:var(--ink)] text-[color:var(--cream)]"
           />
         </div>

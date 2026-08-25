@@ -23,6 +23,7 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - **Today** (`/`) starts on **All water** — the seven letter desks, not Galveston. A last-desk cookie does not pull the homepage back to one coast. Pick a water to open that brief.
 - **Morning line** (`/morning`) — one sentence for the water on Today. Copy it. The rest of that coast is named underneath. Join lives on `/join`, not here.
 - Last theater / area / method is remembered in a cookie for calendar, morning, compare, and map.
+- The species book covers the fish that actually live on these seven theaters — drum, snook, hogfish, the snappers, grouper, cobia, kings, billfish — not a Texas-only short list. Join lives on `/join`, not on the Saturday Letter.
 - The Saturday Letter has a permalink (`/newsletter/YYYY-MM-DD`) and a short archive.
 - Satellite chart (Esri imagery) with official layers and your My Maps. Pick a micro-area and the camera zooms to that water only — Flamingo does not keep Islamorada lit.
 - Filters for **wade / skiff / kayak / fly / spin / jetty / offshore** (troll, edge, deep jig).

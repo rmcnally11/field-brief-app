@@ -15,7 +15,7 @@ export const AREAS: Area[] = [
       "Brackish border estuary. Sabine and Neches river water, pass current at Texas Point, marsh drains after a blow.",
     tideCharacter: "marsh-current",
     meanRangeFt: 1.6,
-    leadSpecies: ["redfish", "speckled-trout", "flounder"],
+    leadSpecies: ["redfish", "speckled-trout", "flounder", "black-drum"],
   },
   {
     id: "galveston",
@@ -31,8 +31,8 @@ export const AREAS: Area[] = [
       "Largest Texas estuary. Trinity, East, West, and Christmas bays. Wind often moves more water than the tide table. Home water for drum, sheep, trout, and reds.",
     tideCharacter: "marsh-current",
     meanRangeFt: 1.4,
-    leadSpecies: ["redfish", "speckled-trout", "black-drum"],
-    offshoreLead: ["mahi", "tuna"],
+    leadSpecies: ["redfish", "speckled-trout", "black-drum", "sheepshead"],
+    offshoreLead: ["red-snapper", "king-mackerel", "cobia", "amberjack", "mahi", "tuna"],
   },
   {
     id: "matagorda",
@@ -47,7 +47,7 @@ export const AREAS: Area[] = [
       "East Matagorda has almost no Gulf inlet — ICW and Mitchell's Cut do the exchanging. Mid-bay reefs in winter. Port O'Connor jetties and the ship channel on the west side.",
     tideCharacter: "marsh-current",
     meanRangeFt: 1.2,
-    leadSpecies: ["redfish", "speckled-trout", "flounder"],
+    leadSpecies: ["redfish", "speckled-trout", "flounder", "black-drum"],
   },
   {
     id: "aransas",
@@ -62,7 +62,7 @@ export const AREAS: Area[] = [
       "Grass-and-oyster working water. Lydia Ann, Copano reefs, Redfish Bay. The mid-coast skiff and wade theater.",
     tideCharacter: "marsh-current",
     meanRangeFt: 0.8,
-    leadSpecies: ["redfish", "speckled-trout"],
+    leadSpecies: ["redfish", "speckled-trout", "black-drum"],
   },
   {
     id: "corpus",
@@ -77,8 +77,8 @@ export const AREAS: Area[] = [
       "Packery, Shamrock, Nueces, Mustang backside. Pass water at Port Aransas. Bull reds on the jetties in fall.",
     tideCharacter: "pass-current",
     meanRangeFt: 0.5,
-    leadSpecies: ["redfish", "tarpon", "speckled-trout"],
-    offshoreLead: ["mahi", "tuna"],
+    leadSpecies: ["redfish", "tarpon", "speckled-trout", "black-drum", "mangrove-snapper"],
+    offshoreLead: ["red-snapper", "king-mackerel", "cobia", "amberjack", "mahi", "tuna"],
   },
   {
     id: "baffin",
@@ -109,7 +109,7 @@ export const AREAS: Area[] = [
       "The clear-water classroom. South Bay, spoil banks, Brazos Santiago. Sight-casting reds in inches. Often the warmest Texas winter water.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 1.2,
-    leadSpecies: ["redfish", "speckled-trout"],
+    leadSpecies: ["redfish", "speckled-trout", "snook", "mangrove-snapper"],
   },
   {
     id: "venice",
@@ -125,8 +125,8 @@ export const AREAS: Area[] = [
       "The Mississippi birdfoot. Passes, ponds, and river-marsh. Bull reds in the passes, school reds and trout in the ponds. Tarpon in mid-summer on the beach and the south passes. NOAA 8760721 Pilottown is the clock. Wind and river stage move more water than the printed tide.",
     tideCharacter: "marsh-current",
     meanRangeFt: 1.0,
-    leadSpecies: ["redfish", "speckled-trout", "tarpon"],
-    offshoreLead: ["tuna", "mahi"],
+    leadSpecies: ["redfish", "speckled-trout", "tarpon", "black-drum"],
+    offshoreLead: ["red-snapper", "tuna", "mahi", "amberjack", "cobia"],
   },
   {
     id: "grand-isle",
@@ -142,7 +142,7 @@ export const AREAS: Area[] = [
       "Louisiana’s inhabited barrier island. Caminada and Barataria, the state-park surf and pier, trout and reds in the bays. NOAA 8761724 sits on the island. Do not fish it like Venice — this is a bay-and-beach desk, not the birdfoot.",
     tideCharacter: "marsh-current",
     meanRangeFt: 1.4,
-    leadSpecies: ["speckled-trout", "redfish"],
+    leadSpecies: ["speckled-trout", "redfish", "black-drum"],
   },
   {
     id: "calcasieu",
@@ -158,7 +158,7 @@ export const AREAS: Area[] = [
       "Southwest Louisiana. Calcasieu Lake, the pass, Cameron jetties. Same fish as the Texas border — reds, trout, fall flounder — under LDWF rules, not TPWD. NOAA 8768094 is the pass. Not Sabine Lake; the state line is west of here.",
     tideCharacter: "pass-current",
     meanRangeFt: 1.8,
-    leadSpecies: ["redfish", "speckled-trout", "flounder"],
+    leadSpecies: ["redfish", "speckled-trout", "flounder", "black-drum"],
   },
   {
     id: "biscayne",
@@ -174,8 +174,8 @@ export const AREAS: Area[] = [
       "North end of the grand-slam stage. Bones and permit on the oceanside flats and ocean banks, baby tarpon and snook in the west-side mangroves. Educated fish, short windows, boat traffic.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 2.1,
-    leadSpecies: ["bonefish", "permit", "snook", "tarpon"],
-    offshoreLead: ["sailfish", "mahi", "tuna"],
+    leadSpecies: ["bonefish", "permit", "snook", "tarpon", "mangrove-snapper"],
+    offshoreLead: ["sailfish", "mahi", "tuna", "wahoo", "swordfish", "blue-marlin", "black-grouper", "yellowtail-snapper"],
   },
   {
     id: "key-largo",
@@ -191,8 +191,8 @@ export const AREAS: Area[] = [
       "The first Key. Card Sound and Jewfish Creek to the north, Tavernier Creek to the south. Oceanside banks for bones and permit; Blackwater and Buttonwood for baby tarpon and snook. NOAA 8723689 is Point Charles (predictions). Water temp is Virginia Key 8723214 — there is no live well at Point Charles. Pennekamp is the launch. Adjacent FKNMS SPAs are no-take.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 2.1,
-    leadSpecies: ["bonefish", "permit", "tarpon", "snook"],
-    offshoreLead: ["sailfish", "mahi", "tuna"],
+    leadSpecies: ["bonefish", "permit", "tarpon", "snook", "hogfish", "yellowtail-snapper"],
+    offshoreLead: ["sailfish", "mahi", "tuna", "wahoo", "swordfish", "blue-marlin", "black-grouper", "mutton-snapper"],
   },
   {
     id: "islamorada",
@@ -208,8 +208,8 @@ export const AREAS: Area[] = [
       "The mecca. Oceanside bones and permit, bayside backcountry, Channel 2 / Channel 5 current, wrecks for permit. Most pressured fish in the hemisphere.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 1.8,
-    leadSpecies: ["permit", "bonefish", "tarpon"],
-    offshoreLead: ["sailfish", "mahi", "tuna"],
+    leadSpecies: ["permit", "bonefish", "tarpon", "hogfish", "yellowtail-snapper", "mutton-snapper"],
+    offshoreLead: ["sailfish", "mahi", "tuna", "wahoo", "swordfish", "blue-marlin", "black-grouper"],
   },
   {
     id: "florida-bay",
@@ -240,8 +240,8 @@ export const AREAS: Area[] = [
       "Vaca Key gauge. Oceanside wrecks and patch reefs, bayside basins, Seven Mile Bridge current. Permit and tarpon more than bones.",
     tideCharacter: "pass-current",
     meanRangeFt: 1.7,
-    leadSpecies: ["permit", "tarpon", "bonefish"],
-    offshoreLead: ["sailfish", "mahi", "tuna"],
+    leadSpecies: ["permit", "tarpon", "bonefish", "hogfish", "yellowtail-snapper"],
+    offshoreLead: ["sailfish", "mahi", "tuna", "wahoo", "swordfish", "blue-marlin", "black-grouper"],
   },
   {
     id: "key-west",
@@ -256,8 +256,8 @@ export const AREAS: Area[] = [
       "Marquesas, Harbor Key, oceanside wrecks, the contentment of long runs. Permit and tarpon country. Summer showers can switch a flat on once it clears.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 1.4,
-    leadSpecies: ["permit", "tarpon", "bonefish"],
-    offshoreLead: ["sailfish", "mahi", "tuna"],
+    leadSpecies: ["permit", "tarpon", "bonefish", "hogfish", "yellowtail-snapper", "mutton-snapper"],
+    offshoreLead: ["sailfish", "mahi", "tuna", "wahoo", "swordfish", "blue-marlin", "black-grouper"],
   },
   {
     id: "boca-grande",
@@ -273,7 +273,7 @@ export const AREAS: Area[] = [
       "The pass. Migratory tarpon stack in Boca Grande Pass in spring. Charlotte Harbor and Gasparilla hold snook and reds. NOAA 8725577 is the pass clock (predictions). Water temp is Fort Myers 8725520 — there is no live well at the inlet.",
     tideCharacter: "pass-current",
     meanRangeFt: 1.6,
-    leadSpecies: ["tarpon", "snook", "redfish"],
+    leadSpecies: ["tarpon", "snook", "redfish", "mangrove-snapper"],
   },
   {
     id: "jupiter",
@@ -289,7 +289,8 @@ export const AREAS: Area[] = [
       "Inlet snook country. Jupiter Inlet, the Loxahatchee, Lake Worth Lagoon. Tarpon in the inlet and along the beach. Not a Keys bonefish brief — this is current, bridges, and mangrove points. Clock is Lake Worth Pier 8722670, a few miles south.",
     tideCharacter: "pass-current",
     meanRangeFt: 2.2,
-    leadSpecies: ["snook", "tarpon"],
+    leadSpecies: ["snook", "tarpon", "mangrove-snapper", "pompano"],
+    offshoreLead: ["sailfish", "mahi", "tuna", "wahoo", "swordfish", "blue-marlin"],
   },
   {
     id: "andros",
@@ -388,8 +389,8 @@ export const AREAS: Area[] = [
     tideCharacter: "blue-water",
     meanRangeFt: 1.6,
     modeledTideOffsetHours: 0.2,
-    leadSpecies: ["sailfish", "mahi", "tuna"],
-    offshoreLead: ["sailfish", "mahi", "tuna"],
+    leadSpecies: ["sailfish", "mahi", "tuna", "wahoo"],
+    offshoreLead: ["sailfish", "mahi", "tuna", "wahoo", "blue-marlin", "swordfish"],
   },
   {
     id: "east-cape",
@@ -406,7 +407,7 @@ export const AREAS: Area[] = [
     meanRangeFt: 2.4,
     modeledTideOffsetHours: -1.1,
     leadSpecies: ["roosterfish", "mahi", "tuna"],
-    offshoreLead: ["mahi", "tuna", "roosterfish"],
+    offshoreLead: ["mahi", "tuna", "roosterfish", "wahoo", "striped-marlin"],
   },
   {
     id: "la-paz",
@@ -423,7 +424,7 @@ export const AREAS: Area[] = [
     meanRangeFt: 3.0,
     modeledTideOffsetHours: -0.8,
     leadSpecies: ["roosterfish", "mahi", "tuna"],
-    offshoreLead: ["mahi", "tuna", "roosterfish"],
+    offshoreLead: ["mahi", "tuna", "roosterfish", "wahoo", "striped-marlin"],
   },
   {
     id: "san-juan",
@@ -439,8 +440,8 @@ export const AREAS: Area[] = [
       "Urban tarpon. Condado Lagoon and San Juan Bay. Snook in the mangrove edges. The north coast drops to blue water in a hurry — sail and mahi are an offshore method, not this lagoon. NOAA 9755371 La Puntilla is the clock. DNER rules, not FWC.",
     tideCharacter: "pass-current",
     meanRangeFt: 1.2,
-    leadSpecies: ["tarpon", "snook"],
-    offshoreLead: ["sailfish", "mahi", "tuna"],
+    leadSpecies: ["tarpon", "snook", "mangrove-snapper"],
+    offshoreLead: ["sailfish", "mahi", "tuna", "wahoo", "blue-marlin", "swordfish", "white-marlin"],
   },
   {
     id: "vieques",
@@ -456,8 +457,8 @@ export const AREAS: Area[] = [
       "The Spanish Virgin Islands. More flat than San Juan — bones and permit on the east-island banks, tarpon in the harbors. Culebra is the next cay north; do not invent a secret number between them. NOAA 9752621 Isabel Segunda. Mosquito Bay is a reserve, not a freelance wade.",
     tideCharacter: "sight-skinny",
     meanRangeFt: 1.1,
-    leadSpecies: ["bonefish", "permit", "tarpon"],
-    offshoreLead: ["mahi", "tuna"],
+    leadSpecies: ["bonefish", "permit", "tarpon", "hogfish"],
+    offshoreLead: ["mahi", "tuna", "wahoo", "blue-marlin"],
   },
   {
     id: "parguera",
@@ -473,8 +474,8 @@ export const AREAS: Area[] = [
       "Southwest mangrove cays and the drop to the Caribbean. Snook and tarpon in the trees, reef and blue water a short run south. NOAA 9759110 Magueyes Island is the clock. Not San Juan. DNER and any reserve markers are the law.",
     tideCharacter: "marsh-current",
     meanRangeFt: 0.8,
-    leadSpecies: ["snook", "tarpon"],
-    offshoreLead: ["mahi", "tuna"],
+    leadSpecies: ["snook", "tarpon", "mangrove-snapper", "hogfish"],
+    offshoreLead: ["mahi", "tuna", "wahoo", "blue-marlin", "swordfish"],
   },
   {
     id: "alphonse",
@@ -491,7 +492,7 @@ export const AREAS: Area[] = [
     meanRangeFt: 3.6,
     modeledTideOffsetHours: 0.3,
     leadSpecies: ["gt", "bonefish", "permit"],
-    offshoreLead: ["tuna", "mahi"],
+    offshoreLead: ["tuna", "mahi", "wahoo", "blue-marlin"],
   },
   {
     id: "farquhar",
@@ -508,7 +509,7 @@ export const AREAS: Area[] = [
     meanRangeFt: 3.4,
     modeledTideOffsetHours: 0.15,
     leadSpecies: ["gt", "bonefish"],
-    offshoreLead: ["tuna", "mahi"],
+    offshoreLead: ["tuna", "mahi", "wahoo", "blue-marlin"],
   },
   {
     id: "mahe",
@@ -525,7 +526,7 @@ export const AREAS: Area[] = [
     meanRangeFt: 3.8,
     modeledTideOffsetHours: 0.05,
     leadSpecies: ["gt", "tuna"],
-    offshoreLead: ["tuna", "mahi", "sailfish"],
+    offshoreLead: ["tuna", "mahi", "wahoo", "blue-marlin"],
   },
 ];
 
@@ -565,7 +566,7 @@ export function defaultOffshoreLeads(area: Area): SpeciesId[] {
 
 export function leadsFor(area: Area, activity: ActivityId | "all"): SpeciesId[] {
   if (activity === "offshore") {
-    return area.offshoreLead?.length ? area.offshoreLead : defaultOffshoreLeads(area);
+    return [...new Set([...(area.offshoreLead ?? []), ...defaultOffshoreLeads(area)])];
   }
   return area.leadSpecies;
 }

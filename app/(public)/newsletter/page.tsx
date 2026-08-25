@@ -1,8 +1,7 @@
 import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
 import { LetterIssue } from "@/components/letter-issue";
-import { MorningMail } from "@/components/morning-mail";
-import { desksForCoasts, isAllCoasts, letterDeskForArea, resolveElectedCoasts } from "@/lib/coasts";
-import { readCoastsPref, readWaterPref } from "@/lib/prefs";
+import { resolveElectedCoasts } from "@/lib/coasts";
+import { readCoastsPref } from "@/lib/prefs";
 
 export const dynamic = "force-dynamic";
 
@@ -12,16 +11,12 @@ export default async function NewsletterPage({
   searchParams: Promise<{ coasts?: string; desks?: string }>;
 }) {
   const q = await searchParams;
-  const [cookie, water] = await Promise.all([readCoastsPref(), readWaterPref()]);
+  const cookie = await readCoastsPref();
   const coasts = resolveElectedCoasts({
     coastsQuery: q.coasts,
     desksQuery: q.desks,
     cookie: cookie?.join(",") ?? null,
   });
-  const signupDesks =
-    coasts && !isAllCoasts(coasts)
-      ? desksForCoasts(coasts)
-      : [letterDeskForArea(water?.areaId) ?? "galveston"];
 
   let issue;
   let error: string | null = null;
@@ -40,10 +35,5 @@ export default async function NewsletterPage({
     );
   }
 
-  return (
-    <div className="space-y-8">
-      <LetterIssue issue={issue} coasts={coasts} />
-      <MorningMail source="Letter" defaultDesks={signupDesks} defaultDesk={signupDesks[0]} />
-    </div>
-  );
+  return <LetterIssue issue={issue} coasts={coasts} />;
 }

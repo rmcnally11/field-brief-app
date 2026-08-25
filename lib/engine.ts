@@ -187,8 +187,12 @@ function wreckMarkToSpot(mark: OfficialMark, area: Area): Spot {
     activities: ["skiff", "spin", "fly", "offshore"],
     species:
       area.theater === "florida"
-        ? ["permit", "tarpon", "mahi", "tuna"]
-        : ["redfish", "speckled-trout", "sheepshead"],
+        ? ["permit", "tarpon", "hogfish", "yellowtail-snapper", "mutton-snapper", "black-grouper"]
+        : area.theater === "texas" || area.theater === "louisiana"
+          ? ["red-snapper", "mangrove-snapper", "sheepshead", "cobia", "amberjack"]
+          : area.theater === "bahamas" || area.theater === "puerto-rico" || area.theater === "mexico"
+            ? ["hogfish", "yellowtail-snapper", "mutton-snapper", "black-grouper"]
+            : ["gt", "tuna"],
     source: "public-structure",
     note: `${mark.detail || "Charted wreck / obstruction."} NOAA ENC — surveyed position, not a navigation chart.`,
     depth: "deep",

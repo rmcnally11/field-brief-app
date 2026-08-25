@@ -117,7 +117,7 @@ export default function ForTheLetterPage() {
           <li>Scores are 1–10, not bite guarantees. Do not say the fish will eat.</li>
           <li>No invented honey holes, GPS, or secret water.</li>
           <li>Jacks never headline. Roosterfish never on Gulf water. GT is Seychelles only.</li>
-          <li>Mahi / sail / tuna stay off the flat unless the JSON in-play list already put them there.</li>
+          <li>Mahi / sail / tuna / marlin / swordfish stay off the flat unless the JSON in-play list already put them there.</li>
           <li>Do not mention Rollover Pass. It was filled in 2019.</li>
           <li>Closures come from the JSON only. Tell them to verify before they keep a fish.</li>
           <li>Links must stay on onthiswater.com. No shorteners. No other weather domains.</li>

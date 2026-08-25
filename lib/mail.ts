@@ -7,7 +7,7 @@ import { ORIGIN, calendarCardUrl, calendarHref } from "@/lib/tweet";
 import { skyCopy } from "@/lib/wx";
 import type { NewsletterIssue } from "@/lib/newsletter";
 import { coastEditionLabel } from "@/lib/coasts";
-import { scoreHex, scoreInk } from "@/lib/viz";
+import { copper, gold, scoreHex, scoreInk } from "@/lib/viz";
 import {
   MONTH_NAMES,
   MONTH_THEATER,
@@ -15,14 +15,22 @@ import {
   peaksThisMonth,
   theaterLabel as coastLabel,
 } from "@/lib/data/fundamentals";
-
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
+import {
+  LINE,
+  MUTED,
+  NAVY,
+  PAGE,
+  PANEL,
+  btn,
+  dek,
+  emailDoc,
+  escapeHtml,
+  heading,
+  kicker,
+  scoreDisc,
+  sectionTitle,
+  tileRow,
+} from "@/lib/mail-ui";
 
 function deskMeta(areaId: string) {
   return DESKS.find((d) => d.areaId === areaId);
@@ -127,61 +135,13 @@ function hrefs(briefing: Briefing) {
   };
 }
 
-function sectionTitle(text: string) {
-  return `<p style="margin:24px 0 10px;letter-spacing:.16em;text-transform:uppercase;font-size:11px;color:#b87333">${escapeHtml(text)}</p>`;
-}
-
-function btn(href: string, label: string) {
-  return `<a href="${href}" class="fb-btn" style="display:inline-block;background:#1c6b6b;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:6px;font-size:15px;line-height:1.2">${escapeHtml(label)}</a>`;
-}
-
-function emailDoc(opts: { preheader?: string; body: string }) {
-  const pre = opts.preheader
-    ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0">${escapeHtml(opts.preheader)}</div>`
-    : "";
-  return `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="x-apple-disable-message-reformatting">
-<meta name="format-detection" content="telephone=no,address=no,email=no,date=no">
-<title>On This Water</title>
-<style>
-  html,body{margin:0!important;padding:0!important;width:100%!important}
-  body{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;background:#f4efe6;color:#1a2a3a}
-  table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
-  img{border:0;height:auto;line-height:100%;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic}
-  a{text-decoration:none}
-  @media only screen and (max-width:620px){
-    .fb-wrap{width:100%!important;max-width:100%!important}
-    .fb-pad{padding:18px 14px 28px!important}
-    .fb-h1{font-size:24px!important;line-height:1.28!important}
-    .fb-score{font-size:28px!important}
-    .fb-btn{display:block!important;width:100%!important;box-sizing:border-box!important;text-align:center!important}
-    .fb-tide{display:block!important;padding:3px 0!important}
-    .fb-cal td{font-size:11px!important;padding:5px 1px!important;line-height:1.2!important}
-    .fb-label{width:34%!important}
+function instrumentTiles(briefing: Briefing) {
+  const rows = instruments(briefing);
+  const chunks: string[] = [];
+  for (let i = 0; i < rows.length; i += 2) {
+    chunks.push(tileRow(rows[i], rows[i + 1]));
   }
-</style>
-</head>
-<body style="margin:0;padding:0;background:#f4efe6;color:#1a2a3a;font-family:Georgia,'Times New Roman',serif">
-${pre}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4efe6;width:100%">
-  <tr>
-    <td align="center" style="padding:0">
-      <table role="presentation" class="fb-wrap" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px">
-        <tr>
-          <td class="fb-pad" style="padding:28px 18px 36px">
-            ${opts.body}
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-</body>
-</html>`;
+  return chunks.join("");
 }
 
 export function morningEmailText(briefing: Briefing, yolo?: CalendarDay | null) {
@@ -248,112 +208,94 @@ export function morningEmailText(briefing: Briefing, yolo?: CalendarDay | null) 
   return parts.filter((p) => p != null).join("\n");
 }
 
-export function morningEmailHtml(briefing: Briefing, yolo?: CalendarDay | null) {
+function morningDeskCard(briefing: Briefing, yolo?: CalendarDay | null, compact = false) {
   const meta = deskMeta(briefing.area.id);
   const links = hrefs(briefing);
   const line = morningLine(briefing, yolo);
-  const inst = instruments(briefing);
   const fish = inPlay(briefing);
   const tides = clocks(briefing);
+  const w = briefing.conditions.weather;
 
-  const instRows = inst
-    .map(
-      (r) => `<tr>
-        <td class="fb-label" style="padding:10px 12px 10px 0;border-bottom:1px solid #e4dcc8;color:#6a7580;font-size:13px;width:30%;vertical-align:top">${escapeHtml(r.label)}</td>
-        <td style="padding:10px 0;border-bottom:1px solid #e4dcc8;font-size:16px">${escapeHtml(r.value)}${
-          r.note ? `<div style="font-size:13px;color:#6a7580;margin-top:3px">${escapeHtml(r.note)}</div>` : ""
-        }</td>
-      </tr>`,
-    )
-    .join("");
+  const play = fish
+    .map((s) => `${s.species.commonName} ${s.score.toFixed(1)}`)
+    .join(" · ");
 
-  const tideLine = tides.length
-    ? `<p style="margin:12px 0 0;font-size:15px;color:#3d4d5c;line-height:1.45">${tides
-        .map(
-          (t) =>
-            `<span class="fb-tide" style="display:inline-block;padding:0 12px 0 0"><strong>${escapeHtml(t.what)}</strong> ${escapeHtml(t.when)} · ${escapeHtml(t.height)}</span>`,
-        )
-        .join("")}</p>`
+  const watch = briefing.warnings[0]
+    ? `<p style="margin:10px 0 0;font-size:13px;color:${copper};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">⚠ ${escapeHtml(briefing.warnings[0])}</p>`
     : "";
 
-  const warnings = briefing.warnings.length
-    ? `${sectionTitle("Watch")}<ul style="margin:0;padding-left:20px;color:#8a5a12;font-size:15px;line-height:1.45">${briefing.warnings
-        .map((w) => `<li style="margin:0 0 8px">${escapeHtml(w)}</li>`)
-        .join("")}</ul>`
+  const yoloLine = yolo
+    ? `<p style="margin:10px 0 0;font-size:13px;color:${NAVY};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">YOLO <strong>${escapeHtml(formatYmdLong(yolo.date, briefing.area.timezone))}</strong> · ${yolo.score.toFixed(1)}</p>`
     : "";
 
-  const where = briefing.where.length
-    ? `${sectionTitle("Where")}<ol style="margin:0;padding-left:20px;font-size:16px;line-height:1.4">${briefing.where
-        .slice(0, 4)
-        .map(
-          (p) =>
-            `<li style="margin:0 0 12px"><strong>${escapeHtml(p.spot.name)}</strong> · ${p.score.toFixed(1)}<br/><span style="color:#3d4d5c;font-size:14px">${escapeHtml(p.why[0] ?? p.spot.note)}</span></li>`,
-        )
-        .join("")}</ol>`
-    : "";
+  const extra = compact
+    ? `${watch}${yoloLine}`
+    : `${instrumentTiles(briefing)}
+    ${tides.length
+      ? `<p style="margin:4px 0 0;font-size:13px;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${tides
+          .map((t) => `<span class="fb-tide" style="display:inline-block;padding:0 12px 0 0"><strong style="color:${NAVY}">${escapeHtml(t.what)}</strong> ${escapeHtml(t.when)} · ${escapeHtml(t.height)}</span>`)
+          .join("")}</p>`
+      : ""}
+    ${play ? `<p style="margin:12px 0 0;font-size:14px;color:${NAVY}">In play · ${escapeHtml(play)}</p>` : ""}
+    ${watch}${yoloLine}
+    <p style="margin:14px 0 0">${btn(links.brief, `Open ${briefing.area.shortName}`)}</p>`;
 
-  const when = briefing.when.length
-    ? `${sectionTitle("When")}<ul style="margin:0;padding-left:20px;font-size:16px;line-height:1.4">${briefing.when
-        .map(
-          (w) =>
-            `<li style="margin:0 0 10px"><strong>${escapeHtml(w.label)}</strong> · ${w.score.toFixed(1)}<br/><span style="color:#3d4d5c;font-size:14px">${escapeHtml(w.why)}</span></li>`,
-        )
-        .join("")}</ul>`
-    : "";
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 18px;background:${PAGE};border:1px solid ${LINE};border-radius:18px">
+    <tr>
+      <td style="padding:18px 16px 16px">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%">
+          <tr>
+            <td valign="top">
+              ${kicker(`${theaterLabel(briefing.area.theater)} · ${briefing.area.shortName}${meta ? ` · ${meta.desk}` : ""}`)}
+              <p style="margin:8px 0 0;font-size:22px;line-height:1.25;color:${NAVY};font-family:Georgia,'Times New Roman',serif">${escapeHtml(briefing.headline)}</p>
+              <p style="margin:8px 0 0;font-size:15px;line-height:1.45;color:${MUTED}">${escapeHtml(line)}</p>
+              <p style="margin:8px 0 0;font-size:12px;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(briefing.confidence)} · ${escapeHtml(formatYmdLong(briefing.forDate, briefing.area.timezone))}${w.windMph != null ? ` · ${Math.round(w.windMph)} mph${w.windCardinal ? ` ${w.windCardinal}` : ""}` : ""}</p>
+            </td>
+            <td valign="top" align="right" width="100" style="width:100px;padding-left:10px">${scoreDisc(briefing.overall)}</td>
+          </tr>
+        </table>
+        ${extra}
+      </td>
+    </tr>
+  </table>`;
+}
 
-  const play = fish.length
-    ? `${sectionTitle("In play")}<ul style="margin:0;padding-left:20px;font-size:16px;line-height:1.4">${fish
-        .map(
-          (s) =>
-            `<li style="margin:0 0 10px"><strong>${escapeHtml(s.species.commonName)}</strong> · ${s.score.toFixed(1)}<br/><span style="color:#3d4d5c;font-size:14px">${escapeHtml(s.why)}</span></li>`,
-        )
-        .join("")}</ul>`
-    : "";
+export function morningEmailHtml(briefing: Briefing, yolo?: CalendarDay | null) {
+  return morningDigestHtml([{ briefing, yolo }]);
+}
 
-  const why = briefing.why.length
-    ? `${sectionTitle("Why")}<ul style="margin:0;padding-left:20px;color:#3d4d5c;font-size:15px;line-height:1.45">${briefing.why
-        .slice(0, 6)
-        .map((w) => `<li style="margin:0 0 8px">${escapeHtml(w)}</li>`)
-        .join("")}</ul>`
-    : "";
+export function morningDigestSubject(rows: Array<{ briefing: Briefing }>) {
+  if (rows.length === 1) return morningSubject(rows[0].briefing);
+  const bits = rows.slice(0, 4).map((r) => `${r.briefing.area.shortName} ${r.briefing.overall.toFixed(1)}`);
+  const more = rows.length > 4 ? ` +${rows.length - 4}` : "";
+  return `Today · ${bits.join(" · ")}${more}`;
+}
 
-  const yoloBlock = yolo
-    ? `${sectionTitle("YOLO")}<p style="margin:0;font-size:16px;line-height:1.45">Best remaining dry day with a real wind forecast is <strong>${escapeHtml(formatYmdLong(yolo.date, briefing.area.timezone))}</strong> · ${yolo.score.toFixed(1)}. Rain and thunderstorms cannot own that day.</p>`
-    : "";
+export function morningDigestText(rows: Array<{ briefing: Briefing; yolo?: CalendarDay | null }>) {
+  return rows.map((r) => morningEmailText(r.briefing, r.yolo)).join("\n\n———\n\n");
+}
 
+export function morningDigestHtml(rows: Array<{ briefing: Briefing; yolo?: CalendarDay | null }>) {
+  if (!rows.length) {
+    return emailDoc({ body: `${heading("Gauges quiet")}${dek("No desks answered this morning.")}` });
+  }
+  const first = rows[0];
+  const line = morningLine(first.briefing, first.yolo);
+  const names = rows.map((r) => r.briefing.area.shortName).join(" · ");
+  const compact = rows.length > 1;
+  const cards = rows.map((r) => morningDeskCard(r.briefing, r.yolo, compact && rows.length > 3)).join("");
+  const lead = rows.length === 1 ? first.briefing.headline : `${rows.length} waters this morning`;
   return emailDoc({
-    preheader: `${briefing.area.shortName} ${briefing.overall.toFixed(1)} · ${line}`,
+    preheader: rows.length === 1 ? `${first.briefing.area.shortName} ${first.briefing.overall.toFixed(1)} · ${line}` : names,
     body: `
-    <p style="margin:0;letter-spacing:.18em;text-transform:uppercase;font-size:11px;color:#b87333">
-      On This Water · ${escapeHtml(theaterLabel(briefing.area.theater))}
-      ${meta ? ` · ${escapeHtml(meta.desk)}` : ""}
-    </p>
-    <p style="margin:8px 0 0;font-size:14px;color:#6a7580;line-height:1.4">${escapeHtml(briefing.area.name)}${meta ? ` — ${escapeHtml(meta.kicker)}` : ""}</p>
-    <h1 class="fb-h1" style="margin:14px 0 0;font-size:28px;line-height:1.25">${escapeHtml(briefing.headline)}</h1>
-    <p style="margin:14px 0 0;font-size:16px;line-height:1.5;color:#3d4d5c">${escapeHtml(line)}</p>
-    <p style="margin:16px 0 0;font-size:15px">
-      <strong class="fb-score" style="font-size:26px">${briefing.overall.toFixed(1)}</strong>
-      <span style="color:#6a7580"> / 10 · ${escapeHtml(briefing.confidence)} confidence · ${escapeHtml(formatYmdLong(briefing.forDate, briefing.area.timezone))}</span>
-    </p>
-    ${sectionTitle("The water")}
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse">${instRows}</table>
-    ${tideLine}
-    ${warnings}
-    ${where}
-    ${when}
-    ${play}
-    ${why}
-    ${yoloBlock}
-    <p style="margin:28px 0 0">${btn(links.brief, "Open the live brief")}</p>
-    <p style="margin:14px 0 0;font-size:14px;line-height:1.6">
-      <a href="${links.calendar}" style="color:#1c6b6b">Calendar</a>
-      &nbsp;·&nbsp;
-      <a href="${links.map}" style="color:#1c6b6b">Map</a>
-      &nbsp;·&nbsp;
-      <a href="${links.card}" style="color:#1c6b6b">Card</a>
-    </p>
-    <p style="margin:24px 0 0;font-size:13px;color:#6a7580;line-height:1.5">
-      Scores are 1–10, not a bite. This is not a chart for navigation. The gauges stay live on the page — this mail is a snapshot of ${escapeHtml(briefing.forDate)}, not a nightly batch.
+    ${kicker(rows.length === 1 ? `Today · ${theaterLabel(first.briefing.area.theater)}` : "Today · your water")}
+    ${heading(lead)}
+    ${dek(rows.length === 1 ? line : `Live scores for ${names}. Same instruments as the site — one card per desk.`)}
+    ${sectionTitle(rows.length === 1 ? "The water" : "Your desks")}
+    ${cards}
+    ${rows.length > 1 ? `<p style="margin:8px 0 0">${btn(`${ORIGIN}/`, "Open the live brief")}</p>` : ""}
+    <p style="margin:18px 0 0;font-size:13px;line-height:1.5;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
+      Scores are 1–10, not a bite. This mail is a snapshot. The gauges stay live on the page.
     </p>`,
   });
 }
@@ -401,42 +343,64 @@ export function letterEmailHtml(issue: NewsletterIssue, coasts: TheaterId[] | nu
   const desks = issue.desks
     .map((desk) => {
       const name = desk.briefing?.area.shortName ?? desk.desk.replace(" desk", "");
-      const score = desk.briefing ? desk.briefing.overall.toFixed(1) : "—";
       const head = desk.briefing?.headline ?? desk.error ?? desk.kicker;
-      return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 18px">
-        <tr><td style="padding:0 0 16px;border-bottom:1px solid #e4dcc8">
-          <p style="margin:0;letter-spacing:.16em;text-transform:uppercase;font-size:11px;color:#b87333">${escapeHtml(desk.desk)}</p>
-          <p class="fb-h2" style="margin:8px 0 0;font-size:20px;line-height:1.3"><strong>${escapeHtml(name)}</strong> · ${escapeHtml(score)}</p>
-          <p style="margin:8px 0 0;font-size:16px;line-height:1.45">${escapeHtml(head)}</p>
-          <p style="margin:8px 0 0;font-size:14px;color:#3d4d5c;line-height:1.45">${escapeHtml(desk.seasonal)}</p>
-        </td></tr>
+      const score = desk.briefing?.overall;
+      const w = desk.briefing?.conditions.weather;
+      const wind =
+        w?.windMph != null
+          ? `${Math.round(w.windMph)} mph${w.windCardinal ? ` ${w.windCardinal}` : ""}`
+          : "wind n/a";
+      const sky = w ? skyCopy(w.wx, w.precipChance, w.sky) : "sky n/a";
+      return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 14px;background:${PAGE};border:1px solid ${LINE};border-radius:18px">
+        <tr>
+          <td style="padding:16px">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%">
+              <tr>
+                <td valign="top">
+                  ${kicker(desk.desk)}
+                  <p style="margin:8px 0 0;font-size:22px;line-height:1.25;color:${NAVY};font-family:Georgia,'Times New Roman',serif">${escapeHtml(name)}</p>
+                  <p style="margin:8px 0 0;font-size:15px;line-height:1.45;color:${MUTED}">${escapeHtml(head)}</p>
+                  <p style="margin:8px 0 0;font-size:13px;color:${NAVY};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(wind)} · ${escapeHtml(sky)}</p>
+                  <p style="margin:8px 0 0;font-size:13px;color:${MUTED}">${escapeHtml(desk.seasonal)}</p>
+                </td>
+                <td valign="top" align="right" width="100" style="width:100px;padding-left:10px">${score != null ? scoreDisc(score) : ""}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
       </table>`;
     })
     .join("");
   const peaks = issue.peaks.length
-    ? `${sectionTitle("In peak")}<ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.45">${issue.peaks
-        .map((p) => `<li style="margin:0 0 10px"><strong>${escapeHtml(p.name)}</strong> · ${escapeHtml(p.theaters)}<br/><span style="color:#3d4d5c">${escapeHtml(p.why)}</span></li>`)
-        .join("")}</ul>`
+    ? `${sectionTitle("In peak")}${issue.peaks
+        .map(
+          (p) =>
+            `<p style="margin:0 0 10px;font-size:15px;line-height:1.45"><strong style="color:${NAVY}">${escapeHtml(p.name)}</strong> · ${escapeHtml(p.theaters)}<br/><span style="color:${MUTED}">${escapeHtml(p.why)}</span></p>`,
+        )
+        .join("")}`
     : "";
   const closures = issue.closures.length
-    ? `${sectionTitle("Closed or closing")}<ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.45">${issue.closures
-        .map((c) => `<li style="margin:0 0 10px"><strong>${escapeHtml(c.title)}</strong><br/><span style="color:#3d4d5c">${escapeHtml(c.body)}</span></li>`)
-        .join("")}</ul>`
+    ? `${sectionTitle("Closed or closing")}${issue.closures
+        .map(
+          (c) =>
+            `<p style="margin:0 0 10px;font-size:15px;line-height:1.45"><strong style="color:${copper}">${escapeHtml(c.title)}</strong><br/><span style="color:${MUTED}">${escapeHtml(c.body)}</span></p>`,
+        )
+        .join("")}`
     : "";
   return emailDoc({
     preheader: `${edition} · ${issue.rangeLabel}`,
     body: `
-    <p style="margin:0;letter-spacing:.18em;text-transform:uppercase;font-size:11px;color:#b87333">Saturday Letter · ${escapeHtml(edition)}</p>
-    <p style="margin:8px 0 0;font-size:14px;color:#6a7580">${escapeHtml(issue.rangeLabel)}</p>
-    <h1 class="fb-h1" style="margin:14px 0 0;font-size:28px;line-height:1.25">${escapeHtml(issue.monthName)} on your water</h1>
-    <p style="margin:16px 0 0;font-size:16px;line-height:1.5;color:#3d4d5c">${escapeHtml(issue.letter)}</p>
+    ${kicker(`Saturday Letter · ${edition}`)}
+    ${heading(`${issue.monthName} on your water`)}
+    ${dek(issue.rangeLabel)}
+    <p style="margin:16px 0 0;font-size:16px;line-height:1.55;color:${NAVY}">${escapeHtml(issue.letter)}</p>
     ${sectionTitle("This week")}
     ${desks}
     ${peaks}
     ${closures}
-    <p style="margin:24px 0 0">${btn(`${ORIGIN}/newsletter${qs}`, "Open the letter")}</p>
-    <p style="margin:24px 0 0;font-size:13px;color:#6a7580;line-height:1.5">
-      This edition is the water you elected. Coasts you did not pick stay off this letter. Scores are 1–10, not a bite.
+    <p style="margin:20px 0 0">${btn(`${ORIGIN}/newsletter${qs}`, "Open the letter")}</p>
+    <p style="margin:18px 0 0;font-size:13px;line-height:1.5;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
+      This edition is the water you elected. Scores are 1–10, not a bite.
     </p>`,
   });
 }
@@ -448,38 +412,41 @@ function calendarGridHtml(month: CalendarMonth, area: Area) {
   const pad = first.getDay();
   const cells: string[] = [];
   for (let i = 0; i < pad; i++) {
-    cells.push(`<td width="14%" style="width:14%;padding:4px 2px;background:#f4efe6">&nbsp;</td>`);
+    cells.push(`<td width="14%" style="width:14%;padding:3px 2px;background:${PAGE}">&nbsp;</td>`);
   }
   for (const day of month.days) {
     const n = Number(day.date.slice(-2));
     const bg = scoreHex(day.score);
     const fg = scoreInk(day.score);
-    const ring = day.yolo ? "#b87333" : day.amazing ? "#c9a227" : "#e4dcc8";
+    const ring = day.yolo ? copper : day.amazing ? gold : LINE;
     const ringW = day.yolo || day.amazing ? "2px" : "1px";
     const wet = day.wx === "storm" ? "T" : day.wx === "rain" ? "R" : "";
     cells.push(`<td width="14%" align="center" valign="top" style="width:14%;padding:3px 2px">
-      <a href="${ORIGIN}/?area=${area.id}&theater=${area.theater}&date=${day.date}" style="display:block;text-decoration:none;color:${fg};background:${bg};border:${ringW} solid ${ring};border-radius:6px;padding:6px 2px 7px">
-        <div style="font-size:11px;line-height:1">${n}</div>
-        <div style="font-size:14px;font-weight:bold;line-height:1.2;padding-top:2px">${day.score.toFixed(1)}</div>
-        <div style="font-size:10px;line-height:1.2;padding-top:2px">${escapeHtml(day.moon.glyph)}${wet ? ` ${wet}` : ""}</div>
+      <a href="${ORIGIN}/?area=${area.id}&theater=${area.theater}&date=${day.date}" style="display:block;text-decoration:none;color:${fg};background:${bg};border:${ringW} solid ${ring};border-radius:10px;padding:7px 2px 8px">
+        <div style="font-size:10px;line-height:1;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${n}</div>
+        <div style="font-size:15px;font-weight:700;line-height:1.2;padding-top:3px;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${day.score.toFixed(1)}</div>
+        <div style="font-size:11px;line-height:1.2;padding-top:2px">${escapeHtml(day.moon.glyph)}${wet ? ` ${wet}` : ""}</div>
       </a>
     </td>`);
   }
   while (cells.length % 7 !== 0) {
-    cells.push(`<td width="14%" style="width:14%;padding:4px 2px;background:#f4efe6">&nbsp;</td>`);
+    cells.push(`<td width="14%" style="width:14%;padding:3px 2px;background:${PAGE}">&nbsp;</td>`);
   }
   const rows: string[] = [];
   for (let i = 0; i < cells.length; i += 7) {
     rows.push(`<tr>${cells.slice(i, i + 7).join("")}</tr>`);
   }
   const head = ["S", "M", "T", "W", "T", "F", "S"]
-    .map((d) => `<th width="14%" style="width:14%;padding:0 0 6px;font-size:11px;letter-spacing:.08em;color:#6a7580;font-weight:normal">${d}</th>`)
+    .map(
+      (d) =>
+        `<th width="14%" style="width:14%;padding:0 0 6px;font-size:10px;letter-spacing:.1em;color:${MUTED};font-weight:normal;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${d}</th>`,
+    )
     .join("");
   return `<table role="presentation" class="fb-cal" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:separate;border-spacing:0">
     <tr>${head}</tr>
     ${rows.join("")}
   </table>
-  <p style="margin:10px 0 0;font-size:12px;color:#6a7580;line-height:1.45">Gold ring = amazing dry day. Copper = YOLO. T = thunderstorm, R = rain. Scores are 1–10, not a bite.</p>`;
+  <p style="margin:10px 0 0;font-size:12px;color:${MUTED};line-height:1.45;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">Gold ring = amazing dry day. Copper = YOLO. T = thunderstorm, R = rain.</p>`;
 }
 
 function upcomingHtml(days: CalendarDay[], area: Area) {
@@ -492,10 +459,20 @@ function upcomingHtml(days: CalendarDay[], area: Area) {
       const sky = skyCopy(d.wx, d.precipChance) || "sky later";
       const wind = d.windMph != null ? `${Math.round(d.windMph)} mph` : "no wind yet";
       const tag = d.yolo ? "YOLO" : d.amazing ? "Amazing" : d.confidence;
+      const bg = scoreHex(d.score);
       return `<tr>
-        <td style="padding:10px 0;border-bottom:1px solid #e4dcc8">
-          <p style="margin:0;font-size:16px"><strong>${escapeHtml(label)}</strong> · ${d.score.toFixed(1)}</p>
-          <p style="margin:4px 0 0;font-size:14px;color:#3d4d5c;line-height:1.4">${escapeHtml(tag)} · ${escapeHtml(wind)} · ${escapeHtml(sky)}${d.bestWindow ? ` · ${escapeHtml(d.bestWindow)}` : ""}</p>
+        <td style="padding:10px 0;border-bottom:1px solid ${LINE}">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%">
+            <tr>
+              <td width="44" valign="top" style="width:44px;padding-right:10px">
+                <div style="width:36px;height:36px;border-radius:18px;background:${bg};color:${scoreInk(d.score)};text-align:center;line-height:36px;font-size:12px;font-weight:700;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${d.score.toFixed(1)}</div>
+              </td>
+              <td valign="top">
+                <p style="margin:0;font-size:15px;color:${NAVY}"><strong>${escapeHtml(label)}</strong></p>
+                <p style="margin:4px 0 0;font-size:13px;color:${MUTED};line-height:1.4">${escapeHtml(tag)} · ${escapeHtml(wind)} · ${escapeHtml(sky)}${d.bestWindow ? ` · ${escapeHtml(d.bestWindow)}` : ""}</p>
+              </td>
+            </tr>
+          </table>
         </td>
       </tr>`;
     })
@@ -503,10 +480,20 @@ function upcomingHtml(days: CalendarDay[], area: Area) {
 }
 
 export function calendarSubject(area: Area, month: CalendarMonth) {
-  const yolo = month.days.find((d) => d.yolo);
-  return yolo
-    ? `Calendar · ${area.shortName} · YOLO ${formatYmdLong(yolo.date, area.timezone)}`
-    : `Calendar · ${area.shortName} · ${month.label}`;
+  return calendarDigestSubject([{ area, month }]);
+}
+
+export function calendarDigestSubject(rows: Array<{ area: Area; month: CalendarMonth }>) {
+  if (rows.length === 1) {
+    const { area, month } = rows[0];
+    const yolo = month.days.find((d) => d.yolo);
+    return yolo
+      ? `Calendar · ${area.shortName} · YOLO ${formatYmdLong(yolo.date, area.timezone)}`
+      : `Calendar · ${area.shortName} · ${month.label}`;
+  }
+  const names = rows.slice(0, 4).map((r) => r.area.shortName).join(" · ");
+  const more = rows.length > 4 ? ` +${rows.length - 4}` : "";
+  return `Calendar · ${names}${more} · ${rows[0]?.month.label ?? "this month"}`;
 }
 
 export function calendarEmailText(area: Area, month: CalendarMonth) {
@@ -532,30 +519,49 @@ export function calendarEmailText(area: Area, month: CalendarMonth) {
 }
 
 export function calendarEmailHtml(area: Area, month: CalendarMonth) {
+  return calendarDigestHtml([{ area, month }]);
+}
+
+export function calendarDigestText(rows: Array<{ area: Area; month: CalendarMonth }>) {
+  return rows.map((r) => calendarEmailText(r.area, r.month)).join("\n\n———\n\n");
+}
+
+function calendarWaterBlock(area: Area, month: CalendarMonth) {
   const yolo = month.days.find((d) => d.yolo);
-  const meta = deskMeta(area.id);
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 22px;background:${PAGE};border:1px solid ${LINE};border-radius:18px">
+    <tr>
+      <td style="padding:16px">
+        ${kicker(`${theaterLabel(area.theater)} · ${area.shortName}`)}
+        <p style="margin:8px 0 0;font-size:24px;line-height:1.2;color:${NAVY};font-family:Georgia,'Times New Roman',serif">${escapeHtml(area.shortName)}</p>
+        <p style="margin:6px 0 12px;font-size:14px;color:${MUTED}">${escapeHtml(month.label)}${yolo ? ` · YOLO ${escapeHtml(formatYmdLong(yolo.date, area.timezone))} · ${yolo.score.toFixed(1)}` : ""}</p>
+        ${calendarGridHtml(month, area)}
+        ${upcomingHtml(month.days, area)}
+        <p style="margin:16px 0 0">${btn(calendarHref(area.id, area.theater), `Open ${area.shortName} calendar`)}</p>
+      </td>
+    </tr>
+  </table>`;
+}
+
+export function calendarDigestHtml(rows: Array<{ area: Area; month: CalendarMonth }>) {
+  if (!rows.length) {
+    return emailDoc({ body: `${heading("Calendar quiet")}${dek("No month grids set.")}` });
+  }
+  const names = rows.map((r) => r.area.shortName).join(" · ");
+  const first = rows[0];
   return emailDoc({
-    preheader: yolo
-      ? `${area.shortName} calendar · YOLO ${formatYmdLong(yolo.date, area.timezone)}`
-      : `${area.shortName} calendar · ${month.label}`,
+    preheader: rows.length === 1 ? `${first.area.shortName} calendar · ${first.month.label}` : `Calendar · ${names}`,
     body: `
-    <p style="margin:0;letter-spacing:.18em;text-transform:uppercase;font-size:11px;color:#b87333">
-      On This Water calendar · ${escapeHtml(theaterLabel(area.theater))}${meta ? ` · ${escapeHtml(meta.desk)}` : ""}
-    </p>
-    <h1 class="fb-h1" style="margin:12px 0 0;font-size:28px;line-height:1.25">${escapeHtml(area.shortName)}</h1>
-    <p style="margin:8px 0 0;font-size:16px;color:#3d4d5c">${escapeHtml(month.label)} · this month’s scores, live wind and rain where the forecast reaches</p>
-    ${yolo ? `<p style="margin:14px 0 0;font-size:16px;line-height:1.45">YOLO is <strong>${escapeHtml(formatYmdLong(yolo.date, area.timezone))}</strong> · ${yolo.score.toFixed(1)}. Best remaining dry day with a real wind forecast.</p>` : ""}
-    ${sectionTitle("The month")}
-    ${calendarGridHtml(month, area)}
-    ${upcomingHtml(month.days, area)}
-    <p style="margin:28px 0 0">${btn(calendarHref(area.id, area.theater), "Open the live calendar")}</p>
-    <p style="margin:14px 0 0;font-size:14px;line-height:1.6">
-      <a href="${calendarCardUrl(area.id, area.theater)}" style="color:#1c6b6b">Graphic card</a>
-      &nbsp;·&nbsp;
-      <a href="${ORIGIN}/?area=${area.id}&theater=${area.theater}" style="color:#1c6b6b">Today’s brief</a>
-    </p>
-    <p style="margin:24px 0 0;font-size:13px;color:#6a7580;line-height:1.5">
-      Scores are 1–10, not a bite. This is not a chart for navigation. Days past the wind forecast are tide and moon only.
+    ${kicker(rows.length === 1 ? `Calendar · ${theaterLabel(first.area.theater)}` : "Calendar · your water")}
+    ${heading(rows.length === 1 ? first.area.shortName : `${rows.length} month grids`)}
+    ${dek(
+      rows.length === 1
+        ? `${first.month.label} · scores, moon, rain, and the copper YOLO day.`
+        : `${first.month.label}. Every water you left on — not just the first desk.`,
+    )}
+    ${sectionTitle(rows.length === 1 ? "The month" : "Your water")}
+    ${rows.map((r) => calendarWaterBlock(r.area, r.month)).join("")}
+    <p style="margin:8px 0 0;font-size:13px;line-height:1.5;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
+      Scores are 1–10, not a bite. Days past the wind forecast are tide and moon only.
     </p>`,
   });
 }
@@ -618,26 +624,32 @@ export function seasonalEmailText(issue: SeasonIssue) {
 export function seasonalEmailHtml(issue: SeasonIssue) {
   const qs = issue.coasts.length === 1 ? `?theater=${issue.coasts[0]}` : "";
   const peaks = issue.peaks.length
-    ? `${sectionTitle("In peak")}<ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.45">${issue.peaks
-        .map((p) => `<li style="margin:0 0 10px"><strong>${escapeHtml(p.name)}</strong> · ${escapeHtml(p.theaters)}<br/><span style="color:#3d4d5c">${escapeHtml(p.why)}</span></li>`)
-        .join("")}</ul>`
-    : `${sectionTitle("In peak")}<p style="margin:0;font-size:15px;color:#3d4d5c">No primary species is marked peak this month on your coasts. Present fish still show on the season page.</p>`;
+    ? `${sectionTitle("In peak")}${issue.peaks
+        .map(
+          (p) =>
+            `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 10px;background:${PANEL};border:1px solid ${LINE};border-radius:14px"><tr><td style="padding:12px 14px"><p style="margin:0;font-size:16px;color:${NAVY}"><strong>${escapeHtml(p.name)}</strong></p><p style="margin:4px 0 0;font-size:13px;color:${MUTED}">${escapeHtml(p.theaters)} · ${escapeHtml(p.why)}</p></td></tr></table>`,
+        )
+        .join("")}`
+    : `${sectionTitle("In peak")}<p style="margin:0;font-size:15px;color:${MUTED}">No primary species is marked peak this month on your coasts. Present fish still show on the season page.</p>`;
   const closures = issue.closures.length
-    ? `${sectionTitle("Closed or closing")}<ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.45">${issue.closures
-        .map((c) => `<li style="margin:0 0 10px"><strong>${escapeHtml(c.title)}</strong><br/><span style="color:#3d4d5c">${escapeHtml(c.body)}</span></li>`)
-        .join("")}</ul>`
+    ? `${sectionTitle("Closed or closing")}${issue.closures
+        .map(
+          (c) =>
+            `<p style="margin:0 0 10px;font-size:15px;line-height:1.45"><strong style="color:${copper}">${escapeHtml(c.title)}</strong><br/><span style="color:${MUTED}">${escapeHtml(c.body)}</span></p>`,
+        )
+        .join("")}`
     : "";
   return emailDoc({
     preheader: `${coastEditionLabel(issue.coasts)} · ${issue.monthName} fundamentals`,
     body: `
-    <p style="margin:0;letter-spacing:.18em;text-transform:uppercase;font-size:11px;color:#b87333">Seasonal fundamentals · ${escapeHtml(coastEditionLabel(issue.coasts))}</p>
-    <h1 class="fb-h1" style="margin:12px 0 0;font-size:28px;line-height:1.25">${escapeHtml(issue.monthName)} on your water</h1>
-    <p style="margin:16px 0 0;font-size:16px;line-height:1.5;color:#3d4d5c">${escapeHtml(issue.letter)}</p>
+    ${kicker(`Season · ${coastEditionLabel(issue.coasts)}`)}
+    ${heading(`${issue.monthName} on your water`)}
+    <p style="margin:16px 0 0;font-size:16px;line-height:1.55;color:${NAVY}">${escapeHtml(issue.letter)}</p>
     ${peaks}
     ${closures}
-    <p style="margin:28px 0 0">${btn(`${ORIGIN}/fundamentals${qs}`, "Open the season page")}</p>
-    <p style="margin:24px 0 0;font-size:13px;color:#6a7580;line-height:1.5">
-      Doctrine for the coasts you elected, not a honey-hole list. Verify TPWD, FWC, or the local book before you keep a fish.
+    <p style="margin:22px 0 0">${btn(`${ORIGIN}/fundamentals${qs}`, "Open the season page")}</p>
+    <p style="margin:18px 0 0;font-size:13px;line-height:1.5;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
+      Doctrine for the coasts you elected, not a honey-hole list. Verify before you keep a fish.
     </p>`,
   });
 }

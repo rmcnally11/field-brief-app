@@ -5,9 +5,9 @@ import { getYoloDay } from "@/lib/calendar";
 import { AREAS } from "@/lib/data/areas";
 import {
   buildSeasonIssue,
-  calendarEmailHtml,
-  calendarEmailText,
-  calendarSubject,
+  calendarDigestHtml,
+  calendarDigestSubject,
+  calendarDigestText,
   letterEmailHtml,
   letterEmailText,
   letterSubject,
@@ -18,6 +18,7 @@ import {
   seasonalEmailText,
   seasonalSubject,
 } from "@/lib/mail";
+import { AREA_BY_ID } from "@/lib/data/areas";
 import { listSubscribers, subscribersForDesk } from "@/lib/subscribers";
 import { coastsForDesks } from "@/lib/coasts";
 import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
@@ -200,9 +201,16 @@ export async function dispatchCalendar(opts?: { force?: boolean; desk?: string; 
     return { skipped: true as const, reason: "not Sunday in Chicago", results: [] as const };
   }
   const subscribers = await listSubscribers();
-  const due = AREAS.filter((d) => !opts?.desk || d.id === opts.desk);
+  const calendar = subscribers.filter((s) => s.cadence.includes("calendar") && s.desks.length);
+  const groups = new Map<string, string[]>();
+  for (const sub of calendar) {
+    const desks = opts?.desk ? sub.desks.filter((d) => d === opts.desk) : sub.desks;
+    if (!desks.length) continue;
+    const key = [...desks].sort().join(",");
+    groups.set(key, [...(groups.get(key) ?? []), sub.email]);
+  }
   const results: Array<{
-    areaId: string;
+    desks: string[];
     subject: string;
     recipients: number;
     sent: boolean;
@@ -210,44 +218,46 @@ export async function dispatchCalendar(opts?: { force?: boolean; desk?: string; 
     error?: string;
     why?: string;
   }> = [];
-  for (const area of due) {
-    const recipients = subscribersForDesk(subscribers, area.id, "calendar");
+  for (const [key, emails] of groups) {
+    const desks = key.split(",");
     try {
-      const now = clockParts(at, area.timezone);
-      const months = await buildCalendarRange(area, now.year, now.month, "all", 1);
-      const month = months[0];
-      if (!month) throw new Error("Calendar did not set.");
-      const subject = calendarSubject(area, month);
-      const html = calendarEmailHtml(area, month);
-      const text = calendarEmailText(area, month);
-      if (!recipients.length) {
-        const outbox = await writeOutbox(`cal-${area.id}`, { subject, text, recipients: [] }).catch(() => undefined);
-        results.push({ areaId: area.id, subject, recipients: 0, sent: false, outbox, why: "no address on the list" });
-        continue;
+      const rows = [];
+      for (const id of desks) {
+        const area = AREA_BY_ID[id];
+        if (!area) continue;
+        const now = clockParts(at, area.timezone);
+        const months = await buildCalendarRange(area, now.year, now.month, "all", 1);
+        if (months[0]) rows.push({ area, month: months[0] });
       }
-      const remote = await sendResend(recipients, subject, html, text);
+      if (!rows.length) throw new Error("Calendar did not set.");
+      const subject = calendarDigestSubject(rows);
+      const html = calendarDigestHtml(rows);
+      const text = calendarDigestText(rows);
+      const remote = await sendResend(emails, subject, html, text);
       const outbox = remote.sent
         ? undefined
-        : await writeOutbox(`cal-${area.id}`, { subject, text, recipients, html }).catch(() => undefined);
+        : await writeOutbox(`cal-${desks.join("-")}`, { subject, text, recipients: emails, html }).catch(
+            () => undefined,
+          );
       results.push({
-        areaId: area.id,
+        desks,
         subject,
-        recipients: recipients.length,
+        recipients: emails.length,
         sent: remote.sent,
         outbox,
         why: remote.why ?? undefined,
       });
     } catch (error) {
       results.push({
-        areaId: area.id,
-        subject: `${area.shortName} calendar`,
-        recipients: recipients.length,
+        desks,
+        subject: `Calendar · ${desks.join(" · ")}`,
+        recipients: emails.length,
         sent: false,
         error: error instanceof Error ? error.message : "Calendar mail failed",
       });
     }
   }
-  return { skipped: false as const, reason: null, results };
+  return { skipped: false as const, reason: groups.size ? null : "no calendar addresses", results };
 }
 
 export async function dispatchSeasonal(opts?: { force?: boolean; at?: Date }) {

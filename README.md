@@ -15,7 +15,7 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - Live **NOAA CO-OPS** tides, observed water level, water temperature, and station wind on Texas and Florida gauges.
 - **Wind versus the table**: observed minus predicted water. On the Texas coast the wind often *is* the tide.
 - **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas, Mexico, Seychelles) — wind **and rain / thunderstorms**.
-- Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**.
+- Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**. The 5am mail leads with that same tide chart — the curve is the first thing in the inbox.
 - **Saturday Letter** (`/newsletter`) — one live desk per theater you elect (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse). A Texas-only reader does not see Andros or Seychelles. Peaks and harvest closures follow the same coasts.
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by the coasts you elected, then water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next. Tap a day for that date’s brief. Copper outline = amazing day. The monthly **YOLO** day is the best remaining **dry** day with a real wind forecast. Rain and thunderstorms tax the score; a soaker cannot be a copper day.
@@ -74,7 +74,7 @@ The page stays live. Texas wind versus the table changes inside a morning. The 5
 
 ## The list — signup, the table, and the 5am email
 
-Others can subscribe. The family door is [`/join`](https://onthiswater.com/join?coasts=texas). The same form is on today and the letter (`/newsletter`). Join writes a row on the Airtable Subscribers table. Resend only sends the mail — it is not the list. Full click-by-click link: [AIRTABLE.md](./AIRTABLE.md).
+Others can subscribe. The family door is [`/join`](https://onthiswater.com/join?coasts=texas). The same form is on the letter (`/newsletter`). It is not on the live brief — that page stays on the water. Join writes a row on the Airtable Subscribers table. Resend only sends the mail — it is not the list. Full click-by-click link: [AIRTABLE.md](./AIRTABLE.md).
 
 There **is** a managed table: [Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) in the Costal Cavaliers workspace (the Airtable base is still named Field Brief until you rename it in Airtable). Columns: Name, Email, Home ZIP, Coasts they fish, What they receive (`Daily` = 5am brief / `Weekly` = Saturday letter / `Calendar` = Sunday month grid / `Seasonal` = first-of-month fundamentals), Status (`Active` / `Paid` / `Unsubscribed`), How they joined, Joined on, Notes. `Paid` is the monetize hook — same list, later a charge. That table is not a page on the site. Production cannot read or write it until `AIRTABLE_API_KEY` is on Vercel and you redeploy.
 

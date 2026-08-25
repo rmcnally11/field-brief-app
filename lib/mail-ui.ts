@@ -90,10 +90,12 @@ export function brandBar() {
   </table>`;
 }
 
-export function emailDoc(opts: { preheader?: string; body: string }) {
+export function emailDoc(opts: { preheader?: string; hero?: string; brand?: boolean; body: string }) {
   const pre = opts.preheader
     ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0">${escapeHtml(opts.preheader)}</div>`
     : "";
+  const showBrand = opts.brand ?? !opts.hero;
+  const topPad = opts.hero || !showBrand ? "18px 18px 40px" : "28px 18px 40px";
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -126,10 +128,10 @@ ${pre}
   <tr>
     <td align="center" style="padding:0">
       <table role="presentation" class="fb-wrap" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px">
+        ${opts.hero ? `<tr><td style="padding:0;font-size:0;line-height:0;background:${PANEL}">${opts.hero}</td></tr>` : ""}
         <tr>
-          <td class="fb-pad" style="padding:28px 18px 40px;background:${PAGE}">
-            ${brandBar()}
-            ${waterline()}
+          <td class="fb-pad" style="padding:${topPad};background:${PAGE}">
+            ${showBrand ? `${brandBar()}${waterline()}` : ""}
             ${opts.body}
             ${waterline()}
             <p style="margin:0;font-size:12px;line-height:1.5;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">

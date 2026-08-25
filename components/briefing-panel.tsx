@@ -21,7 +21,6 @@ import { morningLine } from "@/lib/morning";
 import { briefHref, compareHref } from "@/lib/hrefs";
 import { neighborArea } from "@/lib/data/areas";
 import { skyCopy } from "@/lib/wx";
-import { MorningMail } from "@/components/morning-mail";
 
 function tideClock(stamp: string, tz: string) {
   const d = stamp.includes("T") ? new Date(stamp) : parseNoaaGmt(stamp);
@@ -104,8 +103,6 @@ export function BriefingPanel({
           />
         </div>
       </section>
-
-      <MorningMail defaultDesk={area.id} compact />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Instrument label="Wind" source={conditions.weather.source.toUpperCase()}>

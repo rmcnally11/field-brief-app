@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildSampleEmails, sendSampleEmails } from "@/lib/samples";
-import { validEmail } from "@/lib/subscribers";
+import { findSubscriber, validEmail } from "@/lib/subscribers";
 
 function authorized(request: NextRequest) {
   const secret = process.env.CRON_SECRET?.trim();
@@ -18,22 +18,26 @@ export async function GET(request: NextRequest) {
   const send = request.nextUrl.searchParams.get("send") === "1";
   const kind = request.nextUrl.searchParams.get("kind");
   const desk = request.nextUrl.searchParams.get("desk") ?? "galveston";
-  const desks = request.nextUrl.searchParams.get("desks")?.split(",").map((d) => d.trim()).filter(Boolean);
+  const fromQuery = request.nextUrl.searchParams.get("desks")?.split(",").map((d) => d.trim()).filter(Boolean);
   try {
+    const listed = to && validEmail(to) ? await findSubscriber(to) : null;
+    const desks = fromQuery?.length ? fromQuery : listed?.desks?.length ? listed.desks : [desk];
     if (send) {
       if (!to || !validEmail(to)) {
         return NextResponse.json({ error: "Need a to= address or SUBSCRIBER_EMAILS." }, { status: 400 });
       }
-      const result = await sendSampleEmails(to, { areaId: desk, desks: desks?.length ? desks : [desk] });
-      return NextResponse.json(result);
+      const result = await sendSampleEmails(to, { areaId: desks[0], desks });
+      return NextResponse.json({ ...result, desks, listed: Boolean(listed) });
     }
-    const samples = await buildSampleEmails({ areaId: desk, desks: desks?.length ? desks : [desk] });
+    const origin = request.nextUrl.origin;
+    const samples = await buildSampleEmails({ areaId: desks[0], desks, origin });
     const picked = kind ? samples.filter((s) => s.kind === kind) : samples;
     if (request.nextUrl.searchParams.get("html") === "1" && picked[0]) {
       return new NextResponse(picked[0].html, { headers: { "Content-Type": "text/html; charset=utf-8" } });
     }
     return NextResponse.json({
-      desk,
+      desks,
+      listed: Boolean(listed),
       samples: picked.map((s) => ({ kind: s.kind, subject: s.subject, bytes: s.html.length })),
     });
   } catch (error) {

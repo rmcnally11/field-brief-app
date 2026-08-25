@@ -67,6 +67,7 @@ export async function buildSampleEmails(opts?: {
   areaId?: string;
   desks?: string[];
   coasts?: TheaterId[];
+  origin?: string;
 }): Promise<SampleMail[]> {
   const desks = opts?.desks?.length ? opts.desks : [opts?.areaId ?? "galveston"];
   const coasts = opts?.coasts ?? coastsForDesks(desks);
@@ -80,7 +81,7 @@ export async function buildSampleEmails(opts?: {
     {
       kind: "daily",
       subject: morningDigestSubject(mornings),
-      html: morningDigestHtml(mornings),
+      html: morningDigestHtml(mornings, { origin: opts?.origin }),
       text: morningDigestText(mornings),
     },
     {

@@ -4,6 +4,7 @@ import { morningLine } from "@/lib/morning";
 import { theaterLabel } from "@/lib/data/theaters";
 import { formatInZone, formatYmdLong, parseNoaaGmt } from "@/lib/time";
 import { ORIGIN, calendarCardUrl, calendarHref } from "@/lib/tweet";
+import { tideChartUrl } from "@/lib/tide-chart";
 import { skyCopy } from "@/lib/wx";
 import type { NewsletterIssue } from "@/lib/newsletter";
 import { coastEditionLabel } from "@/lib/coasts";
@@ -125,14 +126,39 @@ function clocks(briefing: Briefing) {
   }));
 }
 
-function hrefs(briefing: Briefing) {
+function mailOrigin(origin?: string) {
+  return (origin || ORIGIN).replace(/\/$/, "");
+}
+
+function hrefs(briefing: Briefing, origin?: string) {
+  const root = mailOrigin(origin);
   const q = `area=${briefing.area.id}&theater=${briefing.area.theater}`;
   return {
-    brief: `${ORIGIN}/?${q}`,
-    calendar: `${ORIGIN}/calendar?${q}`,
-    map: `${ORIGIN}/map?${q}`,
-    card: `${ORIGIN}/card?${q}`,
+    brief: `${root}/?${q}`,
+    calendar: `${root}/calendar?${q}`,
+    map: `${root}/map?${q}`,
+    card: `${root}/card?${q}`,
   };
+}
+
+function tideImage(briefing: Briefing, opts?: { origin?: string; bleed?: boolean }) {
+  const src = tideChartUrl(briefing.area.id, mailOrigin(opts?.origin), briefing.forDate);
+  const tides = briefing.conditions.tides;
+  const alt = `${briefing.area.shortName} tide · ${tides.stage.replace("-", " ")}${
+    tides.predictedNow != null ? ` · ${tides.predictedNow.toFixed(2)} ft` : ""
+  }`;
+  const href = hrefs(briefing, opts?.origin).brief;
+  const radius = opts?.bleed ? "0" : "14px";
+  const bottom = opts?.bleed ? "0" : "14px";
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 ${bottom}">
+    <tr>
+      <td style="padding:0;font-size:0;line-height:0;background:${PANEL}">
+        <a href="${href}" style="display:block">
+          <img src="${escapeHtml(src)}" width="600" alt="${escapeHtml(alt)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;border-radius:${radius}" />
+        </a>
+      </td>
+    </tr>
+  </table>`;
 }
 
 function instrumentTiles(briefing: Briefing) {
@@ -208,13 +234,19 @@ export function morningEmailText(briefing: Briefing, yolo?: CalendarDay | null) 
   return parts.filter((p) => p != null).join("\n");
 }
 
-function morningDeskCard(briefing: Briefing, yolo?: CalendarDay | null, compact = false) {
+function morningDeskCard(
+  briefing: Briefing,
+  yolo?: CalendarDay | null,
+  opts: { compact?: boolean; showTide?: boolean; origin?: string } = {},
+) {
+  const compact = Boolean(opts.compact);
   const meta = deskMeta(briefing.area.id);
-  const links = hrefs(briefing);
+  const links = hrefs(briefing, opts.origin);
   const line = morningLine(briefing, yolo);
   const fish = inPlay(briefing);
   const tides = clocks(briefing);
   const w = briefing.conditions.weather;
+  const chart = opts.showTide ? tideImage(briefing, { origin: opts.origin }) : "";
 
   const play = fish
     .map((s) => `${s.species.commonName} ${s.score.toFixed(1)}`)
@@ -241,8 +273,9 @@ function morningDeskCard(briefing: Briefing, yolo?: CalendarDay | null, compact 
     <p style="margin:14px 0 0">${btn(links.brief, `Open ${briefing.area.shortName}`)}</p>`;
 
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 18px;background:${PAGE};border:1px solid ${LINE};border-radius:18px">
+    ${chart ? `<tr><td style="padding:0;font-size:0;line-height:0">${chart}</td></tr>` : ""}
     <tr>
-      <td style="padding:18px 16px 16px">
+      <td style="padding:${chart ? "12px 16px 16px" : "18px 16px 16px"}">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%">
           <tr>
             <td valign="top">
@@ -260,8 +293,12 @@ function morningDeskCard(briefing: Briefing, yolo?: CalendarDay | null, compact 
   </table>`;
 }
 
-export function morningEmailHtml(briefing: Briefing, yolo?: CalendarDay | null) {
-  return morningDigestHtml([{ briefing, yolo }]);
+export function morningEmailHtml(
+  briefing: Briefing,
+  yolo?: CalendarDay | null,
+  opts?: { origin?: string },
+) {
+  return morningDigestHtml([{ briefing, yolo }], opts);
 }
 
 export function morningDigestSubject(rows: Array<{ briefing: Briefing }>) {
@@ -275,25 +312,39 @@ export function morningDigestText(rows: Array<{ briefing: Briefing; yolo?: Calen
   return rows.map((r) => morningEmailText(r.briefing, r.yolo)).join("\n\n———\n\n");
 }
 
-export function morningDigestHtml(rows: Array<{ briefing: Briefing; yolo?: CalendarDay | null }>) {
+export function morningDigestHtml(
+  rows: Array<{ briefing: Briefing; yolo?: CalendarDay | null }>,
+  opts?: { origin?: string },
+) {
   if (!rows.length) {
     return emailDoc({ body: `${heading("Gauges quiet")}${dek("No desks answered this morning.")}` });
   }
   const first = rows[0];
   const line = morningLine(first.briefing, first.yolo);
   const names = rows.map((r) => r.briefing.area.shortName).join(" · ");
-  const compact = rows.length > 1;
-  const cards = rows.map((r) => morningDeskCard(r.briefing, r.yolo, compact && rows.length > 3)).join("");
-  const lead = rows.length === 1 ? first.briefing.headline : `${rows.length} waters this morning`;
+  const single = rows.length === 1;
+  const cards = rows
+    .map((r) =>
+      morningDeskCard(r.briefing, r.yolo, {
+        compact: !single && rows.length > 3,
+        showTide: !single,
+        origin: opts?.origin,
+      }),
+    )
+    .join("");
+  const hero = single ? tideImage(first.briefing, { origin: opts?.origin, bleed: true }) : undefined;
   return emailDoc({
-    preheader: rows.length === 1 ? `${first.briefing.area.shortName} ${first.briefing.overall.toFixed(1)} · ${line}` : names,
-    body: `
-    ${kicker(rows.length === 1 ? `Today · ${theaterLabel(first.briefing.area.theater)}` : "Today · your water")}
-    ${heading(lead)}
-    ${dek(rows.length === 1 ? line : `Live scores for ${names}. Same instruments as the site — one card per desk.`)}
-    ${sectionTitle(rows.length === 1 ? "The water" : "Your desks")}
+    preheader: single ? `${first.briefing.area.shortName} ${first.briefing.overall.toFixed(1)} · ${line}` : names,
+    hero,
+    brand: false,
+    body: single
+      ? `${cards}
+    <p style="margin:18px 0 0;font-size:13px;line-height:1.5;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
+      Scores are 1–10, not a bite. This mail is a snapshot. The gauges stay live on the page.
+    </p>`
+      : `
     ${cards}
-    ${rows.length > 1 ? `<p style="margin:8px 0 0">${btn(`${ORIGIN}/`, "Open the live brief")}</p>` : ""}
+    <p style="margin:8px 0 0">${btn(`${mailOrigin(opts?.origin)}/`, "Open the live brief")}</p>
     <p style="margin:18px 0 0;font-size:13px;line-height:1.5;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
       Scores are 1–10, not a bite. This mail is a snapshot. The gauges stay live on the page.
     </p>`,

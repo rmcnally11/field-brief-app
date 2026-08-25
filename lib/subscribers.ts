@@ -178,3 +178,8 @@ export function subscribersForDesk(list: Subscriber[], areaId: string, cadence?:
     .filter((s) => s.desks.includes(areaId) && (!cadence || s.cadence.includes(cadence)))
     .map((s) => s.email);
 }
+
+export async function findSubscriber(email: string) {
+  const wanted = normalizeEmail(email);
+  return (await listSubscribers()).find((s) => s.email === wanted) ?? null;
+}

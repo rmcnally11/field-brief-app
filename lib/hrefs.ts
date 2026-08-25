@@ -28,6 +28,14 @@ export function compareHref(opts: {
   return `/compare?${p}`;
 }
 
+export function morningHref(opts: { areaId: string; theater: string; activity?: string }) {
+  const p = new URLSearchParams();
+  p.set("area", opts.areaId);
+  p.set("theater", opts.theater);
+  if (opts.activity && opts.activity !== "all") p.set("activity", opts.activity);
+  return `/morning?${p}`;
+}
+
 export function calendarHref(opts: { areaId: string; theater: string; activity?: string; month?: string }) {
   const p = new URLSearchParams();
   p.set("area", opts.areaId);

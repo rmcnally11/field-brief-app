@@ -18,7 +18,7 @@ import { YoloBanner } from "@/components/yolo-banner";
 import { formatInZone, formatYmdLong, parseNoaaGmt } from "@/lib/time";
 import { Badge } from "@/components/ui/badge";
 import { morningLine } from "@/lib/morning";
-import { briefHref, compareHref } from "@/lib/hrefs";
+import { briefHref, compareHref, morningHref } from "@/lib/hrefs";
 import { neighborArea } from "@/lib/data/areas";
 import { skyCopy } from "@/lib/wx";
 
@@ -260,7 +260,7 @@ export function BriefingPanel({
           Open the calendar
         </a>
         <a
-          href="/morning"
+          href={morningHref({ areaId: area.id, theater: area.theater, activity: briefing.activity })}
           className="rounded-full border border-[color:var(--line)] px-3 py-1.5 text-[color:var(--cream)]/75 hover:text-[color:var(--cream)]"
         >
           Morning dispatch

@@ -20,7 +20,7 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by the coasts you elected, then water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next. Tap a day for that date’s brief. Copper outline = amazing day. The monthly **YOLO** day is the best remaining **dry** day with a real wind forecast. Rain and thunderstorms tax the score; a soaker cannot be a copper day.
 - **Stay or drive** (`/compare`) — two desks, one morning.
-- **Morning line** (`/morning`) — one sentence you can copy or mail. No SMS on Hobby.
+- **Morning line** (`/morning`) — one sentence for the water on Today. Copy it. The rest of that coast is named underneath. Join lives on `/join`, not here.
 - Last theater / area / method is remembered in a cookie.
 - The Saturday Letter has a permalink (`/newsletter/YYYY-MM-DD`) and a short archive.
 - Satellite chart (Esri imagery) with official layers and your My Maps. Pick a micro-area and the camera zooms to that water only — Flamingo does not keep Islamorada lit.

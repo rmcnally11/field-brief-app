@@ -146,7 +146,7 @@ function emailDoc(opts: { preheader?: string; body: string }) {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
 <meta name="format-detection" content="telephone=no,address=no,email=no,date=no">
-<title>Field Brief</title>
+<title>On This Water</title>
 <style>
   html,body{margin:0!important;padding:0!important;width:100%!important}
   body{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;background:#f4efe6;color:#1a2a3a}
@@ -325,7 +325,7 @@ export function morningEmailHtml(briefing: Briefing, yolo?: CalendarDay | null) 
     preheader: `${briefing.area.shortName} ${briefing.overall.toFixed(1)} · ${line}`,
     body: `
     <p style="margin:0;letter-spacing:.18em;text-transform:uppercase;font-size:11px;color:#b87333">
-      Field Brief · ${escapeHtml(theaterLabel(briefing.area.theater))}
+      On This Water · ${escapeHtml(theaterLabel(briefing.area.theater))}
       ${meta ? ` · ${escapeHtml(meta.desk)}` : ""}
     </p>
     <p style="margin:8px 0 0;font-size:14px;color:#6a7580;line-height:1.4">${escapeHtml(briefing.area.name)}${meta ? ` — ${escapeHtml(meta.kicker)}` : ""}</p>
@@ -363,12 +363,12 @@ export function letterSubject(issue: NewsletterIssue, coasts: TheaterId[] | null
   const names = issue.desks
     .map((d) => d.briefing?.area.shortName ?? d.desk.replace(" desk", ""))
     .join(" · ");
-  return `Field Letter · ${issue.monthName} · ${names || edition}`;
+  return `Saturday Letter · ${issue.monthName} · ${names || edition}`;
 }
 
 export function letterEmailText(issue: NewsletterIssue, coasts: TheaterId[] | null) {
   const edition = coastEditionLabel(coasts);
-  const parts = [`Field Letter · ${edition}`, issue.rangeLabel, "", issue.letter, ""];
+  const parts = [`Saturday Letter · ${edition}`, issue.rangeLabel, "", issue.letter, ""];
   for (const desk of issue.desks) {
     const name = desk.briefing?.area.shortName ?? desk.desk;
     const score = desk.briefing ? desk.briefing.overall.toFixed(1) : "quiet";
@@ -426,7 +426,7 @@ export function letterEmailHtml(issue: NewsletterIssue, coasts: TheaterId[] | nu
   return emailDoc({
     preheader: `${edition} · ${issue.rangeLabel}`,
     body: `
-    <p style="margin:0;letter-spacing:.18em;text-transform:uppercase;font-size:11px;color:#b87333">Field Letter · ${escapeHtml(edition)}</p>
+    <p style="margin:0;letter-spacing:.18em;text-transform:uppercase;font-size:11px;color:#b87333">Saturday Letter · ${escapeHtml(edition)}</p>
     <p style="margin:8px 0 0;font-size:14px;color:#6a7580">${escapeHtml(issue.rangeLabel)}</p>
     <h1 class="fb-h1" style="margin:14px 0 0;font-size:28px;line-height:1.25">${escapeHtml(issue.monthName)} on your water</h1>
     <p style="margin:16px 0 0;font-size:16px;line-height:1.5;color:#3d4d5c">${escapeHtml(issue.letter)}</p>
@@ -513,7 +513,7 @@ export function calendarEmailText(area: Area, month: CalendarMonth) {
   const yolo = month.days.find((d) => d.yolo);
   const amazing = month.days.filter((d) => d.amazing).map((d) => d.date);
   const lines = [
-    `Field Brief calendar · ${theaterLabel(area.theater)} · ${area.name}`,
+    `On This Water calendar · ${theaterLabel(area.theater)} · ${area.name}`,
     month.label,
     yolo ? `YOLO: ${yolo.date} · ${yolo.score.toFixed(1)}` : null,
     amazing.length ? `Amazing dry days: ${amazing.join(", ")}` : null,
@@ -540,7 +540,7 @@ export function calendarEmailHtml(area: Area, month: CalendarMonth) {
       : `${area.shortName} calendar · ${month.label}`,
     body: `
     <p style="margin:0;letter-spacing:.18em;text-transform:uppercase;font-size:11px;color:#b87333">
-      Field Brief calendar · ${escapeHtml(theaterLabel(area.theater))}${meta ? ` · ${escapeHtml(meta.desk)}` : ""}
+      On This Water calendar · ${escapeHtml(theaterLabel(area.theater))}${meta ? ` · ${escapeHtml(meta.desk)}` : ""}
     </p>
     <h1 class="fb-h1" style="margin:12px 0 0;font-size:28px;line-height:1.25">${escapeHtml(area.shortName)}</h1>
     <p style="margin:8px 0 0;font-size:16px;color:#3d4d5c">${escapeHtml(month.label)} · this month’s scores, live wind and rain where the forecast reaches</p>

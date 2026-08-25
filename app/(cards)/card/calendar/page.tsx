@@ -31,7 +31,7 @@ export default async function CalendarCardPage({
       <header className="flex items-end justify-between gap-4">
         <div>
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--copper)]">
-            Field Brief · {theaterLabel(area.theater)} calendar
+            On This Water · {theaterLabel(area.theater)} calendar
           </p>
           <h1 className="mt-1 font-heading text-5xl">{area.shortName}</h1>
           <p className="mt-2 text-sm text-[color:var(--cream)]/60">

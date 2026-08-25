@@ -8,8 +8,8 @@ import { Waterline } from "@/components/viz/waterline";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Field Brief — the door",
-  description: "A shared word opens the brief. Ask the person who sent you the link.",
+  title: "On This Water — the door",
+  description: "A shared word opens compare, morning, species, method, and season. Ask the person who sent you the link.",
 };
 
 export default async function EnterPage({

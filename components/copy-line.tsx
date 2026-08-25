@@ -27,7 +27,7 @@ export function CopyLine({ text, label = "Copy the morning line" }: { text: stri
       </Button>
       <a
         className="text-xs text-[color:var(--sea)] underline decoration-[color:var(--sea)]/40"
-        href={`mailto:?subject=Field Brief&body=${encodeURIComponent(text)}`}
+        href={`mailto:?subject=On This Water&body=${encodeURIComponent(text)}`}
       >
         Mail it
       </a>

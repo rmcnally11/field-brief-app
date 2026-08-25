@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { GITHUB_REPO } from "@/lib/brand";
 import { getBriefing } from "@/lib/briefing";
 import { buildCalendarRange, getYoloDay } from "@/lib/calendar";
 import { getArea } from "@/lib/data/areas";
@@ -89,7 +90,7 @@ export async function GET() {
   return NextResponse.json({
     source: `${ORIGIN}/for-the-letter`,
     instructions: `${ORIGIN}/for-the-letter`,
-    github: "https://github.com/rmcnally11/field-brief-app/blob/main/TWITTER.md",
+    github: `${GITHUB_REPO}/blob/main/TWITTER.md`,
     rule: "Screenshot image URLs from this site only. Do not generate pictures. Skip any desk with skip=true.",
     mornings,
     calendars,

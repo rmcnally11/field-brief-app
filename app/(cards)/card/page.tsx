@@ -44,7 +44,7 @@ export default async function MorningCardPage({
       <header className="flex items-end justify-between gap-4">
         <div>
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--copper)]">
-            Field Brief · {theaterLabel(area.theater)} desk
+            On This Water · {theaterLabel(area.theater)} desk
           </p>
           <h1 className="mt-1 font-heading text-5xl text-[color:var(--cream)]">{area.shortName}</h1>
           <p className="mt-2 max-w-3xl font-heading text-2xl leading-snug text-[color:var(--cream)]/80">{line}</p>

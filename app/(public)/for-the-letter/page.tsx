@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Waterline } from "@/components/viz/waterline";
+import { GITHUB_REPO, PRODUCT_NAME, siteOrigin } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "For Field Letter and Twitter bots",
+  title: "For Saturday Letter and Twitter bots",
   description:
-    "Substack and X agents may only reprint Field Brief. Morning and calendar pictures are screenshots of this site.",
+    "Substack and X agents may only reprint On This Water. Morning and calendar pictures are screenshots of this site.",
 };
 
-const ORIGIN = "https://field-brief-app.vercel.app";
+const ORIGIN = siteOrigin();
 
 const DESK_HREFS = [
   ["Texas desk — Galveston", `${ORIGIN}/?area=galveston&theater=texas`],
@@ -28,7 +29,7 @@ export default function ForTheLetterPage() {
           For Substack and Twitter bots
         </h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/65">
-          You may reprint Field Brief. You may not invent weather, tides, scores, or water. If a
+          You may reprint {PRODUCT_NAME}. You may not invent weather, tides, scores, or water. If a
           number is not on this site, it does not go in the letter.
         </p>
         <Waterline className="mt-4" />
@@ -45,7 +46,7 @@ export default function ForTheLetterPage() {
           <li>
             <a
               className="underline decoration-[color:var(--copper)]/40"
-              href="https://github.com/rmcnally11/field-brief-app"
+              href={GITHUB_REPO}
             >
               github.com/rmcnally11/field-brief-app
             </a>
@@ -119,7 +120,7 @@ export default function ForTheLetterPage() {
           <li>Mahi / sail / tuna stay off the flat unless the JSON in-play list already put them there.</li>
           <li>Do not mention Rollover Pass. It was filled in 2019.</li>
           <li>Closures come from the JSON only. Tell them to verify before they keep a fish.</li>
-          <li>Links must stay on field-brief-app.vercel.app. No shorteners. No other weather domains.</li>
+          <li>Links must stay on onthiswater.com. No shorteners. No other weather domains.</li>
           <li>One Saturday post. No mid-week “update” from a forecast you made up.</li>
         </ul>
       </section>
@@ -146,14 +147,14 @@ export default function ForTheLetterPage() {
         Full prompts:{" "}
         <a
           className="underline decoration-[color:var(--copper)]/40"
-          href="https://github.com/rmcnally11/field-brief-app/blob/main/SUBSTACK.md"
+          href={`${GITHUB_REPO}/blob/main/SUBSTACK.md`}
         >
           SUBSTACK.md
         </a>
         {" · "}
         <a
           className="underline decoration-[color:var(--copper)]/40"
-          href="https://github.com/rmcnally11/field-brief-app/blob/main/TWITTER.md"
+          href={`${GITHUB_REPO}/blob/main/TWITTER.md`}
         >
           TWITTER.md
         </a>

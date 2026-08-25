@@ -1,7 +1,8 @@
+import { USER_AGENT } from "@/lib/brand";
 import { cardinalFromDeg } from "@/lib/time";
 import { coerceSky, skyFromText } from "@/lib/wx";
 
-const UA = "FieldBrief/1.0 (inshore conditions; https://github.com)";
+const UA = USER_AGENT;
 
 export async function fetchNwsPoint(lat: number, lon: number) {
   const res = await fetch(`https://api.weather.gov/points/${lat.toFixed(3)},${lon.toFixed(3)}`, {

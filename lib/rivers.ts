@@ -1,3 +1,4 @@
+import { USER_AGENT } from "@/lib/brand";
 import type { RiverNow } from "@/lib/types";
 
 /** USGS IV sites that actually drain into these desks. Names come from the gauge. */
@@ -25,7 +26,7 @@ export async function fetchUsgsDischarge(areaId: string): Promise<RiverNow | nul
   url.searchParams.set("sites", meta.site);
   url.searchParams.set("parameterCd", "00060");
   const res = await fetch(url, {
-    headers: { Accept: "application/json", "User-Agent": "FieldBrief/1.0 (inshore conditions)" },
+    headers: { Accept: "application/json", "User-Agent": USER_AGENT },
     next: { revalidate: 900 },
     signal: AbortSignal.timeout(3500),
   });

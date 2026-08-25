@@ -12,10 +12,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Waterline } from "@/components/viz/waterline";
+import { PRODUCT_LINE, PRODUCT_NAME } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
-  { href: "/", label: "Brief", dek: "Today’s water" },
+  { href: "/", label: "Today", dek: "Today’s water" },
   { href: "/calendar", label: "Calendar", dek: "Amazing days" },
   { href: "/compare", label: "Compare", dek: "Stay or drive" },
   { href: "/map", label: "Map", dek: "Marks and legal water" },
@@ -41,7 +42,7 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6">
         <a href="/" className="flex items-baseline gap-2">
           <span className="font-heading text-lg tracking-tight text-[color:var(--cream)]">
-            Field Brief
+            {PRODUCT_NAME}
           </span>
           <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[color:var(--sea)] sm:inline">
             Seven theaters
@@ -81,10 +82,10 @@ export function SiteHeader() {
                 The coast
               </p>
               <SheetTitle className="font-heading text-2xl text-[color:var(--cream)]">
-                Field Brief
+                {PRODUCT_NAME}
               </SheetTitle>
               <SheetDescription className="text-[color:var(--cream)]/50">
-                Seven theaters. Where, when, and why.
+                {PRODUCT_LINE}
               </SheetDescription>
             </SheetHeader>
             <Waterline className="px-4" />

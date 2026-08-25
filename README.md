@@ -1,8 +1,8 @@
-# Field Brief
+# On This Water
 
 Inshore and offshore conditions for seven theaters: the **Texas coast**, **Louisiana**, **Florida** (Keys, Boca Grande, Jupiter), the **Bahamas**, **Mexico** (Yucatan flats + Baja), **Puerto Rico**, and the **Seychelles**. The brief tells you **where**, **when**, and **why** fish should be on a given piece of water — and which species are actually in play.
 
-GitHub: [rmcnally11/field-brief-app](https://github.com/rmcnally11/field-brief-app). Live site: [field-brief-app.vercel.app](https://field-brief-app.vercel.app). Substack bots: [SUBSTACK.md](./SUBSTACK.md). Twitter / X bots: [TWITTER.md](./TWITTER.md) (morning + calendar screenshots of `/card`). Live rules: [/for-the-letter](https://field-brief-app.vercel.app/for-the-letter). Your three My Maps are imported as cream pins:
+GitHub: [rmcnally11/field-brief-app](https://github.com/rmcnally11/field-brief-app). Live site: [onthiswater.com](https://onthiswater.com) (Vercel project still named `field-brief-app`). Substack bots: [SUBSTACK.md](./SUBSTACK.md). Twitter / X bots: [TWITTER.md](./TWITTER.md) (morning + calendar screenshots of `/card`). Live rules: [/for-the-letter](https://onthiswater.com/for-the-letter). Your three My Maps are imported as cream pins:
 
 - [GULF ATLAS! - FISH](https://www.google.com/maps/d/u/0/edit?mid=1eqN2MMRViRbG4xwKDcL0Tzotogjcktw&usp=sharing)
 - [FL Keys — zones, wrecks, humps, bridges](https://www.google.com/maps/d/u/0/edit?mid=1nn7DQ_IHmDLXRUFsatM4hj9zIqmaUg4&usp=sharing)
@@ -16,13 +16,13 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - **Wind versus the table**: observed minus predicted water. On the Texas coast the wind often *is* the tide.
 - **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas, Mexico, Seychelles) — wind **and rain / thunderstorms**.
 - Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**.
-- **Weekly Field Letter** (`/newsletter`) — one live desk per theater you elect (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse). A Texas-only reader does not see Andros or Seychelles. Peaks and harvest closures follow the same coasts.
+- **Saturday Letter** (`/newsletter`) — one live desk per theater you elect (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse). A Texas-only reader does not see Andros or Seychelles. Peaks and harvest closures follow the same coasts.
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by the coasts you elected, then water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next. Tap a day for that date’s brief. Copper outline = amazing day. The monthly **YOLO** day is the best remaining **dry** day with a real wind forecast. Rain and thunderstorms tax the score; a soaker cannot be a copper day.
 - **Stay or drive** (`/compare`) — two desks, one morning.
 - **Morning line** (`/morning`) — one sentence you can copy or mail. No SMS on Hobby.
 - Last theater / area / method is remembered in a cookie.
-- Weekly Field Letter has a Saturday permalink (`/newsletter/YYYY-MM-DD`) and a short archive.
+- The Saturday Letter has a permalink (`/newsletter/YYYY-MM-DD`) and a short archive.
 - Satellite chart (Esri imagery) with official layers and your My Maps. Pick a micro-area and the camera zooms to that water only — Flamingo does not keep Islamorada lit.
 - Filters for **wade / skiff / kayak / fly / spin / jetty / offshore** (troll, edge, deep jig).
 - Official map layers:
@@ -49,7 +49,7 @@ No API keys for the gauges. NOAA, NWS, USGS, and Open-Meteo are public. NWS requ
 This repo does **not** auto-deploy. The Preview you see in Cursor is this cloud VM. To get an `https://….vercel.app` link:
 
 1. Import `rmcnally11/field-brief-app` in [vercel.com](https://vercel.com). Production branch is `main`.
-2. Framework: Next.js. Optional: `SITE_PASSWORD` to change the shared door word (compare / morning / species / method / season / list). For the list and mail: `AIRTABLE_API_KEY` (PAT on the Field Brief base), `RESEND_API_KEY`, `RESEND_FROM`, `SUBSCRIBER_EMAILS`, `CRON_SECRET`.
+2. Framework: Next.js. Optional: `SITE_PASSWORD` to change the shared door word (compare / morning / species / method / season / list). For the list and mail: `AIRTABLE_API_KEY` (PAT on the Airtable list base), `RESEND_API_KEY`, `RESEND_FROM`, `SUBSCRIBER_EMAILS`, `CRON_SECRET`. Set `NEXT_PUBLIC_SITE_URL=https://onthiswater.com` so cards and mail links use the brand domain.
 3. After the first deploy, every `git push` to the connected branch rebuilds the site.
 
 There is no nightly site rebuild. Code updates when someone pushes. Conditions update when someone opens a page (see below).
@@ -74,9 +74,9 @@ The page stays live. Texas wind versus the table changes inside a morning. The 5
 
 ## The list — signup, the table, and the 5am email
 
-Others can subscribe. The family door is [`/join`](https://field-brief-app.vercel.app/join?coasts=texas). The same form is on the brief and the letter (`/newsletter`). `/morning` still sits behind the hobby door. Join writes a row on the Airtable Subscribers table. Resend only sends the mail — it is not the list. Full click-by-click link: [AIRTABLE.md](./AIRTABLE.md).
+Others can subscribe. The family door is [`/join`](https://onthiswater.com/join?coasts=texas). The same form is on today and the letter (`/newsletter`). `/morning` still sits behind the hobby door. Join writes a row on the Airtable Subscribers table. Resend only sends the mail — it is not the list. Full click-by-click link: [AIRTABLE.md](./AIRTABLE.md).
 
-There **is** a managed table: [Field Brief → Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) in the Costal Cavaliers workspace. Columns: Name, Email, Home ZIP, Coasts they fish, What they receive (`Daily` = 5am brief / `Weekly` = Saturday letter / `Calendar` = Sunday month grid / `Seasonal` = first-of-month fundamentals), Status (`Active` / `Paid` / `Unsubscribed`), How they joined, Joined on, Notes. `Paid` is the monetize hook — same list, later a charge. A gated `/subscribers` page in the app shows the same rows. Production cannot read or write that table until `AIRTABLE_API_KEY` is on Vercel and you redeploy.
+There **is** a managed table: [Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) in the Costal Cavaliers workspace (the Airtable base is still named Field Brief until you rename it in Airtable). Columns: Name, Email, Home ZIP, Coasts they fish, What they receive (`Daily` = 5am brief / `Weekly` = Saturday letter / `Calendar` = Sunday month grid / `Seasonal` = first-of-month fundamentals), Status (`Active` / `Paid` / `Unsubscribed`), How they joined, Joined on, Notes. `Paid` is the monetize hook — same list, later a charge. A gated `/subscribers` page in the app shows the same rows. Production cannot read or write that table until `AIRTABLE_API_KEY` is on Vercel and you redeploy.
 
 Signup elects **coasts** and **cadence**. Default is the water on the page (Texas / Galveston on a cold letter visit), not all seven desks. A Texas-only fisherman does not get Andros or Seychelles in the 5am line, the Saturday letter, Sunday’s calendar, or the season page. `fb_coasts` remembers that election the same way `fb_water` remembers the last desk. Letter chips (`/newsletter?coasts=texas`) and `?theater=` on `/fundamentals` write the cookie.
 

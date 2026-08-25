@@ -1,6 +1,7 @@
+import { USER_AGENT } from "@/lib/brand";
 import { noaaDateSpan, parseNoaaGmt } from "@/lib/time";
 
-const APP = "FieldBrief/1.0";
+const APP = USER_AGENT;
 const BASE = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter";
 
 async function getJson(url: string) {

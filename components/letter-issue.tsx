@@ -153,7 +153,7 @@ export function LetterIssue({
     <div className="space-y-10">
       <header className="mx-auto max-w-3xl text-center">
         <p className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--copper)]">
-          The Field Letter · Vol. 1 · No. {issue.weekNumber}
+          The Saturday Letter · Vol. 1 · No. {issue.weekNumber}
         </p>
         <h1 className="mt-2 font-heading text-4xl text-[color:var(--cream)] md:text-6xl">Week of the water</h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/55">

@@ -18,7 +18,7 @@ export const CADENCE_META: { id: Cadence; label: string; title: string; blurb: s
   {
     id: "weekly",
     label: "Weekly",
-    title: "Saturday Field Letter",
+    title: "Saturday Letter",
     blurb: "Once a week, the letter for those desks only. A Texas signup does not get Andros or Seychelles.",
   },
   {

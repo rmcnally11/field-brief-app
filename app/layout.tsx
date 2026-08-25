@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { PRODUCT_DOMAIN } from "@/lib/brand";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,9 +28,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Field Brief — seven saltwater theaters",
+  metadataBase: new URL(`https://${PRODUCT_DOMAIN}`),
+  title: "On This Water — seven saltwater theaters",
   description:
-    "Where, when, and why inshore fish should be on the water. Live NOAA tides, a weekly Field Letter, seasonal fundamentals by coast and species, and monthly 1–10 calendars.",
+    "The water, as it is this morning. Live NOAA tides, a Saturday Letter, seasonal fundamentals by coast and species, and monthly 1–10 calendars.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

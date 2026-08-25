@@ -1,9 +1,10 @@
 import type { Briefing, CalendarDay, TheaterId } from "@/lib/types";
+import { PRODUCT_NAME, siteOrigin } from "@/lib/brand";
 import { DESKS } from "@/lib/newsletter";
 import { theaterLabel } from "@/lib/data/theaters";
 import { skyCopy, skyWord } from "@/lib/wx";
 
-export const ORIGIN = "https://field-brief-app.vercel.app";
+export const ORIGIN = siteOrigin();
 
 export const TWEET_DESKS = DESKS;
 
@@ -69,7 +70,7 @@ export function morningTweetText(briefing: Briefing, yolo?: CalendarDay | null, 
   const place = PLACE[briefing.area.id] ?? `${theaterLabel(briefing.area.theater)} fishing`;
   const yoloBit = yolo ? ` YOLO day ${yolo.date.slice(5)}.` : "";
   const kick = kicker ? ` ${kicker}.` : "";
-  const line = `${briefing.area.shortName} fishing weather: ${briefing.overall.toFixed(1)} this morning. ${place}. Wind ${windBit(briefing)}, ${skyBit(briefing)}.${extraBit(briefing)}${kick} Field Brief — a 1–10, not a bite.${yoloBit}`;
+  const line = `${briefing.area.shortName} fishing weather: ${briefing.overall.toFixed(1)} this morning. ${place}. Wind ${windBit(briefing)}, ${skyBit(briefing)}.${extraBit(briefing)}${kick} ${PRODUCT_NAME} — a 1–10, not a bite.${yoloBit}`;
   return `${line}\n${morningCardUrl(briefing.area.id, briefing.area.theater)}`;
 }
 
@@ -77,7 +78,7 @@ export function morningAlt(briefing: Briefing) {
   const w = briefing.conditions.weather;
   const place = PLACE[briefing.area.id] ?? briefing.area.name;
   return [
-    `Field Brief ${place} weather card`,
+    `${PRODUCT_NAME} ${place} weather card`,
     `${briefing.area.shortName} fishing score ${briefing.overall.toFixed(1)} of 10`,
     w.windMph != null ? `wind ${Math.round(w.windMph)} mph ${w.windCardinal ?? ""}`.trim() : null,
     skyCopy(w.wx, w.precipChance, w.sky),
@@ -105,12 +106,12 @@ export function calendarTweetText(
     : rains.length
       ? ` Rain in the forecast ${rains.map((d) => d.date.slice(5)).join(", ")}.`
       : "";
-  const line = `${shortName} fishing calendar — ${place}. ${yoloBit}${wetBit} Inshore forecast from Field Brief. Not a bite call.`;
+  const line = `${shortName} fishing calendar — ${place}. ${yoloBit}${wetBit} Inshore forecast from ${PRODUCT_NAME}. Not a bite call.`;
   return `${line}\n${calendarCardUrl(areaId, theater)}`;
 }
 
 export function calendarAlt(shortName: string, days: CalendarDay[], areaId?: string) {
   const yolo = days.find((d) => d.yolo);
   const place = areaId ? PLACE[areaId] ?? shortName : shortName;
-  return `Field Brief ${place} calendar. Month grid with moon, tide, and fishing weather.${yolo ? ` YOLO ${yolo.date}.` : ""} Copper is YOLO. Gold is an amazing dry day. Rain and thunderstorm labels are from this site.`;
+  return `${PRODUCT_NAME} ${place} calendar. Month grid with moon, tide, and fishing weather.${yolo ? ` YOLO ${yolo.date}.` : ""} Copper is YOLO. Gold is an amazing dry day. Rain and thunderstorm labels are from this site.`;
 }

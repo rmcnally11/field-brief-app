@@ -1,10 +1,10 @@
-# Link Airtable to Field Brief
+# Link Airtable to On This Water
 
 Airtable is the list. Resend is only the stamp that sends the mail. Do not use a Resend Audience, Contacts list, or `RESEND_AUDIENCE_ID` as the subscriber store.
 
 The table already exists. Production cannot read or write it until you put an Airtable personal access token on Vercel and redeploy.
 
-**Table:** [Field Brief → Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6)
+**Table:** [Subscribers](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) (Airtable base is still named Field Brief until you rename it in the Airtable UI)
 
 Your operator row is already on it: `rmcnally11@gmail.com`, all seven desks, Daily / Weekly / Calendar / Seasonal, Status **Active**.
 
@@ -26,13 +26,13 @@ Without the Airtable token, a live `/join` signup is `via: "local"` and dies on 
 
 ## 1. Create an Airtable personal access token
 
-1. Open [airtable.com/create/tokens](https://airtable.com/create/tokens) while signed in as the account that owns the Field Brief base.
+1. Open [airtable.com/create/tokens](https://airtable.com/create/tokens) while signed in as the account that owns the list base (still named Field Brief in Airtable unless you rename it).
 2. Click **Create new token**.
-3. Name it `Field Brief production`.
+3. Name it `On This Water production`.
 4. Under **Scopes**, add exactly these:
    - `data.records:read`
    - `data.records:write`
-5. Under **Access**, click **Add a base** → pick **Field Brief** only. Do not grant every base in Costal Cavaliers.
+5. Under **Access**, click **Add a base** → pick that list base only. Do not grant every base in Costal Cavaliers.
 6. Click **Create token**.
 7. Copy the value once. It starts with `pat`. Airtable will not show it again.
 
@@ -60,7 +60,7 @@ Saving the variable does **not** attach it to the deployment that is already liv
 ## 3. Redeploy Production
 
 1. In the same project, open **Deployments**.
-2. Open the current **Production** deployment (the one serving [field-brief-app.vercel.app](https://field-brief-app.vercel.app)).
+2. Open the current **Production** deployment (the one serving [onthiswater.com](https://onthiswater.com)).
 3. Click the **⋯** menu → **Redeploy**.
 4. Do **not** check “Use existing Build Cache” if that option is there. You want a fresh process with the new env.
 5. Wait until the deployment is **Ready**.
@@ -82,7 +82,7 @@ Do not put the token in a committed `.env` file. `.env*` is gitignored.
 
 Open:
 
-https://field-brief-app.vercel.app/api/subscribe
+https://onthiswater.com/api/subscribe
 
 You want:
 
@@ -94,16 +94,16 @@ You want:
 
 If you get `{ "list": "unlinked", "airtable": false }`, the variable is missing on that deployment. Repeat steps 2–3.
 
-If `airtable` is true but `ok` is false, the token is present and Airtable rejected it. Check scopes (`data.records:read` + `data.records:write`) and that the token is scoped to the Field Brief base.
+If `airtable` is true but `ok` is false, the token is present and Airtable rejected it. Check scopes (`data.records:read` + `data.records:write`) and that the token is scoped to this list base.
 
 ### B. A real signup
 
-Family door: [field-brief-app.vercel.app/join?coasts=texas](https://field-brief-app.vercel.app/join?coasts=texas)
+Family door: [onthiswater.com/join?coasts=texas](https://onthiswater.com/join?coasts=texas)
 
 Or from a terminal:
 
 ```bash
-curl -sS -X POST https://field-brief-app.vercel.app/api/subscribe \
+curl -sS -X POST https://onthiswater.com/api/subscribe \
   -H 'content-type: application/json' \
   -d '{"email":"FAMILY_EMAIL_HERE","desks":["galveston"],"cadence":["daily","weekly","calendar","seasonal"],"source":"Letter"}'
 ```
@@ -150,10 +150,10 @@ To take someone off: set Status to **Unsubscribed**. Do not delete the row unles
 
 Linking Airtable does not deliver mail to family inboxes by itself.
 
-Resend is still in test mode on `Field Brief <onboarding@resend.dev>`. That address can only deliver to the Resend-account email (`rmcnally11@gmail.com`). Family rows will be on the table and the cron will try them; Resend will refuse anyone else until you:
+Resend is still in test mode on `On This Water <onboarding@resend.dev>` until you set `RESEND_FROM`. That fallback address can only deliver to the Resend-account email (`rmcnally11@gmail.com`). Family rows will be on the table and the cron will try them; Resend will refuse anyone else until you:
 
-1. Add and verify a domain at [resend.com/domains](https://resend.com/domains).
-2. Set `RESEND_FROM` on Vercel to something on that domain, for example `Field Brief <brief@yourdomain.com>`.
+1. Add and verify `onthiswater.com` at [resend.com/domains](https://resend.com/domains).
+2. Set `RESEND_FROM` on Vercel to `On This Water <line@onthiswater.com>` (or another address on that domain).
 3. Redeploy Production.
 
 Until then: the list is real, the 5am job can see family rows, and only your inbox can receive the stamp.
@@ -221,7 +221,7 @@ The 5am job still needs `AIRTABLE_API_KEY` on Vercel to *read* those rows. A for
 | --- | --- | --- |
 | `/api/subscribe` GET says `unlinked` | Variable not on that deployment | Add `AIRTABLE_API_KEY`, redeploy Production |
 | POST returns `via: "local"` | Same | Same |
-| GET says `ok: false` / POST 500 with `Airtable 401` or `403` | Bad or under-scoped token | New PAT with read + write on Field Brief only |
+| GET says `ok: false` / POST 500 with `Airtable 401` or `403` | Bad or under-scoped token | New PAT with read + write on this list base only |
 | `Airtable 404` | Wrong base/table (should not happen; IDs are in code) | Do not change `lib/airtable-list.ts` IDs |
 | Row appears, family gets no mail | List is linked; stamp is still test-mode Resend | Verify a domain, set `RESEND_FROM`, redeploy |
 | You get mail, family does not | `SUBSCRIBER_EMAILS` and/or your row work; Resend refuses other inboxes | Same domain step |

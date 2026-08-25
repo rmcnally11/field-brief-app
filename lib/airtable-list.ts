@@ -1,4 +1,4 @@
-/** Field Brief list — Costal Cavaliers workspace. IDs are public; the token is not. */
+/** On This Water list — Costal Cavaliers workspace. IDs are public; the token is not. */
 export const AIRTABLE_BASE = "app3GRvkkpJdnVIKy";
 export const AIRTABLE_TABLE = "tblqoCAVvAvEFYMe6";
 export const AIRTABLE_TABLE_URL = `https://airtable.com/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`;

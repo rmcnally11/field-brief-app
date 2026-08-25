@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
+import { GITHUB_REPO, siteOrigin } from "@/lib/brand";
 import { filterNewsletter, getNewsletter } from "@/lib/newsletter";
 import { isYmd } from "@/lib/time";
 import { resolveElectedCoasts } from "@/lib/coasts";
 
 export const dynamic = "force-dynamic";
 
-const ORIGIN = "https://field-brief-app.vercel.app";
+const ORIGIN = siteOrigin();
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -19,7 +20,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       source: `${ORIGIN}/newsletter`,
       permalink: `${ORIGIN}/newsletter/${issue.weekId}`,
-      github: "https://github.com/rmcnally11/field-brief-app",
+      github: GITHUB_REPO,
       instructions: `${ORIGIN}/for-the-letter`,
       weekId: issue.weekId,
       weekLabel: issue.weekLabel,

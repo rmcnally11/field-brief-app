@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
         ? "You're on the Airtable list. Mail to anyone but the operator still needs a verified domain on Resend."
         : result.via === "local"
           ? "Saved on this machine only. Production still needs AIRTABLE_API_KEY on Vercel — see AIRTABLE.md."
-          : `You're on the Field Brief list for ${coasts.join(", ")}.`;
+          : `You're on the On This Water list for ${coasts.join(", ")}.`;
     const res = NextResponse.json({
       ok: true,
       desks: result.subscriber.desks,

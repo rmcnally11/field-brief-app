@@ -208,6 +208,85 @@ export function BriefingPanel({
               : conditions.tides.source}
           </p>
         </Instrument>
+        {conditions.hab || conditions.sargassum || conditions.salinity ? (
+          <Instrument
+            label="Coast"
+            source={[conditions.hab?.source, conditions.sargassum?.source, conditions.salinity ? "USGS" : null]
+              .filter(Boolean)
+              .join(" · ")}
+          >
+            {conditions.hab ? (
+              <p className="text-sm text-[color:var(--cream)]/80">
+                <span className="text-[10px] uppercase tracking-[0.14em] text-[color:var(--cream)]/40">
+                  K. brevis
+                </span>
+                <br />
+                {conditions.hab.level}
+                {conditions.hab.hot && conditions.hab.when ? ` · ${conditions.hab.when}` : ""}
+                <br />
+                <span className="text-xs text-[color:var(--cream)]/55">{conditions.hab.where}</span>
+                <br />
+                <a
+                  className="text-xs text-[color:var(--copper)] underline decoration-[color:var(--copper)]/40"
+                  href={conditions.hab.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {conditions.hab.source}
+                </a>
+              </p>
+            ) : null}
+            {conditions.sargassum ? (
+              <p className={`text-sm text-[color:var(--cream)]/80 ${conditions.hab ? "mt-3" : ""}`}>
+                <span className="text-[10px] uppercase tracking-[0.14em] text-[color:var(--cream)]/40">
+                  Sargassum
+                </span>
+                <br />
+                {conditions.sargassum.level}
+                <br />
+                <span className="text-xs text-[color:var(--cream)]/55">{conditions.sargassum.note}</span>
+                <br />
+                <a
+                  className="text-xs text-[color:var(--copper)] underline decoration-[color:var(--copper)]/40"
+                  href={conditions.sargassum.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  NOAA SIR
+                </a>
+                {" · "}
+                <a
+                  className="text-xs text-[color:var(--copper)] underline decoration-[color:var(--copper)]/40"
+                  href={conditions.sargassum.bulletinHref}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  USF SaWS
+                </a>
+              </p>
+            ) : null}
+            {conditions.salinity ? (
+              <p className={`text-sm text-[color:var(--cream)]/80 ${conditions.hab || conditions.sargassum ? "mt-3" : ""}`}>
+                <span className="text-[10px] uppercase tracking-[0.14em] text-[color:var(--cream)]/40">
+                  Salinity / color
+                </span>
+                <br />
+                {conditions.salinity.ppt.toFixed(conditions.salinity.ppt < 10 ? 1 : 0)} ppt · {conditions.salinity.color}
+                <br />
+                <span className="text-xs text-[color:var(--cream)]/55">{conditions.salinity.name}</span>
+                <br />
+                <a
+                  className="text-xs text-[color:var(--copper)] underline decoration-[color:var(--copper)]/40"
+                  href={conditions.salinity.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  USGS {conditions.salinity.site}
+                </a>
+              </p>
+            ) : null}
+          </Instrument>
+        ) : null}
         {conditions.river ? (
           <Instrument label="River" source={`USGS ${conditions.river.site}`}>
             <p className="font-heading text-3xl leading-tight text-[color:var(--cream)]">

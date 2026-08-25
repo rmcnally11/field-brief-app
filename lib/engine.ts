@@ -557,6 +557,20 @@ export function buildBriefing(
       `${conditions.river.name} is ${Math.round(conditions.river.cfs).toLocaleString()} cfs — coffee-colored water is the story. USGS ${conditions.river.site}.`,
     );
   }
+  if (conditions.hab?.hot) {
+    warnings.push(
+      `${conditions.hab.source} K. brevis ${conditions.hab.level}${conditions.hab.when ? ` · ${conditions.hab.when}` : ""}. ${conditions.hab.where}. Patchy — not a score.`,
+    );
+  }
+  if (conditions.sargassum?.elevated) {
+    warnings.push(`${conditions.sargassum.note} Not a GPS weed pin.`);
+  }
+  if (conditions.salinity) {
+    const s = conditions.salinity;
+    why.push(
+      `Salinity ${s.ppt.toFixed(s.ppt < 10 ? 1 : 0)} ppt at ${s.name} (${s.color}). USGS ${s.site}${s.kind === "river" ? " — river well, not mid-bay" : ""}.`,
+    );
+  }
   for (const alert of conditions.alerts ?? []) {
     warnings.push(`NWS ${alert.event}: ${alert.headline}`);
   }

@@ -229,6 +229,34 @@ export type MarineAlert = {
   severity: string;
 };
 
+export type HabNow = {
+  hot: boolean;
+  level: string;
+  where: string;
+  when: string | null;
+  source: string;
+  href: string;
+};
+
+export type SargassumNow = {
+  elevated: boolean;
+  level: string;
+  note: string;
+  source: string;
+  href: string;
+  bulletinHref: string;
+};
+
+export type SalinityNow = {
+  ppt: number;
+  color: string;
+  site: string;
+  name: string;
+  kind: "bay" | "river";
+  href: string;
+  fetchedAt: string;
+};
+
 export type Conditions = {
   areaId: string;
   waterTempF: number | null;
@@ -245,6 +273,9 @@ export type Conditions = {
   river?: RiverNow | null;
   /** NDBC buoy or C-MAN nearest this water. Not the tide. */
   buoy?: BuoyNow | null;
+  hab?: HabNow | null;
+  sargassum?: SargassumNow | null;
+  salinity?: SalinityNow | null;
   /** Active NWS marine / flood / convective alerts at this point. */
   alerts?: MarineAlert[];
 };

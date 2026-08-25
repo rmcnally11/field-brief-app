@@ -207,6 +207,22 @@ export type RiverNow = {
   fetchedAt: string;
 };
 
+/** NDBC buoy or C-MAN. Witness only — never the tide clock. */
+export type BuoyNow = {
+  id: string;
+  name: string;
+  kind: "buoy" | "c-man";
+  href: string;
+  where: string;
+  windMph: number | null;
+  windGustMph: number | null;
+  windDirDeg: number | null;
+  windCardinal: string | null;
+  waveFt: number | null;
+  waterTempF: number | null;
+  fetchedAt: string;
+};
+
 export type MarineAlert = {
   event: string;
   headline: string;
@@ -227,6 +243,8 @@ export type Conditions = {
   };
   /** USGS IV 00060 on Texas / Louisiana river mouths. */
   river?: RiverNow | null;
+  /** NDBC buoy or C-MAN nearest this water. Not the tide. */
+  buoy?: BuoyNow | null;
   /** Active NWS marine / flood / convective alerts at this point. */
   alerts?: MarineAlert[];
 };

@@ -519,6 +519,16 @@ export function buildBriefing(
       );
     }
   }
+  if (conditions.buoy) {
+    const b = conditions.buoy;
+    const bits: string[] = [];
+    if (b.windMph != null) bits.push(`${Math.round(b.windMph)} mph ${b.windCardinal ?? ""}`.trim());
+    if (b.waveFt != null) bits.push(`${b.waveFt.toFixed(1)} ft seas`);
+    if (b.waterTempF != null) bits.push(`SST ${b.waterTempF.toFixed(0)}°F`);
+    why.push(
+      `NDBC ${b.id} ${b.name}: ${bits.join(" · ") || "no report"}. ${b.where}. Witness only — not the tide clock.`,
+    );
+  }
   why.push(
     `${conditions.moon.name} moon — ${conditions.moon.springNeap} tide range. ${
       area.tideCharacter === "sight-skinny"

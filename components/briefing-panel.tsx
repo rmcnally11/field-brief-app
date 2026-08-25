@@ -106,7 +106,14 @@ export function BriefingPanel({
       </section>
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Instrument label="Wind" source={conditions.weather.source.toUpperCase()}>
+        <Instrument
+          label="Wind"
+          source={
+            conditions.buoy
+              ? `${conditions.weather.source.toUpperCase()} · NDBC ${conditions.buoy.id}`
+              : conditions.weather.source.toUpperCase()
+          }
+        >
           <WindCompass
             degrees={conditions.weather.windDirDeg}
             mph={conditions.weather.windMph}
@@ -115,6 +122,32 @@ export function BriefingPanel({
             size={156}
           />
         </Instrument>
+        {conditions.buoy ? (
+          <Instrument
+            label={conditions.buoy.kind === "buoy" ? "Buoy" : "NDBC station"}
+            source={`NDBC ${conditions.buoy.id}`}
+          >
+            <p className="font-heading text-2xl leading-tight text-[color:var(--cream)]">
+              {conditions.buoy.windMph != null
+                ? `${Math.round(conditions.buoy.windMph)} mph ${conditions.buoy.windCardinal ?? ""}`
+                : "No wind report"}
+            </p>
+            <p className="mt-2 text-sm text-[color:var(--cream)]/65">
+              {conditions.buoy.name}
+              {conditions.buoy.waveFt != null ? ` · ${conditions.buoy.waveFt.toFixed(1)} ft seas` : ""}
+              {conditions.buoy.waterTempF != null ? ` · SST ${conditions.buoy.waterTempF.toFixed(0)}°F` : ""}
+            </p>
+            <p className="mt-3 text-xs text-[color:var(--cream)]/45">{conditions.buoy.where}</p>
+            <a
+              className="mt-2 inline-block text-xs text-[color:var(--copper)] underline decoration-[color:var(--copper)]/40"
+              href={conditions.buoy.href}
+              target="_blank"
+              rel="noreferrer"
+            >
+              NDBC {conditions.buoy.id}
+            </a>
+          </Instrument>
+        ) : null}
         <Instrument
           label="Sky"
           source={

@@ -1,8 +1,9 @@
-import type { Area, Conditions, MarineAlert, RiverNow, WeatherNow } from "@/lib/types";
+import type { Area, BuoyNow, Conditions, MarineAlert, RiverNow, WeatherNow } from "@/lib/types";
 import { fetchLatest } from "@/lib/noaa";
 import { fetchNwsAlerts, fetchNwsForecast, nwsWindAt, nwsWindNow } from "@/lib/nws";
 import { fetchOpenMeteo } from "@/lib/openmeteo";
 import { fetchUsgsDischarge } from "@/lib/rivers";
+import { fetchNdbc } from "@/lib/ndbc";
 import { loadTides } from "@/lib/tides";
 import { moonPhase } from "@/lib/moon";
 import { cardinalFromDeg, ymdInZone } from "@/lib/time";
@@ -178,12 +179,13 @@ function nwsCovers(area: Area) {
 export async function loadConditions(area: Area, at = new Date()): Promise<Conditions> {
   const today = ymdInZone(at, area.timezone) === ymdInZone(new Date(), area.timezone);
   const tempStation = area.noaaTempStation ?? area.noaaStation;
-  const [tides, weather, wt, river, alerts] = await Promise.all([
+  const [tides, weather, wt, river, alerts, buoy] = await Promise.all([
     loadTides(area, at, { observe: today }),
     weatherFor(area, at, today),
     today && tempStation ? fetchLatest(tempStation, "water_temperature") : Promise.resolve(null),
     fetchUsgsDischarge(area.id).catch(() => null as RiverNow | null),
     nwsCovers(area) ? fetchNwsAlerts(area.lat, area.lon).catch(() => [] as MarineAlert[]) : Promise.resolve([] as MarineAlert[]),
+    today ? fetchNdbc(area.id).catch(() => null as BuoyNow | null) : Promise.resolve(null as BuoyNow | null),
   ]);
   let waterTempF: number | null = null;
   let waterTempSource: string | null = null;
@@ -199,6 +201,7 @@ export async function loadConditions(area: Area, at = new Date()): Promise<Condi
     weather,
     moon: moonPhase(at),
     river,
+    buoy,
     alerts,
   };
 }

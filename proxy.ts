@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GATE_COOKIE, GATE_PATH, isValidGateToken, safeNextPath } from "@/lib/gate";
 import { AREA_BY_ID } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
 import { encodeWaterPref, WATER_COOKIE, waterCookieOptions } from "@/lib/prefs";
@@ -44,46 +43,14 @@ function remember(request: NextRequest, res: NextResponse) {
 }
 
 export function proxy(request: NextRequest) {
-  const { pathname, search } = request.nextUrl;
-  const open =
-    pathname === GATE_PATH ||
-    pathname.startsWith("/api/") ||
-    pathname.startsWith("/_next") ||
-    pathname === "/favicon.ico" ||
-    pathname === "/newsletter" ||
-    pathname.startsWith("/newsletter/") ||
-    pathname === "/for-the-letter" ||
-    pathname === "/card" ||
-    pathname.startsWith("/card/") ||
-    pathname === "/" ||
-    pathname === "/calendar" ||
-    pathname.startsWith("/calendar/") ||
-    pathname === "/map" ||
-    pathname.startsWith("/map/") ||
-    pathname === "/join" ||
-    pathname.startsWith("/join/") ||
-    pathname === "/compare" ||
-    pathname.startsWith("/compare/") ||
-    pathname === "/morning" ||
-    pathname.startsWith("/morning/") ||
-    pathname === "/species" ||
-    pathname.startsWith("/species/") ||
-    pathname === "/method" ||
-    pathname.startsWith("/method/") ||
-    pathname === "/fundamentals" ||
-    pathname.startsWith("/fundamentals/");
-
-  if (open) return remember(request, NextResponse.next());
-  if (isValidGateToken(request.cookies.get(GATE_COOKIE)?.value)) {
-    return remember(request, NextResponse.next());
+  const { pathname } = request.nextUrl;
+  if (pathname === "/subscribers" || pathname.startsWith("/subscribers/")) {
+    const home = request.nextUrl.clone();
+    home.pathname = "/";
+    home.search = "";
+    return remember(request, NextResponse.redirect(home));
   }
-
-  const url = request.nextUrl.clone();
-  url.pathname = GATE_PATH;
-  url.search = "";
-  const next = safeNextPath(`${pathname}${search}`);
-  if (next !== "/") url.searchParams.set("next", next);
-  return NextResponse.redirect(url);
+  return remember(request, NextResponse.next());
 }
 
 export const config = {

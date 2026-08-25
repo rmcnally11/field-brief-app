@@ -240,7 +240,7 @@ export function MorningMail({
         disabled={status === "loading" || desks.length === 0 || cadence.length === 0}
         className="mt-5 bg-[color:var(--sea)] text-white hover:bg-[color:var(--sea)]/90"
       >
-        {status === "loading" ? "Saving…" : join ? "Send tonight’s brief" : "Join the list"}
+        {status === "loading" ? "Saving…" : "Join the list"}
       </Button>
       {note ? (
         <p className={`mt-3 text-sm ${status === "err" ? "text-[color:var(--copper)]" : "text-[color:var(--cream)]/70"}`} role="status">

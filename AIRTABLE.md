@@ -114,7 +114,7 @@ You want `"via":"airtable"` in the JSON. Then open the [Subscribers table](https
 
 ### C. Operator page
 
-`/subscribers` (operator list only) should say `source airtable` and show the same rows.
+The [Subscribers table](https://airtable.com/app3GRvkkpJdnVIKy/tblqoCAVvAvEFYMe6) should show the same rows. There is no list page on the site.
 
 ---
 

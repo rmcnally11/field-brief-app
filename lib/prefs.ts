@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { AREAS, getArea } from "@/lib/data/areas";
+import { AREA_BY_ID, AREAS, getArea } from "@/lib/data/areas";
 import { parseActivity } from "@/lib/briefing";
 import type { ActivityId, TheaterId } from "@/lib/types";
 import { COASTS_COOKIE, parseCoasts } from "@/lib/coasts";
@@ -57,6 +57,13 @@ export function resolveDesk(
   const activity = parseActivity(query.activity ?? pref?.activity);
   const theater = query.theater ?? pref?.theater ?? area.theater;
   return { area, activity, theater };
+}
+
+/** Bare Today: no water, no coast. Cookie must not drop you on Galveston. */
+export function isAllWaterQuery(query: { area?: string; theater?: string }) {
+  const named = query.area ? AREA_BY_ID[query.area] : undefined;
+  const theater = query.theater;
+  return !named && (!theater || theater === "all");
 }
 
 /** If the URL names a theater the current water is not on, land on that theater’s letter desk. */

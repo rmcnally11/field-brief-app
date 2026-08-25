@@ -2,8 +2,9 @@ import { Suspense } from "react";
 import { getBriefing, parseActivity, parseBriefDate } from "@/lib/briefing";
 import { FilterBar } from "@/components/filters";
 import { BriefingPanel } from "@/components/briefing-panel";
+import { AllWaterLoader, AllWaterSkeleton } from "@/components/all-water-board";
 import { UpcomingLoader, UpcomingSkeleton } from "@/components/upcoming-loader";
-import { readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
+import { isAllWaterQuery, readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
 import { getYoloDay } from "@/lib/calendar";
 
 export const dynamic = "force-dynamic";
@@ -15,8 +16,23 @@ export default async function Home({
 }) {
   const q = await searchParams;
   const pref = await readWaterPref();
-  const desk = resolveDeskForTheater(q, pref);
   const date = parseBriefDate(q.date);
+
+  if (isAllWaterQuery(q)) {
+    const activity = parseActivity(q.activity);
+    return (
+      <div className="space-y-6">
+        <Suspense>
+          <FilterBar areaId={undefined} activity={q.activity ?? activity} theater="all" />
+        </Suspense>
+        <Suspense fallback={<AllWaterSkeleton />}>
+          <AllWaterLoader activity={activity} date={date} />
+        </Suspense>
+      </div>
+    );
+  }
+
+  const desk = resolveDeskForTheater(q, pref);
   let briefing;
   let yolo = null;
   let error: string | null = null;

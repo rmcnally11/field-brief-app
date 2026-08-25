@@ -20,8 +20,9 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by the coasts you elected, then water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next. Tap a day for that date’s brief. Copper outline = amazing day. The monthly **YOLO** day is the best remaining **dry** day with a real wind forecast. Rain and thunderstorms tax the score; a soaker cannot be a copper day.
 - **Stay or drive** (`/compare`) — two desks, one morning.
+- **Today** (`/`) starts on **All water** — the seven letter desks, not Galveston. A last-desk cookie does not pull the homepage back to one coast. Pick a water to open that brief.
 - **Morning line** (`/morning`) — one sentence for the water on Today. Copy it. The rest of that coast is named underneath. Join lives on `/join`, not here.
-- Last theater / area / method is remembered in a cookie.
+- Last theater / area / method is remembered in a cookie for calendar, morning, compare, and map.
 - The Saturday Letter has a permalink (`/newsletter/YYYY-MM-DD`) and a short archive.
 - Satellite chart (Esri imagery) with official layers and your My Maps. Pick a micro-area and the camera zooms to that water only — Flamingo does not keep Islamorada lit.
 - Filters for **wade / skiff / kayak / fly / spin / jetty / offshore** (troll, edge, deep jig).
@@ -40,7 +41,7 @@ npm install
 npm run dev -- --port 43217 --hostname 127.0.0.1
 ```
 
-Open [http://127.0.0.1:43217](http://127.0.0.1:43217). The instrument is public: today, calendar, map, compare, morning, species, method, season, letter, and join. The subscriber table is not on the site — it lives in Airtable.
+Open [http://127.0.0.1:43217](http://127.0.0.1:43217). Today opens on **All water** (seven letter desks). The instrument is public: today, calendar, map, compare, morning, species, method, season, letter, and join. The subscriber table is not on the site — it lives in Airtable.
 
 No API keys for the gauges. NOAA, NWS, USGS, and Open-Meteo are public. NWS requires a User-Agent, which the app sends. The 5am email needs Resend if you want it to leave the machine (see below).
 

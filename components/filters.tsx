@@ -42,13 +42,15 @@ export function FilterBar({
   activity,
   theater,
 }: {
-  areaId: string;
+  areaId?: string;
   activity: string;
   theater?: string;
 }) {
   const href = useFilterHref();
+  const pathname = usePathname();
   const params = useSearchParams();
   const visibleAreas = AREAS.filter((a) => !theater || theater === "all" || a.theater === theater);
+  const allWaterClearsDesk = pathname === "/";
 
   return (
     <>
@@ -59,7 +61,12 @@ export function FilterBar({
               key={t.id}
               href={href({
                 theater: t.id === "all" ? undefined : t.id,
-                area: t.id === "all" ? areaId : letterDeskForTheater(t.id) ?? AREAS.find((a) => a.theater === t.id)?.id,
+                area:
+                  t.id === "all"
+                    ? allWaterClearsDesk
+                      ? undefined
+                      : areaId
+                    : letterDeskForTheater(t.id) ?? AREAS.find((a) => a.theater === t.id)?.id,
               })}
               className={cn(
                 "cursor-pointer rounded-full border px-3 py-1 text-xs uppercase tracking-[0.14em]",
@@ -79,7 +86,7 @@ export function FilterBar({
               href={href({ area: a.id, theater: a.theater })}
               className={cn(
                 "shrink-0 cursor-pointer rounded-md px-2.5 py-1 text-sm",
-                areaId === a.id
+                areaId && areaId === a.id
                   ? "bg-[color:var(--cream)] text-[color:var(--ink)]"
                   : "bg-[color:var(--cream)]/5 text-[color:var(--cream)]/70 hover:bg-[color:var(--cream)]/10",
               )}
@@ -125,7 +132,12 @@ export function FilterBar({
           ))}
         </div>
       </div>
-      <MobileFilterSheet areaId={areaId} activity={activity} theater={theater} />
+      <MobileFilterSheet
+        areaId={areaId}
+        activity={activity}
+        theater={theater}
+        allWaterClearsDesk={allWaterClearsDesk}
+      />
     </>
   );
 }
@@ -134,15 +146,17 @@ function MobileFilterSheet({
   areaId,
   activity,
   theater,
+  allWaterClearsDesk,
 }: {
-  areaId: string;
+  areaId?: string;
   activity: string;
   theater?: string;
+  allWaterClearsDesk: boolean;
 }) {
   const href = useFilterHref();
   const params = useSearchParams();
-  const area = getArea(areaId);
-  const theaterId = theater ?? area.theater;
+  const area = areaId ? getArea(areaId) : null;
+  const theaterId = theater ?? "all";
   const theaterLabel = THEATERS.find((t) => t.id === theaterId)?.label ?? "All water";
   const methodLabel = ACTIVITIES.find((a) => a.id === activity)?.label ?? "Any method";
   const visibleAreas = AREAS.filter((a) => !theater || theater === "all" || a.theater === theater);
@@ -163,7 +177,7 @@ function MobileFilterSheet({
               Water · method
             </span>
             <span className="mt-0.5 block truncate font-heading text-lg text-[color:var(--cream)]">
-              {theaterLabel} · {area.shortName}
+              {area ? `${theaterLabel} · ${area.shortName}` : "All water · pick a desk"}
             </span>
             <span className="block text-xs text-[color:var(--cream)]/50">{methodLabel}</span>
           </span>
@@ -201,7 +215,12 @@ function MobileFilterSheet({
                   key={t.id}
                   href={href({
                     theater: t.id === "all" ? undefined : t.id,
-                    area: t.id === "all" ? areaId : letterDeskForTheater(t.id) ?? AREAS.find((a) => a.theater === t.id)?.id,
+                    area:
+                      t.id === "all"
+                        ? allWaterClearsDesk
+                          ? undefined
+                          : areaId
+                        : letterDeskForTheater(t.id) ?? AREAS.find((a) => a.theater === t.id)?.id,
                   })}
                   className={cn(
                     "touch-manipulation rounded-xl border px-3 py-3 text-sm",
@@ -224,7 +243,7 @@ function MobileFilterSheet({
                   href={href({ area: a.id, theater: a.theater })}
                   className={cn(
                     "touch-manipulation rounded-xl px-3 py-3 text-sm",
-                    areaId === a.id
+                    areaId && areaId === a.id
                       ? "bg-[color:var(--cream)] text-[color:var(--ink)]"
                       : "bg-[color:var(--cream)]/5 text-[color:var(--cream)]/75",
                   )}

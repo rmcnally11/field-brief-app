@@ -5,10 +5,12 @@ export function TideChartGraphic({
   layout,
   fillId = "tideFill",
   fit = "fixed",
+  labels = true,
 }: {
   layout: TideChartLayout;
   fillId?: string;
   fit?: "fixed" | "fluid";
+  labels?: boolean;
 }) {
   if (!layout.ok) return null;
   const {
@@ -63,84 +65,93 @@ export function TideChartGraphic({
         ) : null,
       )}
       {yTicks.map((t) => (
-        <g key={`tick-${t.v}`}>
-          <line
-            x1={padL}
-            x2={width - padR}
-            y1={t.y}
-            y2={t.y}
-            stroke={cream}
-            strokeOpacity={0.12}
-          />
-          <text
-            x={padL - 6}
-            y={t.y + fontSize * 0.35}
-            textAnchor="end"
-            fill={cream}
-            fillOpacity={0.4}
-            fontSize={fontSize}
-            fontFamily="ui-monospace, monospace"
-          >
-            {t.v.toFixed(1)}
-          </text>
-        </g>
+        <line
+          key={`tick-${t.v}`}
+          x1={padL}
+          x2={width - padR}
+          y1={t.y}
+          y2={t.y}
+          stroke={cream}
+          strokeOpacity={0.12}
+        />
       ))}
+      {labels
+        ? yTicks.map((t) => (
+            <text
+              key={`tick-label-${t.v}`}
+              x={padL - 6}
+              y={t.y + fontSize * 0.35}
+              textAnchor="end"
+              fill={cream}
+              fillOpacity={0.4}
+              fontSize={fontSize}
+              fontFamily="ui-monospace, monospace"
+            >
+              {t.v.toFixed(1)}
+            </text>
+          ))
+        : null}
       <path d={fillPath} fill={`url(#${fillId})`} />
       <path d={strokePath} fill="none" stroke={cream} strokeOpacity={0.85} strokeWidth={strokeWidth} />
       {marks.map((m) => (
-        <g key={`${m.time}-${m.type}`}>
-          <circle cx={m.x} cy={m.y} r={markR} fill={m.type === "H" ? cream : copper} />
-          <text
-            x={m.x}
-            y={m.type === "H" ? m.y - fontSize * 0.85 : m.y + fontSize * 1.5}
-            textAnchor="middle"
-            fill={cream}
-            fillOpacity={0.7}
-            fontSize={fontSize}
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-          >
-            {m.type}
-          </text>
-        </g>
+        <circle key={`${m.time}-${m.type}`} cx={m.x} cy={m.y} r={markR} fill={m.type === "H" ? cream : copper} />
       ))}
+      {labels
+        ? marks.map((m) => (
+            <text
+              key={`mark-${m.time}-${m.type}`}
+              x={m.x}
+              y={m.type === "H" ? m.y - fontSize * 0.85 : m.y + fontSize * 1.5}
+              textAnchor="middle"
+              fill={cream}
+              fillOpacity={0.7}
+              fontSize={fontSize}
+              fontFamily="ui-sans-serif, system-ui, sans-serif"
+            >
+              {m.type}
+            </text>
+          ))
+        : null}
       {nowOn ? (
-        <g>
-          <line
-            x1={nowX}
-            x2={nowX}
-            y1={padT}
-            y2={height - padB}
-            stroke={copper}
-            strokeDasharray={`${3 * (fontSize / 8)} ${3 * (fontSize / 8)}`}
-            strokeWidth={nowWidth}
-          />
-          <text
-            x={nowX + fontSize * 0.5}
-            y={padT + fontSize * 1.25}
-            fill={copper}
-            fontSize={fontSize}
-            letterSpacing={0.8}
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-          >
-            NOW
-          </text>
-        </g>
+        <line
+          x1={nowX}
+          x2={nowX}
+          y1={padT}
+          y2={height - padB}
+          stroke={copper}
+          strokeDasharray={`${3 * (fontSize / 8)} ${3 * (fontSize / 8)}`}
+          strokeWidth={nowWidth}
+        />
       ) : null}
-      {dayMarks
-        .filter((_, i) => i % 2 === 0)
-        .map((m) => (
-          <text
-            key={`day-${m.x}`}
-            x={m.x}
-            y={height - 6}
-            fill={cream}
-            fillOpacity={0.35}
-            fontSize={fontSize}
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-          >
-            {m.label}
-          </text>
-        ))}
+      {labels && nowOn ? (
+        <text
+          x={nowX + fontSize * 0.5}
+          y={padT + fontSize * 1.25}
+          fill={copper}
+          fontSize={fontSize}
+          letterSpacing={0.8}
+          fontFamily="ui-sans-serif, system-ui, sans-serif"
+        >
+          NOW
+        </text>
+      ) : null}
+      {labels
+        ? dayMarks
+            .filter((_, i) => i % 2 === 0)
+            .map((m) => (
+              <text
+                key={`day-${m.x}`}
+                x={m.x}
+                y={height - 6}
+                fill={cream}
+                fillOpacity={0.35}
+                fontSize={fontSize}
+                fontFamily="ui-sans-serif, system-ui, sans-serif"
+              >
+                {m.label}
+              </text>
+            ))
+        : null}
     </svg>
   );
 }

@@ -6,7 +6,85 @@ import { getArea } from "@/lib/data/areas";
 import { theaterLabel } from "@/lib/data/theaters";
 import { layoutTideChart } from "@/lib/tide-chart";
 import { loadTides } from "@/lib/tides";
+import type { TideChartLayout } from "@/lib/tide-chart";
 import { cream, copper, gold, sea } from "@/lib/viz";
+
+function TideChartOg({ layout }: { layout: TideChartLayout }) {
+  const { width, height, padL, padT, padB, fontSize, yTicks, marks, dayMarks, nowX, nowOn } = layout;
+  return (
+    <div style={{ position: "relative", width, height, display: "flex" }}>
+      <TideChartGraphic layout={layout} fillId="ogTideFill" labels={false} />
+      {yTicks.map((t) => (
+        <div
+          key={`y-${t.v}`}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: t.y - fontSize * 0.6,
+            width: padL - 8,
+            display: "flex",
+            justifyContent: "flex-end",
+            fontSize,
+            color: "rgba(11,31,51,0.4)",
+            fontFamily: "ui-monospace, monospace",
+          }}
+        >
+          {t.v.toFixed(1)}
+        </div>
+      ))}
+      {marks.map((m) => (
+        <div
+          key={`${m.time}-${m.type}`}
+          style={{
+            position: "absolute",
+            left: m.x - 10,
+            top: m.type === "H" ? m.y - fontSize * 1.6 : m.y + 6,
+            width: 20,
+            display: "flex",
+            justifyContent: "center",
+            fontSize,
+            color: "rgba(11,31,51,0.7)",
+            fontFamily: "ui-sans-serif, system-ui, sans-serif",
+          }}
+        >
+          {m.type}
+        </div>
+      ))}
+      {nowOn ? (
+        <div
+          style={{
+            position: "absolute",
+            left: nowX + 6,
+            top: padT,
+            fontSize,
+            color: copper,
+            letterSpacing: 1,
+            fontFamily: "ui-sans-serif, system-ui, sans-serif",
+          }}
+        >
+          NOW
+        </div>
+      ) : null}
+      {dayMarks
+        .filter((_, i) => i % 2 === 0)
+        .map((m) => (
+          <div
+            key={`day-${m.x}`}
+            style={{
+              position: "absolute",
+              left: m.x,
+              top: height - padB + 4,
+              fontSize,
+              color: "rgba(11,31,51,0.35)",
+              fontFamily: "ui-sans-serif, system-ui, sans-serif",
+            }}
+          >
+            {m.label}
+          </div>
+        ))}
+    </div>
+  );
+}
 
 export const runtime = "nodejs";
 export const revalidate = 300;
@@ -132,7 +210,7 @@ export async function GET(request: NextRequest) {
         title: `${area.name} tide`,
         stage,
         source,
-        children: layout.ok ? <TideChartGraphic layout={layout} fillId="ogTideFill" /> : undefined,
+        children: layout.ok ? <TideChartOg layout={layout} /> : undefined,
       }),
     );
   } catch {

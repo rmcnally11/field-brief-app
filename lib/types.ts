@@ -188,6 +188,11 @@ export type WeatherNow = {
   windDirDeg: number | null;
   windCardinal: string | null;
   pressureMb: number | null;
+  /** 3-hour change in mb. Positive is rising glass. */
+  pressureTrendMb: number | null;
+  pressureSource: "ndbc" | "noaa" | "open-meteo" | null;
+  /** Named station or “Open-Meteo modeled”. */
+  pressureCite: string | null;
   /** 0–100. NWS POP or Open-Meteo probability. */
   precipChance: number | null;
   /** Inches this hour when Open-Meteo answered. */
@@ -220,6 +225,8 @@ export type BuoyNow = {
   windCardinal: string | null;
   waveFt: number | null;
   waterTempF: number | null;
+  pressureMb: number | null;
+  pressureTrendMb: number | null;
   fetchedAt: string;
 };
 

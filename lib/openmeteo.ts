@@ -18,6 +18,7 @@ export type OpenMeteoForecast = {
     precipitation: number[];
     precipitation_probability: number[];
     weather_code: number[];
+    pressure_msl: number[];
   };
   daily?: {
     time: string[];
@@ -38,7 +39,7 @@ export async function fetchOpenMeteo(lat: number, lon: number) {
   );
   url.searchParams.set(
     "hourly",
-    "temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation,precipitation_probability,weather_code",
+    "temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation,precipitation_probability,weather_code,pressure_msl",
   );
   url.searchParams.set(
     "daily",

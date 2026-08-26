@@ -11,6 +11,7 @@ import { coastEditionLabel } from "@/lib/coasts";
 import { copper, gold, scoreHex, scoreInk } from "@/lib/viz";
 import { feedNotes } from "@/lib/feeds";
 import { windWord } from "@/lib/wind";
+import { pressureLine } from "@/lib/pressure";
 import {
   MONTH_NAMES,
   MONTH_THEATER,
@@ -96,6 +97,14 @@ function instruments(briefing: Briefing) {
         Math.abs(a) >= 0.25
           ? "Wind is moving more water than the printout"
           : "Table is telling the truth",
+    });
+  }
+  const glass = pressureLine(w);
+  if (glass) {
+    rows.push({
+      label: "Glass",
+      value: glass,
+      note: w.pressureCite ?? (w.pressureSource === "open-meteo" ? "Modeled — not a dock barometer" : undefined),
     });
   }
   rows.push({
@@ -396,7 +405,11 @@ export function letterEmailText(issue: NewsletterIssue, coasts: TheaterId[] | nu
       `${desk.desk.toUpperCase()} · ${name} · ${score}`,
       desk.briefing?.headline ?? desk.error ?? desk.kicker,
       desk.briefing
-        ? `${windWord(desk.briefing.conditions.weather.windMph)} · ${desk.briefing.when[0]?.label ?? "no window"}`
+        ? `${windWord(desk.briefing.conditions.weather.windMph)} · ${desk.briefing.when[0]?.label ?? "no window"}${
+            pressureLine(desk.briefing.conditions.weather)
+              ? ` · ${pressureLine(desk.briefing.conditions.weather)}`
+              : ""
+          }`
         : "",
       desk.seasonal,
       "",
@@ -447,7 +460,9 @@ export function letterEmailHtml(issue: NewsletterIssue, coasts: TheaterId[] | nu
                   <p style="margin:8px 0 0;font-size:22px;line-height:1.25;color:${NAVY};font-family:Georgia,'Times New Roman',serif">${escapeHtml(name)}</p>
                   <p style="margin:8px 0 0;font-size:15px;line-height:1.45;color:${MUTED}">${escapeHtml(head)}</p>
                   <p style="margin:8px 0 0;font-size:12px;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(feeds)}</p>
-                  <p style="margin:8px 0 0;font-size:13px;color:${NAVY};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(wind)} · ${escapeHtml(sky)}</p>
+                  <p style="margin:8px 0 0;font-size:13px;color:${NAVY};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${escapeHtml(wind)} · ${escapeHtml(sky)}${
+                    w && pressureLine(w) ? ` · ${escapeHtml(pressureLine(w)!)}` : ""
+                  }</p>
                   ${
                     window
                       ? `<p style="margin:8px 0 0;font-size:13px;color:${MUTED}">Window · ${escapeHtml(window.label)}${window.why ? ` — ${escapeHtml(window.why)}` : ""}</p>`

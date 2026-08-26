@@ -1,5 +1,5 @@
 import type { Area, BuoyNow, Conditions, HabNow, MarineAlert, RiverNow, SalinityNow, SargassumNow, WeatherNow } from "@/lib/types";
-import { fetchLatest } from "@/lib/noaa";
+import { fetchAirPressure, fetchLatest } from "@/lib/noaa";
 import { fetchNwsAlerts, fetchNwsForecast, nwsWindAt, nwsWindNow } from "@/lib/nws";
 import { fetchOpenMeteo } from "@/lib/openmeteo";
 import { fetchUsgsDischarge } from "@/lib/rivers";
@@ -11,6 +11,7 @@ import { loadTides } from "@/lib/tides";
 import { moonPhase } from "@/lib/moon";
 import { cardinalFromDeg, ymdInZone } from "@/lib/time";
 import { coerceSky, skyFromWmo, skyPhraseFromWmo } from "@/lib/wx";
+import { tideGauge } from "@/lib/data/tide-gauges";
 
 function blankWeather(source: WeatherNow["source"]): WeatherNow {
   return {
@@ -20,6 +21,9 @@ function blankWeather(source: WeatherNow["source"]): WeatherNow {
     windDirDeg: null,
     windCardinal: null,
     pressureMb: null,
+    pressureTrendMb: null,
+    pressureSource: null,
+    pressureCite: null,
     precipChance: null,
     precipIn: null,
     sky: null,
@@ -38,6 +42,10 @@ function mergeSky(primary: WeatherNow, fallback: WeatherNow | null): WeatherNow 
     precipIn: primary.precipIn ?? fallback.precipIn,
     sky: primary.sky ?? fallback.sky,
     wx: primary.wx ?? fallback.wx,
+    pressureMb: primary.pressureMb ?? fallback.pressureMb,
+    pressureTrendMb: primary.pressureTrendMb ?? fallback.pressureTrendMb,
+    pressureSource: primary.pressureSource ?? fallback.pressureSource,
+    pressureCite: primary.pressureCite ?? fallback.pressureCite,
   };
 }
 
@@ -59,6 +67,9 @@ function openMeteoAt(
   const precipChance = useHour ? (om.hourly.precipitation_probability[best] ?? null) : null;
   const precipIn = useHour ? (om.hourly.precipitation[best] ?? null) : (om.current.precipitation ?? null);
   const code = useHour ? om.hourly.weather_code[best] : om.current.weather_code;
+  const hourlyP = om.hourly.pressure_msl;
+  const pressureMb = useHour ? (hourlyP?.[best] ?? om.current.pressure_msl) : om.current.pressure_msl;
+  const earlier = useHour && hourlyP && best >= 3 ? hourlyP[best - 3] : null;
   return {
     airF: useHour ? om.hourly.temperature_2m[best] : om.current.temperature_2m,
     windMph: useHour ? om.hourly.wind_speed_10m[best] : om.current.wind_speed_10m,
@@ -67,7 +78,11 @@ function openMeteoAt(
     windCardinal: cardinalFromDeg(
       useHour ? om.hourly.wind_direction_10m[best] : om.current.wind_direction_10m,
     ),
-    pressureMb: om.current.pressure_msl,
+    pressureMb: pressureMb ?? null,
+    pressureTrendMb:
+      pressureMb != null && earlier != null ? Number((pressureMb - earlier).toFixed(1)) : null,
+    pressureSource: pressureMb != null ? "open-meteo" : null,
+    pressureCite: pressureMb != null ? "Open-Meteo modeled" : null,
     precipChance,
     precipIn,
     sky: skyPhraseFromWmo(code),
@@ -100,6 +115,9 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
           windDirDeg: wind.dir,
           windCardinal: cardinalFromDeg(wind.dir),
           pressureMb: null,
+          pressureTrendMb: null,
+          pressureSource: null,
+          pressureCite: null,
           precipChance: nwsNow?.precipChance ?? null,
           precipIn: null,
           sky: nwsNow?.sky ?? null,
@@ -119,6 +137,9 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
           windDirDeg: nwsNow.windDirDeg,
           windCardinal: nwsNow.windCardinal,
           pressureMb: null,
+          pressureTrendMb: null,
+          pressureSource: null,
+          pressureCite: null,
           precipChance: nwsNow.precipChance,
           precipIn: null,
           sky: nwsNow.sky,
@@ -149,6 +170,9 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
           windDirDeg: atHour.windDirDeg,
           windCardinal: atHour.windCardinal,
           pressureMb: null,
+          pressureTrendMb: null,
+          pressureSource: null,
+          pressureCite: null,
           precipChance: atHour.precipChance,
           precipIn: null,
           sky: atHour.sky,
@@ -170,6 +194,36 @@ async function weatherFor(area: Area, at: Date, today: boolean): Promise<Weather
   }
 }
 
+function attachPressure(
+  weather: WeatherNow,
+  opts: {
+    buoy: BuoyNow | null;
+    air: Awaited<ReturnType<typeof fetchAirPressure>>;
+    station: string | null;
+  },
+): WeatherNow {
+  if (opts.air?.mb != null) {
+    const gauge = tideGauge(opts.station);
+    return {
+      ...weather,
+      pressureMb: opts.air.mb,
+      pressureTrendMb: opts.air.trendMb,
+      pressureSource: "noaa",
+      pressureCite: gauge ? `NOAA ${gauge.id} · ${gauge.name}` : `NOAA ${opts.station}`,
+    };
+  }
+  if (opts.buoy?.pressureMb != null) {
+    return {
+      ...weather,
+      pressureMb: opts.buoy.pressureMb,
+      pressureTrendMb: opts.buoy.pressureTrendMb,
+      pressureSource: "ndbc",
+      pressureCite: `NDBC ${opts.buoy.id}`,
+    };
+  }
+  return weather;
+}
+
 function nwsCovers(area: Area) {
   return (
     area.theater === "texas" ||
@@ -182,7 +236,7 @@ function nwsCovers(area: Area) {
 export async function loadConditions(area: Area, at = new Date()): Promise<Conditions> {
   const today = ymdInZone(at, area.timezone) === ymdInZone(new Date(), area.timezone);
   const tempStation = area.noaaTempStation ?? area.noaaStation;
-  const [tides, weather, wt, river, alerts, buoy, hab, sargassum, salinity] = await Promise.all([
+  const [tides, weatherRaw, wt, river, alerts, buoy, hab, sargassum, salinity, air] = await Promise.all([
     loadTides(area, at, { observe: today }),
     weatherFor(area, at, today),
     today && tempStation ? fetchLatest(tempStation, "water_temperature") : Promise.resolve(null),
@@ -192,7 +246,11 @@ export async function loadConditions(area: Area, at = new Date()): Promise<Condi
     today ? fetchHab(area).catch(() => null as HabNow | null) : Promise.resolve(null as HabNow | null),
     today ? fetchSargassum(area).catch(() => null as SargassumNow | null) : Promise.resolve(null as SargassumNow | null),
     today ? fetchSalinity(area.id).catch(() => null as SalinityNow | null) : Promise.resolve(null as SalinityNow | null),
+    today && area.noaaStation
+      ? fetchAirPressure(area.noaaStation, at).catch(() => null)
+      : Promise.resolve(null),
   ]);
+  const weather = attachPressure(weatherRaw, { buoy, air, station: area.noaaStation });
   let waterTempF: number | null = null;
   let waterTempSource: string | null = null;
   if (wt?.value != null && tempStation) {

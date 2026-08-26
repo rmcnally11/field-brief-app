@@ -18,6 +18,7 @@ import { AREA_BY_ID, waterChipLabel } from "@/lib/data/areas";
 import { DESKS } from "@/lib/desks";
 import { coastEditionLabel, isAllCoasts } from "@/lib/coasts";
 import { scoreHex, scoreInk } from "@/lib/viz";
+import { pressureLine } from "@/lib/pressure";
 
 function tideLabel(desk: DeskIssue) {
   const tides = desk.briefing?.conditions.tides;
@@ -49,7 +50,8 @@ function weatherLine(desk: DeskIssue) {
         : w?.precipChance != null
           ? `${Math.round(w.precipChance)}% rain`
           : null;
-  return [wind, sky, temp].filter(Boolean).join(" · ");
+  const glass = w ? pressureLine(w) : null;
+  return [wind, sky, temp, glass].filter(Boolean).join(" · ");
 }
 
 function DeskCard({ desk, tomorrow }: { desk: DeskIssue; tomorrow?: Briefing | null }) {

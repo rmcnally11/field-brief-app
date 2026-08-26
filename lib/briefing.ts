@@ -39,7 +39,7 @@ async function computeBriefing(
   };
 }
 
-const cachedBriefing = unstable_cache(computeBriefing, ["field-briefing-v11"], {
+const cachedBriefing = unstable_cache(computeBriefing, ["field-briefing-v12"], {
   revalidate: 180,
 });
 

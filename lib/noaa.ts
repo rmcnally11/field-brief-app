@@ -95,6 +95,51 @@ export async function fetchHourlyObserved(station: string, start: Date, days = 1
     .filter((r) => Number.isFinite(r.height));
 }
 
+export async function fetchAirPressure(station: string, at = new Date()) {
+  try {
+    const { begin, end } = noaaDateSpan(new Date(at.getTime() - 5 * 3600000), 1);
+    const json = await getJson(
+      qs({
+        product: "air_pressure",
+        application: APP,
+        begin_date: begin,
+        end_date: end,
+        station,
+        time_zone: "gmt",
+        units: "metric",
+        interval: "h",
+        format: "json",
+      }),
+    );
+    const rows = (json.data ?? []) as { t: string; v: string }[];
+    const pts = rows
+      .map((r) => ({ at: parseNoaaGmt(r.t), mb: Number(r.v) }))
+      .filter((p) => Number.isFinite(p.mb));
+    if (!pts.length) return null;
+    const latest = pts[pts.length - 1];
+    const target = latest.at.getTime() - 3 * 3600000;
+    let prior: (typeof pts)[number] | null = null;
+    let best = Infinity;
+    for (const p of pts) {
+      const delta = Math.abs(p.at.getTime() - target);
+      if (delta < best) {
+        prior = p;
+        best = delta;
+      }
+    }
+    const name = typeof json.metadata?.name === "string" ? json.metadata.name : null;
+    return {
+      mb: latest.mb,
+      trendMb: prior && best < 50 * 60_000 ? Number((latest.mb - prior.mb).toFixed(1)) : null,
+      station,
+      name,
+      fetchedAt: latest.at.toISOString(),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchLatest(station: string, product: string) {
   try {
     const json = await getJson(

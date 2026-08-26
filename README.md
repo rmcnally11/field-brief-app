@@ -12,10 +12,10 @@ This is a conditions instrument, not a bite guarantee and not a chart for naviga
 
 ## What it does
 
-- Live **NOAA CO-OPS** tides, observed water level, water temperature, and station wind on Texas and Florida gauges.
+- Live **NOAA CO-OPS** tides, observed water level, water temperature, station wind, and **air pressure** (the glass) on Texas, Florida, Louisiana, and Puerto Rico gauges. NDBC PRES when the dock station is quiet. Bahamas / Mexico / Seychelles use modeled Open-Meteo MSL and say so. The reading and the 3-hour trend are not a bite.
 - **Wind versus the table**: observed minus predicted water. On the Texas coast the wind often *is* the tide.
 - **NWS** marine/hourly weather (U.S.) and **Open-Meteo** (Bahamas, Mexico, Seychelles) — wind **and rain / thunderstorms**.
-- Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, and a **14-day upcoming strip**. Feed chips say when a gauge is live, modeled, quiet, or missing. **Today or tomorrow** sits on the same water. Windows name **first light** and **last light** when the clock is the story. The 5am mail leads with that same tide chart — and says **partial brief** if a desk you elected stayed quiet.
+- Visual instruments on the brief: **tide curve**, **moon disk**, **wind compass**, **score ring**, water-temp bar, the **glass** (inHg + mb + rising/falling), and a **14-day upcoming strip**. Feed chips say when a gauge is live, modeled, quiet, or missing. **Today or tomorrow** sits on the same water. Windows name **first light** and **last light** when the clock is the story. The 5am mail leads with that same tide chart — and says **partial brief** if a desk you elected stayed quiet.
 - **Saturday Letter** (`/newsletter`) — All coasts is the seven-desk newspaper (Galveston, Venice, Islamorada, Andros, Ascension, San Juan, Alphonse). Open a coast chip to see every water on that coast — Texas is Sabine through Lower Laguna, not Galveston only. This week’s desks are the same live `getBriefing()` as Today — not a week-old letter cache. Desk cards use the same instruments: feed chips, moon, wind, tide curve, first/last light, and today-vs-tomorrow. The Saturday email carries the tide chart, feed line, wind word, and window. A Texas-only reader does not see Andros or Seychelles. Peaks and harvest closures follow the same coasts. Frozen permalinks keep that Saturday’s snapshot.
 - **Seasonal fundamentals** (`/fundamentals`) — doctrine by the coasts you elected, then water type (fly / spin / sight / wade / skiff / rocks / marsh / skinny), species, and month.
 - Two-month **1–10 calendar** by micro-area: this month and next. Tap a day for that date’s brief. Copper outline = amazing day. The monthly **YOLO** day is the best remaining **dry** day with a real wind forecast. Rain and thunderstorms tax the score; a soaker cannot be a copper day.
@@ -62,7 +62,8 @@ Not a nightly batch. Each Brief / Calendar / Map load hits live gauges, then cac
 
 | Feed | Freshness |
 | --- | --- |
-| NOAA CO-OPS tides, observed water, station wind, water temp | ~5 minutes |
+| NOAA CO-OPS tides, observed water, station wind, water temp, air pressure | ~5 minutes |
+| NDBC PRES / 3-hour tendency (when the dock glass is quiet) | ~10 minutes |
 | NWS hourly forecast (U.S.) — wind, sky, rain chance | ~10 minutes |
 | NWS active alerts at the desk point | ~5 minutes |
 | NWS point metadata | ~30 minutes |

@@ -83,6 +83,24 @@ export function feedNotes(area: Area, conditions: Conditions): FeedNote[] {
     }
   }
 
+  const glass = conditions.weather;
+  if (glass.pressureMb != null) {
+    notes.push({
+      id: "glass",
+      state: glass.pressureSource === "open-meteo" ? "modeled" : "live",
+      label:
+        glass.pressureSource === "open-meteo"
+          ? "Glass · modeled"
+          : glass.pressureCite
+            ? `Glass · ${glass.pressureCite}`
+            : "Glass · live",
+    });
+  } else if (area.noaaStation || buoy) {
+    notes.push({ id: "glass", state: "quiet", label: "Glass quiet" });
+  } else {
+    notes.push({ id: "glass", state: "modeled", label: "Glass · no dock barometer" });
+  }
+
   const expectTemp = Boolean(area.noaaTempStation ?? area.noaaStation);
   if (conditions.waterTempF != null) {
     notes.push({ id: "temp", state: "live", label: "Water temp · gauge" });

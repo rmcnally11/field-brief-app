@@ -29,6 +29,7 @@ import { morningLine } from "@/lib/morning";
 import { briefHref, compareHref, morningHref } from "@/lib/hrefs";
 import { neighborArea } from "@/lib/data/areas";
 import { skyCopy } from "@/lib/wx";
+import { pressureInHg, pressureTrendWord } from "@/lib/pressure";
 
 function tideClock(stamp: string, tz: string) {
   const d = stamp.includes("T") ? new Date(stamp) : parseNoaaGmt(stamp);
@@ -152,6 +153,7 @@ export function BriefingPanel({
               {conditions.buoy.name}
               {conditions.buoy.waveFt != null ? ` · ${conditions.buoy.waveFt.toFixed(1)} ft seas` : ""}
               {conditions.buoy.waterTempF != null ? ` · SST ${conditions.buoy.waterTempF.toFixed(0)}°F` : ""}
+              {conditions.buoy.pressureMb != null ? ` · ${Math.round(conditions.buoy.pressureMb)} mb` : ""}
             </p>
             <p className="mt-3 text-xs text-[color:var(--cream)]/45">{conditions.buoy.where}</p>
             <a
@@ -197,12 +199,32 @@ export function BriefingPanel({
           <p className="mt-2 text-sm text-[color:var(--cream)]/65">
             {skyCopy(conditions.weather.wx, conditions.weather.precipChance, conditions.weather.sky)}
           </p>
-          <p className="mt-3 text-xs text-[color:var(--cream)]/45">
+            <p className="mt-3 text-xs text-[color:var(--cream)]/45">
             {conditions.weather.wx === "storm"
               ? "Lightning is a stay-tied call."
               : conditions.weather.wx === "rain"
                 ? "Sight water goes blind. A marsh still fishes a shower."
                 : "A 20% shower chance is not a cancel. A soaker is."}
+          </p>
+        </Instrument>
+        <Instrument
+          label="Glass"
+          source={conditions.weather.pressureCite ?? "No barometer"}
+        >
+          <p className="font-heading text-3xl leading-tight text-[color:var(--cream)]">
+            {pressureInHg(conditions.weather.pressureMb) != null
+              ? `${pressureInHg(conditions.weather.pressureMb)?.toFixed(2)} inHg`
+              : "—"}
+          </p>
+          <p className="mt-2 text-sm text-[color:var(--cream)]/65">
+            {conditions.weather.pressureMb != null
+              ? `${Math.round(conditions.weather.pressureMb)} mb · ${pressureTrendWord(conditions.weather.pressureTrendMb)}`
+              : "No live or modeled glass on this desk."}
+          </p>
+          <p className="mt-3 text-xs text-[color:var(--cream)]/45">
+            {conditions.weather.pressureSource === "open-meteo"
+              ? "Modeled mean sea level. Not a dock barometer. The glass is not a bite."
+              : "Three-hour change on this station. The glass is not a bite."}
           </p>
         </Instrument>
         <Instrument

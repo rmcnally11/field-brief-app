@@ -1,0 +1,1679 @@
+{
+  "source": "BCO-DMO dataset 828794 \u2014 Fujiwara & Martinez-Andrade 2020",
+  "doi": "https://doi.org/10.26008/1912/bco-dmo.828794.1",
+  "href": "https://www.bco-dmo.org/dataset/828794",
+  "gear": "TPWD Coastal Fisheries gill net",
+  "protocol": "45 overnight shoreline sets per bay per season. Random 1-minute grids. Not a honey-hole map.",
+  "yearStart": 1982,
+  "yearEnd": 2019,
+  "published": "2020-12-18",
+  "cadence": "TPWD still sets spring (Apr\u2013Jun) and fall (Sep\u2013Nov). This public file ends in 2019. It does not update with the tide.",
+  "all": {
+    "sabine": {
+      "system": "Sabine Lake",
+      "majorArea": 1,
+      "seasons": {
+        "spring": {
+          "sets": 1528,
+          "fish": 89946,
+          "yearStart": 1986,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 18428,
+              "perSet": 12.06,
+              "setsPresent": 1413,
+              "pctSets": 92.5
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 10280,
+              "perSet": 6.73,
+              "setsPresent": 1180,
+              "pctSets": 77.2
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 7695,
+              "perSet": 5.04,
+              "setsPresent": 1094,
+              "pctSets": 71.6
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 464,
+              "perSet": 0.3,
+              "setsPresent": 344,
+              "pctSets": 22.5
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 313,
+              "perSet": 0.2,
+              "setsPresent": 234,
+              "pctSets": 15.3
+            }
+          ]
+        },
+        "fall": {
+          "sets": 1530,
+          "fish": 93404,
+          "yearStart": 1986,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 17169,
+              "perSet": 11.22,
+              "setsPresent": 1489,
+              "pctSets": 97.3
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 15853,
+              "perSet": 10.36,
+              "setsPresent": 1410,
+              "pctSets": 92.2
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 4536,
+              "perSet": 2.96,
+              "setsPresent": 1070,
+              "pctSets": 69.9
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 1211,
+              "perSet": 0.79,
+              "setsPresent": 608,
+              "pctSets": 39.7
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 320,
+              "perSet": 0.21,
+              "setsPresent": 201,
+              "pctSets": 13.1
+            }
+          ]
+        }
+      },
+      "sets": 3058,
+      "fish": 183350
+    },
+    "galveston": {
+      "system": "Galveston Bay",
+      "majorArea": 2,
+      "seasons": {
+        "spring": {
+          "sets": 1710,
+          "fish": 182686,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 23643,
+              "perSet": 13.83,
+              "setsPresent": 1507,
+              "pctSets": 88.1
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 17084,
+              "perSet": 9.99,
+              "setsPresent": 1429,
+              "pctSets": 83.6
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 11741,
+              "perSet": 6.87,
+              "setsPresent": 1367,
+              "pctSets": 79.9
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 938,
+              "perSet": 0.55,
+              "setsPresent": 594,
+              "pctSets": 34.7
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 913,
+              "perSet": 0.53,
+              "setsPresent": 453,
+              "pctSets": 26.5
+            }
+          ]
+        },
+        "fall": {
+          "sets": 1710,
+          "fish": 164594,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 16492,
+              "perSet": 9.64,
+              "setsPresent": 1581,
+              "pctSets": 92.5
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 13336,
+              "perSet": 7.8,
+              "setsPresent": 1444,
+              "pctSets": 84.4
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 10287,
+              "perSet": 6.02,
+              "setsPresent": 1507,
+              "pctSets": 88.1
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 1551,
+              "perSet": 0.91,
+              "setsPresent": 795,
+              "pctSets": 46.5
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 883,
+              "perSet": 0.52,
+              "setsPresent": 428,
+              "pctSets": 25.0
+            }
+          ]
+        }
+      },
+      "sets": 3420,
+      "fish": 347280
+    },
+    "matagorda": {
+      "system": "Matagorda Bay",
+      "majorArea": 3,
+      "seasons": {
+        "spring": {
+          "sets": 1709,
+          "fish": 144557,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 15387,
+              "perSet": 9.0,
+              "setsPresent": 1448,
+              "pctSets": 84.7
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 14876,
+              "perSet": 8.7,
+              "setsPresent": 1480,
+              "pctSets": 86.6
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 14028,
+              "perSet": 8.21,
+              "setsPresent": 1485,
+              "pctSets": 86.9
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 2034,
+              "perSet": 1.19,
+              "setsPresent": 491,
+              "pctSets": 28.7
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 647,
+              "perSet": 0.38,
+              "setsPresent": 446,
+              "pctSets": 26.1
+            }
+          ]
+        },
+        "fall": {
+          "sets": 1709,
+          "fish": 122581,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 16258,
+              "perSet": 9.51,
+              "setsPresent": 1561,
+              "pctSets": 91.3
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 14596,
+              "perSet": 8.54,
+              "setsPresent": 1515,
+              "pctSets": 88.6
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 7737,
+              "perSet": 4.53,
+              "setsPresent": 1443,
+              "pctSets": 84.4
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 1699,
+              "perSet": 0.99,
+              "setsPresent": 453,
+              "pctSets": 26.5
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 1340,
+              "perSet": 0.78,
+              "setsPresent": 646,
+              "pctSets": 37.8
+            }
+          ]
+        }
+      },
+      "sets": 3418,
+      "fish": 267138
+    },
+    "san-antonio": {
+      "system": "San Antonio Bay",
+      "majorArea": 4,
+      "seasons": {
+        "spring": {
+          "sets": 1709,
+          "fish": 175278,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 23073,
+              "perSet": 13.5,
+              "setsPresent": 1431,
+              "pctSets": 83.7
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 21648,
+              "perSet": 12.67,
+              "setsPresent": 1546,
+              "pctSets": 90.5
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 19986,
+              "perSet": 11.69,
+              "setsPresent": 1447,
+              "pctSets": 84.7
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 4128,
+              "perSet": 2.42,
+              "setsPresent": 813,
+              "pctSets": 47.6
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 742,
+              "perSet": 0.43,
+              "setsPresent": 505,
+              "pctSets": 29.5
+            }
+          ]
+        },
+        "fall": {
+          "sets": 1710,
+          "fish": 168391,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 28343,
+              "perSet": 16.57,
+              "setsPresent": 1649,
+              "pctSets": 96.4
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 27856,
+              "perSet": 16.29,
+              "setsPresent": 1567,
+              "pctSets": 91.6
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 10961,
+              "perSet": 6.41,
+              "setsPresent": 1535,
+              "pctSets": 89.8
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 3882,
+              "perSet": 2.27,
+              "setsPresent": 838,
+              "pctSets": 49.0
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 2032,
+              "perSet": 1.19,
+              "setsPresent": 852,
+              "pctSets": 49.8
+            }
+          ]
+        }
+      },
+      "sets": 3419,
+      "fish": 343669
+    },
+    "aransas": {
+      "system": "Aransas Bay",
+      "majorArea": 5,
+      "seasons": {
+        "spring": {
+          "sets": 1710,
+          "fish": 138386,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 24572,
+              "perSet": 14.37,
+              "setsPresent": 1546,
+              "pctSets": 90.4
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 20102,
+              "perSet": 11.76,
+              "setsPresent": 1597,
+              "pctSets": 93.4
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 16279,
+              "perSet": 9.52,
+              "setsPresent": 1574,
+              "pctSets": 92.0
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 2020,
+              "perSet": 1.18,
+              "setsPresent": 626,
+              "pctSets": 36.6
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 692,
+              "perSet": 0.4,
+              "setsPresent": 458,
+              "pctSets": 26.8
+            }
+          ]
+        },
+        "fall": {
+          "sets": 1710,
+          "fish": 136974,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 27756,
+              "perSet": 16.23,
+              "setsPresent": 1615,
+              "pctSets": 94.4
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 23623,
+              "perSet": 13.81,
+              "setsPresent": 1633,
+              "pctSets": 95.5
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 8767,
+              "perSet": 5.13,
+              "setsPresent": 1480,
+              "pctSets": 86.5
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 3475,
+              "perSet": 2.03,
+              "setsPresent": 798,
+              "pctSets": 46.7
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 1367,
+              "perSet": 0.8,
+              "setsPresent": 735,
+              "pctSets": 43.0
+            }
+          ]
+        }
+      },
+      "sets": 3420,
+      "fish": 275360
+    },
+    "corpus": {
+      "system": "Corpus Christi Bay",
+      "majorArea": 6,
+      "seasons": {
+        "spring": {
+          "sets": 1710,
+          "fish": 140519,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 21369,
+              "perSet": 12.5,
+              "setsPresent": 1339,
+              "pctSets": 78.3
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 21086,
+              "perSet": 12.33,
+              "setsPresent": 1609,
+              "pctSets": 94.1
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 19501,
+              "perSet": 11.4,
+              "setsPresent": 1571,
+              "pctSets": 91.9
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 3250,
+              "perSet": 1.9,
+              "setsPresent": 717,
+              "pctSets": 41.9
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 775,
+              "perSet": 0.45,
+              "setsPresent": 491,
+              "pctSets": 28.7
+            }
+          ]
+        },
+        "fall": {
+          "sets": 1710,
+          "fish": 136214,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 18161,
+              "perSet": 10.62,
+              "setsPresent": 1446,
+              "pctSets": 84.6
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 17979,
+              "perSet": 10.51,
+              "setsPresent": 1563,
+              "pctSets": 91.4
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 10693,
+              "perSet": 6.25,
+              "setsPresent": 1565,
+              "pctSets": 91.5
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 1654,
+              "perSet": 0.97,
+              "setsPresent": 564,
+              "pctSets": 33.0
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 1342,
+              "perSet": 0.78,
+              "setsPresent": 650,
+              "pctSets": 38.0
+            }
+          ]
+        }
+      },
+      "sets": 3420,
+      "fish": 276733
+    },
+    "baffin": {
+      "system": "Upper Laguna Madre",
+      "majorArea": 7,
+      "seasons": {
+        "spring": {
+          "sets": 1709,
+          "fish": 158886,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 81061,
+              "perSet": 47.43,
+              "setsPresent": 1626,
+              "pctSets": 95.1
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 16538,
+              "perSet": 9.68,
+              "setsPresent": 1485,
+              "pctSets": 86.9
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 13252,
+              "perSet": 7.75,
+              "setsPresent": 1574,
+              "pctSets": 92.1
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 1707,
+              "perSet": 1.0,
+              "setsPresent": 638,
+              "pctSets": 37.3
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 680,
+              "perSet": 0.4,
+              "setsPresent": 399,
+              "pctSets": 23.3
+            }
+          ]
+        },
+        "fall": {
+          "sets": 1709,
+          "fish": 135688,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 72490,
+              "perSet": 42.42,
+              "setsPresent": 1631,
+              "pctSets": 95.4
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 13880,
+              "perSet": 8.12,
+              "setsPresent": 1596,
+              "pctSets": 93.4
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 8637,
+              "perSet": 5.05,
+              "setsPresent": 1385,
+              "pctSets": 81.0
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 1777,
+              "perSet": 1.04,
+              "setsPresent": 602,
+              "pctSets": 35.2
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 972,
+              "perSet": 0.57,
+              "setsPresent": 516,
+              "pctSets": 30.2
+            }
+          ]
+        }
+      },
+      "sets": 3418,
+      "fish": 294574
+    },
+    "lower-laguna": {
+      "system": "Lower Laguna Madre",
+      "majorArea": 8,
+      "seasons": {
+        "spring": {
+          "sets": 1701,
+          "fish": 135364,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 29358,
+              "perSet": 17.26,
+              "setsPresent": 1550,
+              "pctSets": 91.1
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 23916,
+              "perSet": 14.06,
+              "setsPresent": 1326,
+              "pctSets": 78.0
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 22395,
+              "perSet": 13.17,
+              "setsPresent": 1574,
+              "pctSets": 92.5
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 3696,
+              "perSet": 2.17,
+              "setsPresent": 928,
+              "pctSets": 54.6
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 942,
+              "perSet": 0.55,
+              "setsPresent": 532,
+              "pctSets": 31.3
+            }
+          ]
+        },
+        "fall": {
+          "sets": 1707,
+          "fish": 135621,
+          "yearStart": 1982,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 28372,
+              "perSet": 16.62,
+              "setsPresent": 1505,
+              "pctSets": 88.2
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 27871,
+              "perSet": 16.33,
+              "setsPresent": 1653,
+              "pctSets": 96.8
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 14630,
+              "perSet": 8.57,
+              "setsPresent": 1555,
+              "pctSets": 91.1
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 3798,
+              "perSet": 2.22,
+              "setsPresent": 1034,
+              "pctSets": 60.6
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 1690,
+              "perSet": 0.99,
+              "setsPresent": 778,
+              "pctSets": 45.6
+            }
+          ]
+        }
+      },
+      "sets": 3408,
+      "fish": 270985
+    }
+  },
+  "late": {
+    "sabine": {
+      "system": "Sabine Lake",
+      "majorArea": 1,
+      "seasons": {
+        "spring": {
+          "sets": 224,
+          "fish": 12262,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2228,
+              "perSet": 9.95,
+              "setsPresent": 212,
+              "pctSets": 94.6
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 1583,
+              "perSet": 7.07,
+              "setsPresent": 165,
+              "pctSets": 73.7
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 1341,
+              "perSet": 5.99,
+              "setsPresent": 149,
+              "pctSets": 66.5
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 45,
+              "perSet": 0.2,
+              "setsPresent": 38,
+              "pctSets": 17.0
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 36,
+              "perSet": 0.16,
+              "setsPresent": 31,
+              "pctSets": 13.8
+            }
+          ]
+        },
+        "fall": {
+          "sets": 225,
+          "fish": 11380,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2326,
+              "perSet": 10.34,
+              "setsPresent": 218,
+              "pctSets": 96.9
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 1406,
+              "perSet": 6.25,
+              "setsPresent": 197,
+              "pctSets": 87.6
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 457,
+              "perSet": 2.03,
+              "setsPresent": 148,
+              "pctSets": 65.8
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 108,
+              "perSet": 0.48,
+              "setsPresent": 63,
+              "pctSets": 28.0
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 42,
+              "perSet": 0.19,
+              "setsPresent": 27,
+              "pctSets": 12.0
+            }
+          ]
+        }
+      },
+      "sets": 449,
+      "fish": 23642
+    },
+    "galveston": {
+      "system": "Galveston Bay",
+      "majorArea": 2,
+      "seasons": {
+        "spring": {
+          "sets": 225,
+          "fish": 23438,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 3213,
+              "perSet": 14.28,
+              "setsPresent": 199,
+              "pctSets": 88.4
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 3044,
+              "perSet": 13.53,
+              "setsPresent": 197,
+              "pctSets": 87.6
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 1631,
+              "perSet": 7.25,
+              "setsPresent": 186,
+              "pctSets": 82.7
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 119,
+              "perSet": 0.53,
+              "setsPresent": 54,
+              "pctSets": 24.0
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 73,
+              "perSet": 0.32,
+              "setsPresent": 53,
+              "pctSets": 23.6
+            }
+          ]
+        },
+        "fall": {
+          "sets": 225,
+          "fish": 20210,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2135,
+              "perSet": 9.49,
+              "setsPresent": 214,
+              "pctSets": 95.1
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 1413,
+              "perSet": 6.28,
+              "setsPresent": 203,
+              "pctSets": 90.2
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 1091,
+              "perSet": 4.85,
+              "setsPresent": 205,
+              "pctSets": 91.1
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 124,
+              "perSet": 0.55,
+              "setsPresent": 49,
+              "pctSets": 21.8
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 102,
+              "perSet": 0.45,
+              "setsPresent": 70,
+              "pctSets": 31.1
+            }
+          ]
+        }
+      },
+      "sets": 450,
+      "fish": 43648
+    },
+    "matagorda": {
+      "system": "Matagorda Bay",
+      "majorArea": 3,
+      "seasons": {
+        "spring": {
+          "sets": 225,
+          "fish": 19385,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2171,
+              "perSet": 9.65,
+              "setsPresent": 189,
+              "pctSets": 84.0
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 2103,
+              "perSet": 9.35,
+              "setsPresent": 198,
+              "pctSets": 88.0
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 1949,
+              "perSet": 8.66,
+              "setsPresent": 196,
+              "pctSets": 87.1
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 362,
+              "perSet": 1.61,
+              "setsPresent": 52,
+              "pctSets": 23.1
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 47,
+              "perSet": 0.21,
+              "setsPresent": 40,
+              "pctSets": 17.8
+            }
+          ]
+        },
+        "fall": {
+          "sets": 224,
+          "fish": 16625,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2349,
+              "perSet": 10.49,
+              "setsPresent": 203,
+              "pctSets": 90.6
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 1430,
+              "perSet": 6.38,
+              "setsPresent": 196,
+              "pctSets": 87.5
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 979,
+              "perSet": 4.37,
+              "setsPresent": 185,
+              "pctSets": 82.6
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 218,
+              "perSet": 0.97,
+              "setsPresent": 55,
+              "pctSets": 24.6
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 110,
+              "perSet": 0.49,
+              "setsPresent": 60,
+              "pctSets": 26.8
+            }
+          ]
+        }
+      },
+      "sets": 449,
+      "fish": 36010
+    },
+    "san-antonio": {
+      "system": "San Antonio Bay",
+      "majorArea": 4,
+      "seasons": {
+        "spring": {
+          "sets": 225,
+          "fish": 24714,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 3090,
+              "perSet": 13.73,
+              "setsPresent": 187,
+              "pctSets": 83.1
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2967,
+              "perSet": 13.19,
+              "setsPresent": 208,
+              "pctSets": 92.4
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 2619,
+              "perSet": 11.64,
+              "setsPresent": 192,
+              "pctSets": 85.3
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 451,
+              "perSet": 2.0,
+              "setsPresent": 88,
+              "pctSets": 39.1
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 67,
+              "perSet": 0.3,
+              "setsPresent": 54,
+              "pctSets": 24.0
+            }
+          ]
+        },
+        "fall": {
+          "sets": 225,
+          "fish": 26193,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 3861,
+              "perSet": 17.16,
+              "setsPresent": 208,
+              "pctSets": 92.4
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 3422,
+              "perSet": 15.21,
+              "setsPresent": 211,
+              "pctSets": 93.8
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 1862,
+              "perSet": 8.28,
+              "setsPresent": 217,
+              "pctSets": 96.4
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 391,
+              "perSet": 1.74,
+              "setsPresent": 85,
+              "pctSets": 37.8
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 196,
+              "perSet": 0.87,
+              "setsPresent": 88,
+              "pctSets": 39.1
+            }
+          ]
+        }
+      },
+      "sets": 450,
+      "fish": 50907
+    },
+    "aransas": {
+      "system": "Aransas Bay",
+      "majorArea": 5,
+      "seasons": {
+        "spring": {
+          "sets": 225,
+          "fish": 18676,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 2757,
+              "perSet": 12.25,
+              "setsPresent": 209,
+              "pctSets": 92.9
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2200,
+              "perSet": 9.78,
+              "setsPresent": 211,
+              "pctSets": 93.8
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 2135,
+              "perSet": 9.49,
+              "setsPresent": 209,
+              "pctSets": 92.9
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 246,
+              "perSet": 1.09,
+              "setsPresent": 78,
+              "pctSets": 34.7
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 51,
+              "perSet": 0.23,
+              "setsPresent": 38,
+              "pctSets": 16.9
+            }
+          ]
+        },
+        "fall": {
+          "sets": 225,
+          "fish": 17841,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 2844,
+              "perSet": 12.64,
+              "setsPresent": 212,
+              "pctSets": 94.2
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2524,
+              "perSet": 11.22,
+              "setsPresent": 210,
+              "pctSets": 93.3
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 1010,
+              "perSet": 4.49,
+              "setsPresent": 194,
+              "pctSets": 86.2
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 247,
+              "perSet": 1.1,
+              "setsPresent": 83,
+              "pctSets": 36.9
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 125,
+              "perSet": 0.56,
+              "setsPresent": 65,
+              "pctSets": 28.9
+            }
+          ]
+        }
+      },
+      "sets": 450,
+      "fish": 36517
+    },
+    "corpus": {
+      "system": "Corpus Christi Bay",
+      "majorArea": 6,
+      "seasons": {
+        "spring": {
+          "sets": 225,
+          "fish": 21188,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 3790,
+              "perSet": 16.84,
+              "setsPresent": 222,
+              "pctSets": 98.7
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2390,
+              "perSet": 10.62,
+              "setsPresent": 207,
+              "pctSets": 92.0
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 2317,
+              "perSet": 10.3,
+              "setsPresent": 174,
+              "pctSets": 77.3
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 290,
+              "perSet": 1.29,
+              "setsPresent": 81,
+              "pctSets": 36.0
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 63,
+              "perSet": 0.28,
+              "setsPresent": 46,
+              "pctSets": 20.4
+            }
+          ]
+        },
+        "fall": {
+          "sets": 225,
+          "fish": 20424,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2463,
+              "perSet": 10.95,
+              "setsPresent": 204,
+              "pctSets": 90.7
+            },
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 2015,
+              "perSet": 8.96,
+              "setsPresent": 179,
+              "pctSets": 79.6
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 1778,
+              "perSet": 7.9,
+              "setsPresent": 215,
+              "pctSets": 95.6
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 256,
+              "perSet": 1.14,
+              "setsPresent": 78,
+              "pctSets": 34.7
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 75,
+              "perSet": 0.33,
+              "setsPresent": 49,
+              "pctSets": 21.8
+            }
+          ]
+        }
+      },
+      "sets": 450,
+      "fish": 41612
+    },
+    "baffin": {
+      "system": "Upper Laguna Madre",
+      "majorArea": 7,
+      "seasons": {
+        "spring": {
+          "sets": 225,
+          "fish": 29491,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 18041,
+              "perSet": 80.18,
+              "setsPresent": 223,
+              "pctSets": 99.1
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 2845,
+              "perSet": 12.64,
+              "setsPresent": 206,
+              "pctSets": 91.6
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2214,
+              "perSet": 9.84,
+              "setsPresent": 214,
+              "pctSets": 95.1
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 470,
+              "perSet": 2.09,
+              "setsPresent": 140,
+              "pctSets": 62.2
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 75,
+              "perSet": 0.33,
+              "setsPresent": 51,
+              "pctSets": 22.7
+            }
+          ]
+        },
+        "fall": {
+          "sets": 225,
+          "fish": 22391,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 13593,
+              "perSet": 60.41,
+              "setsPresent": 219,
+              "pctSets": 97.3
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2110,
+              "perSet": 9.38,
+              "setsPresent": 215,
+              "pctSets": 95.6
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 873,
+              "perSet": 3.88,
+              "setsPresent": 182,
+              "pctSets": 80.9
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 499,
+              "perSet": 2.22,
+              "setsPresent": 134,
+              "pctSets": 59.6
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 87,
+              "perSet": 0.39,
+              "setsPresent": 60,
+              "pctSets": 26.7
+            }
+          ]
+        }
+      },
+      "sets": 450,
+      "fish": 51882
+    },
+    "lower-laguna": {
+      "system": "Lower Laguna Madre",
+      "majorArea": 8,
+      "seasons": {
+        "spring": {
+          "sets": 224,
+          "fish": 20352,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 4201,
+              "perSet": 18.75,
+              "setsPresent": 187,
+              "pctSets": 83.5
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 3933,
+              "perSet": 17.56,
+              "setsPresent": 205,
+              "pctSets": 91.5
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 2991,
+              "perSet": 13.35,
+              "setsPresent": 213,
+              "pctSets": 95.1
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 593,
+              "perSet": 2.65,
+              "setsPresent": 135,
+              "pctSets": 60.3
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 69,
+              "perSet": 0.31,
+              "setsPresent": 52,
+              "pctSets": 23.2
+            }
+          ]
+        },
+        "fall": {
+          "sets": 224,
+          "fish": 18505,
+          "yearStart": 2015,
+          "yearEnd": 2019,
+          "species": [
+            {
+              "id": "black-drum",
+              "name": "Black drum",
+              "catch": 3961,
+              "perSet": 17.68,
+              "setsPresent": 206,
+              "pctSets": 92.0
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "catch": 3792,
+              "perSet": 16.93,
+              "setsPresent": 219,
+              "pctSets": 97.8
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "catch": 1750,
+              "perSet": 7.81,
+              "setsPresent": 203,
+              "pctSets": 90.6
+            },
+            {
+              "id": "sheepshead",
+              "name": "Sheepshead",
+              "catch": 509,
+              "perSet": 2.27,
+              "setsPresent": 146,
+              "pctSets": 65.2
+            },
+            {
+              "id": "flounder",
+              "name": "Southern flounder",
+              "catch": 140,
+              "perSet": 0.62,
+              "setsPresent": 81,
+              "pctSets": 36.2
+            }
+          ]
+        }
+      },
+      "sets": 448,
+      "fish": 38857
+    }
+  }
+}

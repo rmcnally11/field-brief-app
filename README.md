@@ -120,7 +120,7 @@ Bahamas, Mexico, and Seychelles tides are a modeled lunar tide, labeled as such.
 | [NOAA ENC Direct](https://gis.charttools.noaa.gov/arcgis/rest/services/encdirect) | Wrecks / obstructions |
 | [NOAA FKNMS GIS](https://sanctuaries.noaa.gov/library/imast_gis.html) | Legal sanctuary zones |
 | [TPWD Outdoor Annual](https://tpwd.texas.gov/regulations/outdoor-annual/) | Texas bag/season |
-| [TPWD Coastal Fisheries](https://tpwd.texas.gov/landwater/water/habitats/coastal/) | Long-record bay monitoring (gill net, seine, trawl) and creel. Not a live feed. Public extracts through ~2008 / BCO-DMO gill nets through 2018. Full series: `cfish@tpwd.texas.gov`. Texas is not in NOAA MRIP for private boats. |
+| [TPWD Coastal Fisheries](https://tpwd.texas.gov/landwater/water/habitats/coastal/) / [BCO-DMO 828794](https://www.bco-dmo.org/dataset/828794) | Gill-net counts by Texas bay (1982–2019 public file). 45 overnight sets per bay per spring and fall. TPWD still samples twice a year; this file does not update after 2019 until they send a new extract (`cfish@tpwd.texas.gov`). Not a live feed. Not a honey-hole map. |
 | [TPWD launches](https://tpwd.texas.gov/fishboat/boat/launch/) | Public ramps |
 | [Texas GLO beach access](https://www.glo.texas.gov/coast/coastal-management/beach-access) | Drive-on beaches, county 2WD/4WD plans |
 | [NPS Padre Island](https://www.nps.gov/pais/planyourvisit/beach-driving.htm) | PINS driving / camping |

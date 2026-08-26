@@ -1,0 +1,1445 @@
+{
+  "source": "Collins et al. 2026 \u2014 PLOS One e0344688 (TPWD creel intercepts)",
+  "doi": "https://doi.org/10.1371/journal.pone.0344688",
+  "href": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0344688",
+  "program": "https://tpwd.texas.gov/fishboat/fish/didyouknow/coastal/creel.phtml",
+  "gear": "TPWD Marine Sport-Harvest Monitoring Program \u2014 dockside interview",
+  "protocol": "Public ramps and wet slips. Parties that said they were fishing for redfish, trout, or snapper. Observed harvest of that fish \u2014 not expanded landings, not discards, not every boat at the ramp.",
+  "yearStart": 1991,
+  "yearEnd": 2023,
+  "published": "2026-06-15",
+  "cadence": "TPWD still interviews year-round, 10:00\u201318:00, about 1,000 survey-days and 14,000 interviews a year. This public extract is targeting trips, 1991\u20132023. It does not update with the tide.",
+  "all": {
+    "sabine": {
+      "system": "Sabine Lake",
+      "majorArea": 1,
+      "interviews": 10038,
+      "fish": 32702,
+      "seasons": {
+        "high": {
+          "interviews": 7991,
+          "fish": 28427,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 18327,
+              "interviews": 4422,
+              "perInterview": 4.14,
+              "pctInterviews": 57.0,
+              "perAnglerHour": 0.333,
+              "meanInches": 17.1
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 8160,
+              "interviews": 917,
+              "perInterview": 8.9,
+              "pctInterviews": 78.3,
+              "perAnglerHour": 0.274,
+              "meanInches": 19.6
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 1940,
+              "interviews": 2652,
+              "perInterview": 0.73,
+              "pctInterviews": 29.1,
+              "perAnglerHour": 0.068,
+              "meanInches": 24.5
+            }
+          ]
+        },
+        "low": {
+          "interviews": 2047,
+          "fish": 4275,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 3408,
+              "interviews": 1067,
+              "perInterview": 3.19,
+              "pctInterviews": 43.5,
+              "perAnglerHour": 0.301,
+              "meanInches": 17.1
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 551,
+              "interviews": 938,
+              "perInterview": 0.59,
+              "pctInterviews": 23.9,
+              "perAnglerHour": 0.063,
+              "meanInches": 23.4
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 316,
+              "interviews": 42,
+              "perInterview": 7.52,
+              "pctInterviews": 64.3,
+              "perAnglerHour": 0.338,
+              "meanInches": 19.3
+            }
+          ]
+        }
+      }
+    },
+    "galveston": {
+      "system": "Galveston Bay",
+      "majorArea": 2,
+      "interviews": 20163,
+      "fish": 64004,
+      "seasons": {
+        "high": {
+          "interviews": 17241,
+          "fish": 58015,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 40622,
+              "interviews": 10641,
+              "perInterview": 3.82,
+              "pctInterviews": 58.6,
+              "perAnglerHour": 0.257,
+              "meanInches": 17.5
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 14491,
+              "interviews": 2178,
+              "perInterview": 6.65,
+              "pctInterviews": 72.9,
+              "perAnglerHour": 0.186,
+              "meanInches": 20.7
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 2902,
+              "interviews": 4422,
+              "perInterview": 0.66,
+              "pctInterviews": 26.3,
+              "perAnglerHour": 0.048,
+              "meanInches": 25.6
+            }
+          ]
+        },
+        "low": {
+          "interviews": 2922,
+          "fish": 5989,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 4869,
+              "interviews": 1848,
+              "perInterview": 2.63,
+              "pctInterviews": 44.8,
+              "perAnglerHour": 0.215,
+              "meanInches": 17.7
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 716,
+              "interviews": 80,
+              "perInterview": 8.95,
+              "pctInterviews": 76.2,
+              "perAnglerHour": 0.438,
+              "meanInches": 18.0
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 404,
+              "interviews": 994,
+              "perInterview": 0.41,
+              "pctInterviews": 18.0,
+              "perAnglerHour": 0.035,
+              "meanInches": 24.6
+            }
+          ]
+        }
+      }
+    },
+    "matagorda": {
+      "system": "Matagorda Bay",
+      "majorArea": 3,
+      "interviews": 20064,
+      "fish": 84554,
+      "seasons": {
+        "high": {
+          "interviews": 15911,
+          "fish": 73292,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 51332,
+              "interviews": 9428,
+              "perInterview": 5.44,
+              "pctInterviews": 68.5,
+              "perAnglerHour": 0.323,
+              "meanInches": 17.6
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 14231,
+              "interviews": 1502,
+              "perInterview": 9.47,
+              "pctInterviews": 87.4,
+              "perAnglerHour": 0.243,
+              "meanInches": 23.2
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 7729,
+              "interviews": 4981,
+              "perInterview": 1.55,
+              "pctInterviews": 43.9,
+              "perAnglerHour": 0.098,
+              "meanInches": 23.7
+            }
+          ]
+        },
+        "low": {
+          "interviews": 4153,
+          "fish": 11262,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 8893,
+              "interviews": 2775,
+              "perInterview": 3.2,
+              "pctInterviews": 50.5,
+              "perAnglerHour": 0.232,
+              "meanInches": 17.7
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 1467,
+              "interviews": 1253,
+              "perInterview": 1.17,
+              "pctInterviews": 35.2,
+              "perAnglerHour": 0.084,
+              "meanInches": 23.7
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 902,
+              "interviews": 125,
+              "perInterview": 7.22,
+              "pctInterviews": 60.8,
+              "perAnglerHour": 0.273,
+              "meanInches": 24.3
+            }
+          ]
+        }
+      }
+    },
+    "san-antonio": {
+      "system": "San Antonio Bay",
+      "majorArea": 4,
+      "interviews": 19700,
+      "fish": 86112,
+      "seasons": {
+        "high": {
+          "interviews": 15125,
+          "fish": 70971,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 47800,
+              "interviews": 7956,
+              "perInterview": 6.01,
+              "pctInterviews": 70.1,
+              "perAnglerHour": 0.354,
+              "meanInches": 17.1
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 12985,
+              "interviews": 1200,
+              "perInterview": 10.82,
+              "pctInterviews": 85.5,
+              "perAnglerHour": 0.291,
+              "meanInches": 20.3
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 10186,
+              "interviews": 5969,
+              "perInterview": 1.71,
+              "pctInterviews": 45.8,
+              "perAnglerHour": 0.109,
+              "meanInches": 23.5
+            }
+          ]
+        },
+        "low": {
+          "interviews": 4575,
+          "fish": 15141,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 10908,
+              "interviews": 2245,
+              "perInterview": 4.86,
+              "pctInterviews": 60.4,
+              "perAnglerHour": 0.339,
+              "meanInches": 16.9
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 3459,
+              "interviews": 2216,
+              "perInterview": 1.56,
+              "pctInterviews": 43.1,
+              "perAnglerHour": 0.115,
+              "meanInches": 23.2
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 774,
+              "interviews": 114,
+              "perInterview": 6.79,
+              "pctInterviews": 60.5,
+              "perAnglerHour": 0.32,
+              "meanInches": 21.3
+            }
+          ]
+        }
+      }
+    },
+    "aransas": {
+      "system": "Aransas Bay",
+      "majorArea": 5,
+      "interviews": 28371,
+      "fish": 128880,
+      "seasons": {
+        "high": {
+          "interviews": 22897,
+          "fish": 109984,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 84736,
+              "interviews": 10918,
+              "perInterview": 7.76,
+              "pctInterviews": 71.0,
+              "perAnglerHour": 0.431,
+              "meanInches": 17.0
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 21716,
+              "interviews": 11455,
+              "perInterview": 1.9,
+              "pctInterviews": 47.0,
+              "perAnglerHour": 0.126,
+              "meanInches": 23.1
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 3532,
+              "interviews": 524,
+              "perInterview": 6.74,
+              "pctInterviews": 79.0,
+              "perAnglerHour": 0.243,
+              "meanInches": 21.9
+            }
+          ]
+        },
+        "low": {
+          "interviews": 5474,
+          "fish": 18896,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 13352,
+              "interviews": 2297,
+              "perInterview": 5.81,
+              "pctInterviews": 61.2,
+              "perAnglerHour": 0.403,
+              "meanInches": 17.2
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 5480,
+              "interviews": 3155,
+              "perInterview": 1.74,
+              "pctInterviews": 44.7,
+              "perAnglerHour": 0.128,
+              "meanInches": 23.1
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 64,
+              "interviews": 22,
+              "perInterview": 2.91,
+              "pctInterviews": 36.4,
+              "perAnglerHour": 0.162,
+              "meanInches": 23.0
+            }
+          ]
+        }
+      }
+    },
+    "corpus": {
+      "system": "Corpus Christi Bay",
+      "majorArea": 6,
+      "interviews": 19204,
+      "fish": 67188,
+      "seasons": {
+        "high": {
+          "interviews": 15634,
+          "fish": 59670,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 40489,
+              "interviews": 6529,
+              "perInterview": 6.2,
+              "pctInterviews": 66.0,
+              "perAnglerHour": 0.39,
+              "meanInches": 17.3
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 9733,
+              "interviews": 7960,
+              "perInterview": 1.22,
+              "pctInterviews": 39.3,
+              "perAnglerHour": 0.093,
+              "meanInches": 23.7
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 9448,
+              "interviews": 1145,
+              "perInterview": 8.25,
+              "pctInterviews": 80.8,
+              "perAnglerHour": 0.256,
+              "meanInches": 20.4
+            }
+          ]
+        },
+        "low": {
+          "interviews": 3570,
+          "fish": 7518,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 4008,
+              "interviews": 1350,
+              "perInterview": 2.97,
+              "pctInterviews": 47.9,
+              "perAnglerHour": 0.26,
+              "meanInches": 17.3
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 2343,
+              "interviews": 2106,
+              "perInterview": 1.11,
+              "pctInterviews": 34.6,
+              "perAnglerHour": 0.092,
+              "meanInches": 23.4
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 1167,
+              "interviews": 114,
+              "perInterview": 10.24,
+              "pctInterviews": 71.9,
+              "perAnglerHour": 0.365,
+              "meanInches": 21.5
+            }
+          ]
+        }
+      }
+    },
+    "baffin": {
+      "system": "Upper Laguna Madre",
+      "majorArea": 7,
+      "interviews": 26263,
+      "fish": 158858,
+      "seasons": {
+        "high": {
+          "interviews": 20918,
+          "fish": 139086,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 126494,
+              "interviews": 13892,
+              "perInterview": 9.11,
+              "pctInterviews": 78.6,
+              "perAnglerHour": 0.447,
+              "meanInches": 17.6
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 9650,
+              "interviews": 6613,
+              "perInterview": 1.46,
+              "pctInterviews": 42.8,
+              "perAnglerHour": 0.074,
+              "meanInches": 23.9
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 2942,
+              "interviews": 413,
+              "perInterview": 7.12,
+              "pctInterviews": 74.1,
+              "perAnglerHour": 0.31,
+              "meanInches": 21.2
+            }
+          ]
+        },
+        "low": {
+          "interviews": 5345,
+          "fish": 19772,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 18154,
+              "interviews": 4021,
+              "perInterview": 4.51,
+              "pctInterviews": 60.0,
+              "perAnglerHour": 0.253,
+              "meanInches": 17.6
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 1412,
+              "interviews": 1294,
+              "perInterview": 1.09,
+              "pctInterviews": 35.3,
+              "perAnglerHour": 0.061,
+              "meanInches": 23.9
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 206,
+              "interviews": 30,
+              "perInterview": 6.87,
+              "pctInterviews": 96.7,
+              "perAnglerHour": 0.38,
+              "meanInches": 23.3
+            }
+          ]
+        }
+      }
+    },
+    "lower-laguna": {
+      "system": "Lower Laguna Madre",
+      "majorArea": 8,
+      "interviews": 15915,
+      "fish": 65904,
+      "seasons": {
+        "high": {
+          "interviews": 12578,
+          "fish": 57063,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 28245,
+              "interviews": 4628,
+              "perInterview": 6.1,
+              "pctInterviews": 74.3,
+              "perAnglerHour": 0.415,
+              "meanInches": 17.5
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 18200,
+              "interviews": 1362,
+              "perInterview": 13.36,
+              "pctInterviews": 94.6,
+              "perAnglerHour": 0.435,
+              "meanInches": 19.6
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 10618,
+              "interviews": 6588,
+              "perInterview": 1.61,
+              "pctInterviews": 48.0,
+              "perAnglerHour": 0.102,
+              "meanInches": 23.6
+            }
+          ]
+        },
+        "low": {
+          "interviews": 3337,
+          "fish": 8841,
+          "yearStart": 1991,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 3753,
+              "interviews": 1025,
+              "perInterview": 3.66,
+              "pctInterviews": 61.1,
+              "perAnglerHour": 0.289,
+              "meanInches": 17.3
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 3151,
+              "interviews": 2166,
+              "perInterview": 1.45,
+              "pctInterviews": 45.3,
+              "perAnglerHour": 0.098,
+              "meanInches": 23.8
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 1937,
+              "interviews": 146,
+              "perInterview": 13.27,
+              "pctInterviews": 89.7,
+              "perAnglerHour": 0.467,
+              "meanInches": 20.1
+            }
+          ]
+        }
+      }
+    }
+  },
+  "late": {
+    "sabine": {
+      "system": "Sabine Lake",
+      "majorArea": 1,
+      "interviews": 922,
+      "fish": 2444,
+      "seasons": {
+        "high": {
+          "interviews": 714,
+          "fish": 2283,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 1245,
+              "interviews": 312,
+              "perInterview": 3.99,
+              "pctInterviews": 53.5,
+              "perAnglerHour": 0.342,
+              "meanInches": 16.3
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 827,
+              "interviews": 87,
+              "perInterview": 9.51,
+              "pctInterviews": 86.2,
+              "perAnglerHour": 0.218,
+              "meanInches": 26.1
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 211,
+              "interviews": 315,
+              "perInterview": 0.67,
+              "pctInterviews": 25.1,
+              "perAnglerHour": 0.065,
+              "meanInches": 25.0
+            }
+          ]
+        },
+        "low": {
+          "interviews": 208,
+          "fish": 161,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 109,
+              "interviews": 68,
+              "perInterview": 1.6,
+              "pctInterviews": 32.4,
+              "perAnglerHour": 0.187,
+              "meanInches": 16.8
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 52,
+              "interviews": 140,
+              "perInterview": 0.37,
+              "pctInterviews": 14.3,
+              "perAnglerHour": 0.042,
+              "meanInches": 23.9
+            }
+          ]
+        }
+      }
+    },
+    "galveston": {
+      "system": "Galveston Bay",
+      "majorArea": 2,
+      "interviews": 2966,
+      "fish": 9311,
+      "seasons": {
+        "high": {
+          "interviews": 2501,
+          "fish": 8710,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 4531,
+              "interviews": 592,
+              "perInterview": 7.65,
+              "pctInterviews": 82.4,
+              "perAnglerHour": 0.177,
+              "meanInches": 23.6
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 3552,
+              "interviews": 1049,
+              "perInterview": 3.39,
+              "pctInterviews": 56.7,
+              "perAnglerHour": 0.225,
+              "meanInches": 17.2
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 627,
+              "interviews": 860,
+              "perInterview": 0.73,
+              "pctInterviews": 26.6,
+              "perAnglerHour": 0.056,
+              "meanInches": 26.3
+            }
+          ]
+        },
+        "low": {
+          "interviews": 465,
+          "fish": 601,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 522,
+              "interviews": 261,
+              "perInterview": 2.0,
+              "pctInterviews": 39.1,
+              "perAnglerHour": 0.168,
+              "meanInches": 17.3
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 70,
+              "interviews": 203,
+              "perInterview": 0.34,
+              "pctInterviews": 13.8,
+              "perAnglerHour": 0.033,
+              "meanInches": 24.5
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 9,
+              "interviews": 1,
+              "perInterview": 9.0,
+              "pctInterviews": 100.0,
+              "perAnglerHour": 0.333,
+              "meanInches": 25.9
+            }
+          ]
+        }
+      }
+    },
+    "matagorda": {
+      "system": "Matagorda Bay",
+      "majorArea": 3,
+      "interviews": 4501,
+      "fish": 20945,
+      "seasons": {
+        "high": {
+          "interviews": 3584,
+          "fish": 18209,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 9406,
+              "interviews": 1738,
+              "perInterview": 5.41,
+              "pctInterviews": 71.1,
+              "perAnglerHour": 0.285,
+              "meanInches": 17.8
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 6325,
+              "interviews": 661,
+              "perInterview": 9.57,
+              "pctInterviews": 95.8,
+              "perAnglerHour": 0.24,
+              "meanInches": 24.8
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 2478,
+              "interviews": 1185,
+              "perInterview": 2.09,
+              "pctInterviews": 46.9,
+              "perAnglerHour": 0.125,
+              "meanInches": 23.7
+            }
+          ]
+        },
+        "low": {
+          "interviews": 917,
+          "fish": 2736,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 1783,
+              "interviews": 560,
+              "perInterview": 3.18,
+              "pctInterviews": 45.2,
+              "perAnglerHour": 0.217,
+              "meanInches": 17.5
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 597,
+              "interviews": 316,
+              "perInterview": 1.89,
+              "pctInterviews": 45.9,
+              "perAnglerHour": 0.127,
+              "meanInches": 24.3
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 356,
+              "interviews": 41,
+              "perInterview": 8.68,
+              "pctInterviews": 56.1,
+              "perAnglerHour": 0.3,
+              "meanInches": 30.2
+            }
+          ]
+        }
+      }
+    },
+    "san-antonio": {
+      "system": "San Antonio Bay",
+      "majorArea": 4,
+      "interviews": 2970,
+      "fish": 9472,
+      "seasons": {
+        "high": {
+          "interviews": 2236,
+          "fish": 8101,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 3865,
+              "interviews": 780,
+              "perInterview": 4.96,
+              "pctInterviews": 67.7,
+              "perAnglerHour": 0.284,
+              "meanInches": 17.1
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 2280,
+              "interviews": 319,
+              "perInterview": 7.15,
+              "pctInterviews": 91.2,
+              "perAnglerHour": 0.199,
+              "meanInches": 24.5
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 1956,
+              "interviews": 1137,
+              "perInterview": 1.72,
+              "pctInterviews": 43.5,
+              "perAnglerHour": 0.114,
+              "meanInches": 23.4
+            }
+          ]
+        },
+        "low": {
+          "interviews": 734,
+          "fish": 1371,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 757,
+              "interviews": 273,
+              "perInterview": 2.77,
+              "pctInterviews": 39.6,
+              "perAnglerHour": 0.184,
+              "meanInches": 17.0
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 522,
+              "interviews": 437,
+              "perInterview": 1.19,
+              "pctInterviews": 36.6,
+              "perAnglerHour": 0.095,
+              "meanInches": 23.5
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 92,
+              "interviews": 24,
+              "perInterview": 3.83,
+              "pctInterviews": 41.7,
+              "perAnglerHour": 0.194,
+              "meanInches": 30.4
+            }
+          ]
+        }
+      }
+    },
+    "aransas": {
+      "system": "Aransas Bay",
+      "majorArea": 5,
+      "interviews": 4306,
+      "fish": 9821,
+      "seasons": {
+        "high": {
+          "interviews": 3471,
+          "fish": 8558,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 4619,
+              "interviews": 1192,
+              "perInterview": 3.88,
+              "pctInterviews": 60.4,
+              "perAnglerHour": 0.235,
+              "meanInches": 17.2
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 3149,
+              "interviews": 2134,
+              "perInterview": 1.48,
+              "pctInterviews": 40.6,
+              "perAnglerHour": 0.105,
+              "meanInches": 23.0
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 790,
+              "interviews": 145,
+              "perInterview": 5.45,
+              "pctInterviews": 85.5,
+              "perAnglerHour": 0.231,
+              "meanInches": 20.9
+            }
+          ]
+        },
+        "low": {
+          "interviews": 835,
+          "fish": 1263,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 775,
+              "interviews": 554,
+              "perInterview": 1.4,
+              "pctInterviews": 35.7,
+              "perAnglerHour": 0.102,
+              "meanInches": 23.4
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 437,
+              "interviews": 266,
+              "perInterview": 1.64,
+              "pctInterviews": 35.7,
+              "perAnglerHour": 0.139,
+              "meanInches": 17.1
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 51,
+              "interviews": 15,
+              "perInterview": 3.4,
+              "pctInterviews": 46.7,
+              "perAnglerHour": 0.169,
+              "meanInches": 23.2
+            }
+          ]
+        }
+      }
+    },
+    "corpus": {
+      "system": "Corpus Christi Bay",
+      "majorArea": 6,
+      "interviews": 3474,
+      "fish": 9752,
+      "seasons": {
+        "high": {
+          "interviews": 2955,
+          "fish": 8735,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 4252,
+              "interviews": 1036,
+              "perInterview": 4.1,
+              "pctInterviews": 61.1,
+              "perAnglerHour": 0.249,
+              "meanInches": 17.6
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 2659,
+              "interviews": 407,
+              "perInterview": 6.53,
+              "pctInterviews": 88.2,
+              "perAnglerHour": 0.235,
+              "meanInches": 21.1
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 1824,
+              "interviews": 1512,
+              "perInterview": 1.21,
+              "pctInterviews": 35.9,
+              "perAnglerHour": 0.087,
+              "meanInches": 23.8
+            }
+          ]
+        },
+        "low": {
+          "interviews": 519,
+          "fish": 1017,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 439,
+              "interviews": 369,
+              "perInterview": 1.19,
+              "pctInterviews": 34.4,
+              "perAnglerHour": 0.091,
+              "meanInches": 23.4
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 338,
+              "interviews": 20,
+              "perInterview": 16.9,
+              "pctInterviews": 95.0,
+              "perAnglerHour": 0.547,
+              "meanInches": 26.3
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 240,
+              "interviews": 130,
+              "perInterview": 1.85,
+              "pctInterviews": 34.6,
+              "perAnglerHour": 0.167,
+              "meanInches": 17.7
+            }
+          ]
+        }
+      }
+    },
+    "baffin": {
+      "system": "Upper Laguna Madre",
+      "majorArea": 7,
+      "interviews": 3871,
+      "fish": 14079,
+      "seasons": {
+        "high": {
+          "interviews": 3104,
+          "fish": 12434,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 9197,
+              "interviews": 1588,
+              "perInterview": 5.79,
+              "pctInterviews": 71.7,
+              "perAnglerHour": 0.307,
+              "meanInches": 17.9
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 1821,
+              "interviews": 1339,
+              "perInterview": 1.36,
+              "pctInterviews": 38.7,
+              "perAnglerHour": 0.082,
+              "meanInches": 24.0
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 1416,
+              "interviews": 177,
+              "perInterview": 8.0,
+              "pctInterviews": 70.6,
+              "perAnglerHour": 0.338,
+              "meanInches": 21.3
+            }
+          ]
+        },
+        "low": {
+          "interviews": 767,
+          "fish": 1645,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 1405,
+              "interviews": 558,
+              "perInterview": 2.52,
+              "pctInterviews": 42.5,
+              "perAnglerHour": 0.147,
+              "meanInches": 18.0
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 206,
+              "interviews": 202,
+              "perInterview": 1.02,
+              "pctInterviews": 31.7,
+              "perAnglerHour": 0.056,
+              "meanInches": 24.6
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 34,
+              "interviews": 7,
+              "perInterview": 4.86,
+              "pctInterviews": 100.0,
+              "perAnglerHour": 0.282,
+              "meanInches": 27.0
+            }
+          ]
+        }
+      }
+    },
+    "lower-laguna": {
+      "system": "Lower Laguna Madre",
+      "majorArea": 8,
+      "interviews": 3030,
+      "fish": 9559,
+      "seasons": {
+        "high": {
+          "interviews": 2410,
+          "fish": 8366,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 2896,
+              "interviews": 297,
+              "perInterview": 9.75,
+              "pctInterviews": 93.9,
+              "perAnglerHour": 0.365,
+              "meanInches": 20.3
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 2869,
+              "interviews": 570,
+              "perInterview": 5.03,
+              "pctInterviews": 67.9,
+              "perAnglerHour": 0.33,
+              "meanInches": 17.9
+            },
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 2601,
+              "interviews": 1543,
+              "perInterview": 1.69,
+              "pctInterviews": 48.7,
+              "perAnglerHour": 0.113,
+              "meanInches": 23.5
+            }
+          ]
+        },
+        "low": {
+          "interviews": 620,
+          "fish": 1193,
+          "yearStart": 2019,
+          "yearEnd": 2023,
+          "species": [
+            {
+              "id": "redfish",
+              "name": "Redfish",
+              "water": "bay",
+              "catch": 636,
+              "interviews": 443,
+              "perInterview": 1.44,
+              "pctInterviews": 42.9,
+              "perAnglerHour": 0.1,
+              "meanInches": 23.8
+            },
+            {
+              "id": "speckled-trout",
+              "name": "Speckled trout",
+              "water": "bay",
+              "catch": 337,
+              "interviews": 157,
+              "perInterview": 2.15,
+              "pctInterviews": 45.2,
+              "perAnglerHour": 0.153,
+              "meanInches": 17.9
+            },
+            {
+              "id": "red-snapper",
+              "name": "Red snapper",
+              "water": "gulf",
+              "catch": 220,
+              "interviews": 20,
+              "perInterview": 11.0,
+              "pctInterviews": 80.0,
+              "perAnglerHour": 0.376,
+              "meanInches": 20.0
+            }
+          ]
+        }
+      }
+    }
+  }
+}

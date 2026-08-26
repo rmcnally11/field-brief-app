@@ -1,5 +1,6 @@
 import type { SpeciesId } from "@/lib/types";
-import raw from "@/data/tpwd-gill-net.json";
+import rawNets from "@/data/tpwd-gill-net.json";
+import rawDock from "@/data/tpwd-creel.json";
 
 export type GillNetSpeciesRow = {
   id: SpeciesId;
@@ -40,7 +41,51 @@ export type GillNetFile = {
   late: Record<string, GillNetBay>;
 };
 
-export const GILL_NET = raw as GillNetFile;
+export type CreelSpeciesRow = {
+  id: SpeciesId;
+  name: string;
+  water: "bay" | "gulf";
+  catch: number;
+  interviews: number;
+  perInterview: number;
+  pctInterviews: number;
+  perAnglerHour: number;
+  meanInches: number | null;
+};
+
+export type CreelSeasonBlock = {
+  interviews: number;
+  fish: number;
+  yearStart: number;
+  yearEnd: number;
+  species: CreelSpeciesRow[];
+};
+
+export type CreelBay = {
+  system: string;
+  majorArea: number;
+  interviews: number;
+  fish: number;
+  seasons: Partial<Record<"high" | "low", CreelSeasonBlock>>;
+};
+
+export type CreelFile = {
+  source: string;
+  doi: string;
+  href: string;
+  program: string;
+  gear: string;
+  protocol: string;
+  yearStart: number;
+  yearEnd: number;
+  published: string;
+  cadence: string;
+  all: Record<string, CreelBay>;
+  late: Record<string, CreelBay>;
+};
+
+export const GILL_NET = rawNets as GillNetFile;
+export const CREEL = rawDock as CreelFile;
 
 export const LONG_RECORD = {
   program: "TPWD Coastal Fisheries",
@@ -48,6 +93,8 @@ export const LONG_RECORD = {
   hrefs: {
     bcoDmo: GILL_NET.href,
     doi: GILL_NET.doi,
+    creel: CREEL.href,
+    creelProgram: CREEL.program,
     request: "mailto:cfish@tpwd.texas.gov",
   },
 } as const;
@@ -110,5 +157,50 @@ export function gillNetCoast(month: number) {
       };
     })
     .sort((a, b) => b.redsPerSet - a.redsPerSet);
+  return { season, rows };
+}
+
+export function creelSeason(month: number): {
+  id: "high" | "low";
+  inSeason: boolean;
+  label: string;
+} {
+  if (month >= 6 && month <= 10) {
+    return { id: "high", inSeason: true, label: "High-use dock (May 15–Nov 20)" };
+  }
+  if (month === 5) {
+    return { id: "high", inSeason: true, label: "High-use starts May 15. Showing the high-use record." };
+  }
+  if (month === 11) {
+    return { id: "high", inSeason: true, label: "High-use ends Nov 20. Showing the high-use record." };
+  }
+  return { id: "low", inSeason: true, label: "Low-use dock (Nov 21–May 14)" };
+}
+
+export function creelFor(areaId: string, month: number) {
+  const season = creelSeason(month);
+  const all = CREEL.all[areaId]?.seasons[season.id] ?? null;
+  const late = CREEL.late[areaId]?.seasons[season.id] ?? null;
+  const bay = CREEL.all[areaId] ?? null;
+  if (!bay || !all) return null;
+  return { bay, all, late, season, note: BAY_NOTE[areaId] ?? CREEL.protocol };
+}
+
+export function creelCoast(month: number) {
+  const season = creelSeason(month);
+  const rows = Object.entries(CREEL.all)
+    .filter(([id]) => id !== "san-antonio")
+    .map(([id, bay]) => {
+      const block = bay.seasons[season.id];
+      const trout = block?.species.find((s) => s.id === "speckled-trout");
+      return {
+        id,
+        system: bay.system,
+        interviews: trout?.interviews ?? 0,
+        fish: trout?.catch ?? 0,
+        troutPerInterview: trout?.perInterview ?? 0,
+      };
+    })
+    .sort((a, b) => b.troutPerInterview - a.troutPerInterview);
   return { season, rows };
 }

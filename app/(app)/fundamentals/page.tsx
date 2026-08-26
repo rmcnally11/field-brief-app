@@ -17,6 +17,7 @@ import {
   waterTypeById,
   type WaterTypeId,
 } from "@/lib/data/fundamentals";
+import { LongRecord } from "@/components/long-record";
 import { MonthHeat, MonthHeatLegend } from "@/components/viz/month-heat";
 import { TempBar } from "@/components/viz/temp-bar";
 import { Waterline } from "@/components/viz/waterline";
@@ -396,6 +397,8 @@ export default async function FundamentalsPage({
           })}
         </div>
       )}
+
+      {regionIds.includes("texas") ? <LongRecord month={month} /> : null}
 
       <p className="text-center text-sm text-[color:var(--cream)]/45">
         Want this week’s weather on top of the doctrine?{" "}

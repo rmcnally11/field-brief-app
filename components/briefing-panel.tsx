@@ -30,6 +30,8 @@ import { briefHref, compareHref, morningHref } from "@/lib/hrefs";
 import { neighborArea } from "@/lib/data/areas";
 import { skyCopy } from "@/lib/wx";
 import { pressureInHg, pressureTrendWord } from "@/lib/pressure";
+import { LongRecord } from "@/components/long-record";
+import { longRecordBay } from "@/lib/data/long-record";
 
 function tideClock(stamp: string, tz: string) {
   const d = stamp.includes("T") ? new Date(stamp) : parseNoaaGmt(stamp);
@@ -545,6 +547,10 @@ export function BriefingPanel({
           </ul>
         </div>
       </section>
+
+      {longRecordBay(area.id) ? (
+        <LongRecord areaId={area.id} month={Number(briefing.forDate.slice(5, 7))} />
+      ) : null}
 
       {(briefing.access.length > 0 || briefing.legal.length > 0) && (
         <section className="grid gap-6 lg:grid-cols-2">

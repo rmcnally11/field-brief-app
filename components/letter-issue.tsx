@@ -19,6 +19,8 @@ import { DESKS } from "@/lib/desks";
 import { coastEditionLabel, isAllCoasts } from "@/lib/coasts";
 import { scoreHex, scoreInk } from "@/lib/viz";
 import { pressureLine } from "@/lib/pressure";
+import { LongRecord } from "@/components/long-record";
+import { longRecordBay } from "@/lib/data/long-record";
 
 function tideLabel(desk: DeskIssue) {
   const tides = desk.briefing?.conditions.tides;
@@ -352,6 +354,14 @@ export function LetterIssue({
           </div>
         )}
       </section>
+
+      {issue.desks.some((d) => longRecordBay(d.areaId)) ? (
+        <LongRecord
+          areaId={issue.desks.find((d) => longRecordBay(d.areaId))?.areaId}
+          month={issue.month}
+          compact
+        />
+      ) : null}
 
       <section className="grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
         <article className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">

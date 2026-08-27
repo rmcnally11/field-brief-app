@@ -354,8 +354,7 @@ export function LongRecord({
           </article>
         </div>
 
-        {!compact ? (
-          <p className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+        <p className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
             {texasRecordBays().map((bay) =>
               bay.id === areaId ? (
                 <span key={bay.id} className="text-[color:var(--cream)]/45">
@@ -372,7 +371,6 @@ export function LongRecord({
               ),
             )}
           </p>
-        ) : null}
       </div>
     );
   }

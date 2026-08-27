@@ -42,7 +42,7 @@ function DeskColumn({ briefing, error }: { briefing?: Briefing; error?: string }
       <p className="mt-3 text-sm text-[color:var(--cream)]/65">
         {conditions.weather.windMph != null
           ? `${Math.round(conditions.weather.windMph)} mph ${conditions.weather.windCardinal ?? ""}`.trim()
-          : "Wind not in"}
+          : "No wind reading"}
         {conditions.weather.wx === "storm"
           ? " · thunderstorms"
           : conditions.weather.wx === "rain"

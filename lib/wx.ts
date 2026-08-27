@@ -78,7 +78,7 @@ export function skyCopy(kind: SkyKind | null, chance: number | null, text?: stri
   if (sky === "rain") return pop ? `Rain · ${pop}` : text?.trim() || "Rain";
   if (sky === "clouds") return text?.trim() || (pop ? `Clouds · ${pop}` : "Clouds");
   if (text?.trim()) return pop ? `${text.trim()} · ${pop}` : text.trim();
-  return pop ? `${pop} chance of rain` : "Sky not in";
+  return pop ? `${pop} chance of rain` : "No sky reading";
 }
 
 export function skyWord(kind: SkyKind | null) {

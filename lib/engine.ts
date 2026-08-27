@@ -250,7 +250,7 @@ export function pickSpots(
       const tideFit = habitatTideFit(spot.habitat, conditions.tides.stage);
       score += 3 * tideFit;
       why.push(
-        `${spot.habitat.replace("-", " ")} on a ${conditions.tides.stage.replace("-", " ")} tide is a ${tideFit >= 0.8 ? "classic" : tideFit >= 0.55 ? "workable" : "secondary"} match.`,
+        `${spot.habitat.replaceAll("-", " ")} on ${conditions.tides.stage === "incoming" || conditions.tides.stage === "outgoing" ? "an" : "a"} ${conditions.tides.stage.replaceAll("-", " ")} tide is a ${tideFit >= 0.8 ? "classic" : tideFit >= 0.55 ? "workable" : "secondary"} match.`,
       );
 
       const sky = precipFishability(

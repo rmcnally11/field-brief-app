@@ -61,7 +61,7 @@ function DeskCard({ desk, tomorrow }: { desk: DeskIssue; tomorrow?: Briefing | n
   const inPlay =
     briefing?.species.filter((s) => s.inPlay && s.species.role === "primary").slice(0, 4) ?? [];
   const window = briefing?.when[0];
-  const href = `/?area=${desk.areaId}&theater=${desk.theater}`;
+  const href = `/?area=${desk.areaId}&theater=${desk.theater}${briefing?.activity && briefing.activity !== "all" ? `&activity=${briefing.activity}` : ""}`;
   const c = briefing?.conditions;
 
   return (

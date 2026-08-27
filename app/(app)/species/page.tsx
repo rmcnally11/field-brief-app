@@ -23,7 +23,7 @@ export default function SpeciesPage() {
       </div>
       <div className="grid gap-4">
         {SPECIES.map((s) => (
-          <article key={s.id} className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
+          <article id={s.id} key={s.id} className="scroll-mt-24 rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <div>
                 <h2 className="font-heading text-2xl text-[color:var(--cream)]">{s.commonName}</h2>

@@ -196,7 +196,7 @@ export function BriefingPanel({
                   ? "Clouds"
                   : conditions.weather.wx === "clear"
                     ? "Clear"
-                    : "Sky not in"}
+                    : "No sky reading"}
           </p>
           <p className="mt-2 text-sm text-[color:var(--cream)]/65">
             {skyCopy(conditions.weather.wx, conditions.weather.precipChance, conditions.weather.sky)}
@@ -368,6 +368,14 @@ export function BriefingPanel({
                 ? "High — coffee-colored water is the story. Not a secret hole."
                 : "Discharge into this bay. High water stains the flat."}
             </p>
+            <a
+              className="mt-2 inline-block text-xs text-[color:var(--copper)] underline decoration-[color:var(--copper)]/40"
+              href={`https://waterdata.usgs.gov/monitoring-location/${conditions.river.site}/`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              USGS {conditions.river.site}
+            </a>
           </Instrument>
         ) : area.theater === "texas" || area.theater === "louisiana" ? (
           <Instrument label="River" source={riverMeta ? `USGS ${riverMeta.site}` : "No gauge"}>
@@ -481,9 +489,16 @@ export function BriefingPanel({
                 <li key={pick.spot.id} className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--panel)] p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-medium text-[color:var(--cream)]">{pick.spot.name}</p>
+                      <p className="font-medium text-[color:var(--cream)]">
+                        <a
+                          href={`/map?area=${area.id}&theater=${area.theater}${briefing.activity !== "all" ? `&activity=${briefing.activity}` : ""}`}
+                          className="underline decoration-[color:var(--sea)]/40 underline-offset-4 hover:text-[color:var(--sea)]"
+                        >
+                          {pick.spot.name}
+                        </a>
+                      </p>
                       <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[color:var(--cream)]/40">
-                        {pick.spot.habitat.replace("-", " ")} · {pick.spot.source.replace("-", " ")} · {pick.spot.depth}
+                        {pick.spot.habitat.replaceAll("-", " ")} · {pick.spot.source.replaceAll("-", " ")} · {pick.spot.depth}
                       </p>
                     </div>
                     <ScorePip score={pick.score} />
@@ -615,7 +630,7 @@ export function BriefingPanel({
             {briefing.extraLegal ? (
               <p className="mt-2 text-xs text-[color:var(--cream)]/45">
                 + {briefing.extraLegal} more zones on the{" "}
-                <a className="underline decoration-[color:var(--copper)]/50" href={`/map?area=${area.id}&theater=${area.theater}`}>
+                <a className="underline decoration-[color:var(--copper)]/50" href={`/map?area=${area.id}&theater=${area.theater}${briefing.activity !== "all" ? `&activity=${briefing.activity}` : ""}`}>
                   map
                 </a>
                 .
@@ -637,7 +652,14 @@ export function BriefingPanel({
             <article key={s.species.id} className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--panel)] p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-medium text-[color:var(--cream)]">{s.species.commonName}</p>
+                  <p className="font-medium text-[color:var(--cream)]">
+                    <a
+                      href={`/species#${s.species.id}`}
+                      className="underline decoration-[color:var(--sea)]/40 underline-offset-4 hover:text-[color:var(--sea)]"
+                    >
+                      {s.species.commonName}
+                    </a>
+                  </p>
                   <p className="text-xs italic text-[color:var(--cream)]/40">{s.species.latin}</p>
                 </div>
                 <ScorePip score={s.score} />

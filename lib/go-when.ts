@@ -55,6 +55,17 @@ export function goWhen(today: Briefing, tomorrow: Briefing): GoWhen {
 
   const tomorrowLabel = formatYmdLong(tomorrow.forDate, today.area.timezone);
   const line = `${today.area.shortName} is ${today.overall.toFixed(1)} this morning, ${tomorrow.overall.toFixed(1)} tomorrow. Scores are 1–10, not a bite.`;
+  const todayHref = briefHref({
+    areaId: today.area.id,
+    theater: today.area.theater,
+    activity: today.activity,
+  });
+  const tomorrowHref = briefHref({
+    areaId: today.area.id,
+    theater: today.area.theater,
+    activity: today.activity,
+    date: tomorrow.forDate,
+  });
 
   return {
     verdict,
@@ -63,12 +74,7 @@ export function goWhen(today: Briefing, tomorrow: Briefing): GoWhen {
     driver,
     todayScore: today.overall,
     tomorrowScore: tomorrow.overall,
-    tomorrowHref: briefHref({
-      areaId: today.area.id,
-      theater: today.area.theater,
-      activity: today.activity,
-      date: tomorrow.forDate,
-    }),
-    tomorrowLabel,
+    tomorrowHref: verdict === "today" || verdict === "stay" ? todayHref : tomorrowHref,
+    tomorrowLabel: verdict === "today" || verdict === "stay" ? "this morning" : tomorrowLabel,
   };
 }

@@ -10,7 +10,7 @@ export function morningLine(briefing: Briefing, yolo?: CalendarDay | null) {
       ? `${Math.round(briefing.conditions.weather.windMph)} mph${
           briefing.conditions.weather.windCardinal ? ` ${briefing.conditions.weather.windCardinal}` : ""
         }`
-      : "wind not in yet";
+      : "no wind reading yet";
   const sky =
     briefing.conditions.weather.wx || briefing.conditions.weather.precipChance != null
       ? ` ${skyCopy(briefing.conditions.weather.wx, briefing.conditions.weather.precipChance, briefing.conditions.weather.sky)}.`

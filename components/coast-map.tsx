@@ -6,6 +6,7 @@ import { SPOTS } from "@/lib/data/spots";
 import { AREA_BY_ID } from "@/lib/data/areas";
 import type { OfficialPoint } from "@/lib/layers";
 import type { ActivityId, Spot, SpotPick, TheaterId } from "@/lib/types";
+import { briefHref } from "@/lib/hrefs";
 import { scoreHex } from "@/lib/viz";
 import "leaflet/dist/leaflet.css";
 
@@ -144,6 +145,13 @@ export function CoastMap({
               {pick?.why[0] ? <p className="mt-1 text-xs opacity-70">{pick.why[0]}</p> : null}
               {s.gnisId ? <p className="mt-1 text-xs opacity-60">USGS GNIS {s.gnisId}</p> : null}
               <p className="mt-1 text-xs opacity-70">{s.activities.join(" · ")}</p>
+              {AREA_BY_ID[s.areaId] ? (
+                <p className="mt-2">
+                  <a href={briefHref({ areaId: s.areaId, theater: AREA_BY_ID[s.areaId].theater })}>
+                    Open the {AREA_BY_ID[s.areaId].shortName} brief
+                  </a>
+                </p>
+              ) : null}
             </div>
           </Popup>
         </CircleMarker>

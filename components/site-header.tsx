@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { Suspense } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import { Waterline } from "@/components/viz/waterline";
 import { JoinLink } from "@/components/join-link";
+import { getArea, neighborArea } from "@/lib/data/areas";
 import { PRODUCT_LINE, PRODUCT_NAME } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +35,45 @@ function activePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+function navHref(base: string, params: URLSearchParams) {
+  if (base === "/" || base === "/newsletter" || base === "/species" || base === "/method") {
+    return base;
+  }
+  const area = params.get("area") ?? params.get("a");
+  const theater = params.get("theater");
+  const activity = params.get("activity");
+  const date = params.get("date");
+  const q = new URLSearchParams();
+  if (theater) q.set("theater", theater);
+  if (activity) q.set("activity", activity);
+  if (date) q.set("date", date);
+  if (base === "/compare" && area) {
+    q.set("a", area);
+    q.set("b", neighborArea(getArea(area)).id);
+    return `${base}?${q}`;
+  }
+  if (area && (base === "/calendar" || base === "/map" || base === "/morning" || base === "/fundamentals")) {
+    q.set("area", area);
+  }
+  const s = q.toString();
+  return s ? `${base}?${s}` : base;
+}
+
 export function SiteHeader() {
+  return (
+    <Suspense fallback={<HeaderBar links={LINKS.map((l) => ({ ...l, href: l.href }))} />}>
+      <HeaderWithWater />
+    </Suspense>
+  );
+}
+
+function HeaderWithWater() {
+  const params = useSearchParams();
+  const links = LINKS.map((l) => ({ ...l, href: navHref(l.href, params) }));
+  return <HeaderBar links={links} />;
+}
+
+function HeaderBar({ links }: { links: { href: string; label: string; dek: string }[] }) {
   const pathname = usePathname();
   const onJoin = activePath(pathname, "/join");
 
@@ -49,13 +89,13 @@ export function SiteHeader() {
           </span>
         </a>
         <nav className="hidden items-center gap-1 text-sm lg:flex">
-          {LINKS.map((l) => (
+          {links.map((l) => (
             <a
-              key={l.href}
+              key={l.label}
               href={l.href}
               className={cn(
                 "cursor-pointer rounded-md px-2.5 py-1.5 text-[color:var(--cream)]/75 transition hover:bg-[color:var(--cream)]/6 hover:text-[color:var(--cream)]",
-                activePath(pathname, l.href) && "text-[color:var(--cream)]",
+                activePath(pathname, l.href.split("?")[0] ?? l.href) && "text-[color:var(--cream)]",
               )}
             >
               {l.label}
@@ -100,11 +140,11 @@ export function SiteHeader() {
                 </JoinLink>
               </div>
               <nav className="flex flex-1 flex-col overflow-y-auto px-2 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2">
-                {LINKS.map((l) => {
-                  const on = activePath(pathname, l.href);
+                {links.map((l) => {
+                  const on = activePath(pathname, l.href.split("?")[0] ?? l.href);
                   return (
                     <a
-                      key={l.href}
+                      key={l.label}
                       href={l.href}
                       className={cn(
                         "touch-manipulation rounded-xl px-3 py-3.5",

@@ -72,7 +72,7 @@ function windLine(briefing: Briefing) {
   const wind =
     w.windMph != null
       ? `${Math.round(w.windMph)} mph${w.windCardinal ? ` ${w.windCardinal}` : ""}`
-      : "wind not in";
+      : "no wind reading";
   const wet = w.wx === "storm" || w.wx === "rain" || (w.precipChance != null && w.precipChance >= 30);
   const sky = wet ? skyCopy(w.wx, w.precipChance, w.sky) : null;
   const stage = briefing.conditions.tides.stage?.replace("-", " ");

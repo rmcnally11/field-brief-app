@@ -128,13 +128,18 @@ export default function ForTheLetterPage() {
       <section className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5 text-sm text-[color:var(--cream)]/80">
         <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">Twitter / X</p>
         <p className="mt-3">
-          Morning: seven posts, one theater each, text from <code>/api/tweets</code> mornings[],
-          picture = screenshot of{" "}
+          Morning: seven posts, one theater each, text from <code>/api/tweets</code> mornings[]
+          verbatim — the last line is the live desk so a reader of the tweet lands on this site
+          (same as JSON <code>url</code> / <code>href</code>). Picture = screenshot of{" "}
           <a className="underline" href="/card?area=galveston&amp;theater=texas">
             /card
           </a>{" "}
-          (score ring, wind compass, moon, tide curve, sky). Calendar: seven posts from calendars[],
-          picture = screenshot of{" "}
+          (score ring, wind compass, moon, tide curve, sky) — do not put that card URL in the tweet.
+          Calendar: seven posts from calendars[], last line is the live{" "}
+          <a className="underline" href="/calendar?area=galveston&amp;theater=texas">
+            /calendar
+          </a>
+          , picture = screenshot of{" "}
           <a className="underline" href="/card/calendar?area=galveston&amp;theater=texas">
             /card/calendar
           </a>{" "}

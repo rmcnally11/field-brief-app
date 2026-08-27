@@ -9,7 +9,9 @@ import {
   TWEET_DESKS,
   calendarAlt,
   calendarCardUrl,
+  calendarHref,
   calendarTweetText,
+  deskHref,
   morningAlt,
   morningCardUrl,
   morningTweetText,
@@ -36,7 +38,8 @@ export async function GET() {
         text: morningTweetText(briefing, yolo, desk.kicker),
         image: morningCardUrl(area.id, area.theater),
         alt: morningAlt(briefing),
-        href: morningCardUrl(area.id, area.theater),
+        href: deskHref(area.id, area.theater),
+        url: deskHref(area.id, area.theater),
         skip: false,
       });
     } catch (error) {
@@ -50,7 +53,8 @@ export async function GET() {
         text: null,
         image: morningCardUrl(area.id, area.theater),
         alt: null,
-        href: morningCardUrl(area.id, area.theater),
+        href: deskHref(area.id, area.theater),
+        url: deskHref(area.id, area.theater),
         skip: true,
         error: error instanceof Error ? error.message : "Gauge quiet",
       });
@@ -68,7 +72,8 @@ export async function GET() {
         text: calendarTweetText(area.shortName, area.id, area.theater, days),
         image: calendarCardUrl(area.id, area.theater),
         alt: calendarAlt(area.shortName, days, area.id),
-        href: calendarCardUrl(area.id, area.theater),
+        href: calendarHref(area.id, area.theater),
+        url: calendarHref(area.id, area.theater),
         skip: false,
       });
     } catch (error) {
@@ -80,7 +85,8 @@ export async function GET() {
         text: null,
         image: calendarCardUrl(area.id, area.theater),
         alt: null,
-        href: calendarCardUrl(area.id, area.theater),
+        href: calendarHref(area.id, area.theater),
+        url: calendarHref(area.id, area.theater),
         skip: true,
         error: error instanceof Error ? error.message : "Calendar did not set",
       });
@@ -91,7 +97,7 @@ export async function GET() {
     source: `${ORIGIN}/for-the-letter`,
     instructions: `${ORIGIN}/for-the-letter`,
     github: `${GITHUB_REPO}/blob/main/TWITTER.md`,
-    rule: "Screenshot image URLs from this site only. Do not generate pictures. Skip any desk with skip=true.",
+    rule: "Post text verbatim — the last line is the live site so readers can open the brief. Screenshot image only. Do not generate pictures. Skip any desk with skip=true.",
     mornings,
     calendars,
   });

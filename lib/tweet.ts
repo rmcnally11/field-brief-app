@@ -71,7 +71,7 @@ export function morningTweetText(briefing: Briefing, yolo?: CalendarDay | null, 
   const yoloBit = yolo ? ` YOLO day ${yolo.date.slice(5)}.` : "";
   const kick = kicker ? ` ${kicker}.` : "";
   const line = `${briefing.area.shortName} fishing weather: ${briefing.overall.toFixed(1)} this morning. ${place}. Wind ${windBit(briefing)}, ${skyBit(briefing)}.${extraBit(briefing)}${kick} ${PRODUCT_NAME} — a 1–10, not a bite.${yoloBit}`;
-  return `${line}\n${morningCardUrl(briefing.area.id, briefing.area.theater)}`;
+  return `${line}\n${deskHref(briefing.area.id, briefing.area.theater)}`;
 }
 
 export function morningAlt(briefing: Briefing) {
@@ -107,7 +107,7 @@ export function calendarTweetText(
       ? ` Rain in the forecast ${rains.map((d) => d.date.slice(5)).join(", ")}.`
       : "";
   const line = `${shortName} fishing calendar — ${place}. ${yoloBit}${wetBit} Inshore forecast from ${PRODUCT_NAME}. Not a bite call.`;
-  return `${line}\n${calendarCardUrl(areaId, theater)}`;
+  return `${line}\n${calendarHref(areaId, theater)}`;
 }
 
 export function calendarAlt(shortName: string, days: CalendarDay[], areaId?: string) {

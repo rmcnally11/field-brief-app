@@ -23,7 +23,7 @@ You may NOT create pictures. No DALL-E, Midjourney, Canva, stock boats, “infog
 ### Fetch this, in this order
 
 1. https://onthiswater.com/for-the-letter — rules
-2. https://onthiswater.com/api/tweets — morning + calendar copy, image URLs, alt text
+2. https://onthiswater.com/api/tweets — morning + calendar copy, live site links (`url` / `href`), image URLs, alt text
 3. Open each `image` URL in a 1200-wide viewport and screenshot **the page as rendered**. Morning cards are 1200×675. Calendar cards are 1200 wide and as tall as the month grid.
 
 If `/api/tweets` fails: do not post. Tell the operator the dispatch did not set.
@@ -44,10 +44,10 @@ Post seven separate morning tweets (not one dump), in this order, using `morning
 
 For each desk:
 
-- Tweet text = JSON `text` **verbatim**. That line is already the dispatch — fishing weather, location, wind, sky. Do not rewrite it. Do not add hashtags, emoji, or “thread 1/7.”
-- Attach the screenshot of JSON `image` (the `/card` page).
+- Tweet text = JSON `text` **verbatim**. That line is already the dispatch — fishing weather, location, wind, sky — and it already ends with the live desk URL (`/?area=…&theater=…`) so readers open the site, not the screenshot. Do not rewrite it. Do not add hashtags, emoji, or “thread 1/7.” Do not swap in the `image` URL.
+- Attach the screenshot of JSON `image` (the `/card` page). That URL is for the picture only.
 - Alt text = JSON `alt`.
-- The only link is the one already in `text` (`onthiswater.com`).
+- The only link is the one already in `text`. Same destination as JSON `url` / `href`.
 
 Cadence: once each morning after the live brief has today’s wind and sky. Do not post a second morning take. Do not quote-tweet yourself with a “update.”
 
@@ -55,9 +55,10 @@ Cadence: once each morning after the live brief has today’s wind and sky. Do n
 
 Post seven calendar tweets from `calendars[]`, same desk order.
 
-- Tweet text = JSON `text` verbatim.
-- Attach the screenshot of JSON `image` (`/card/calendar` — the month grid, moon cells, YOLO / rain labels from the site).
+- Tweet text = JSON `text` verbatim. Last line is the live calendar (`/calendar?area=…&theater=…`).
+- Attach the screenshot of JSON `image` (`/card/calendar` — the month grid, moon cells, YOLO / rain labels from the site). That URL is for the picture only.
 - Alt text = JSON `alt`.
+- Same link as JSON `url` / `href`. Do not put the card URL in the tweet.
 
 Cadence: Saturday, with the Saturday Letter, or Monday if Saturday missed. Not daily. The grid is the point.
 
@@ -84,7 +85,7 @@ Forbidden pictures: AI fish, boats, maps you drew, screenshots of any other webs
 
 ### Replies
 
-If someone asks “is the bite on?” reply with the desk link from the JSON. Do not add a new number. If they ask another micro-area (Flamingo, Boca), say the letter desks are the seven above and link the live letter: https://onthiswater.com/newsletter
+If someone asks “is the bite on?” reply with JSON `url` / `href` for that desk. Do not add a new number. If they ask another micro-area (Flamingo, Boca), say the letter desks are the seven above and link the live letter: https://onthiswater.com/newsletter
 
 Do not argue regs. Point at the brief.
 
@@ -95,7 +96,9 @@ Do not argue regs. Point at the brief.
 | What | URL |
 | --- | --- |
 | Tweet JSON | https://onthiswater.com/api/tweets |
-| Morning card | https://onthiswater.com/card?area=galveston&theater=texas |
-| Calendar card | https://onthiswater.com/card/calendar?area=galveston&theater=texas |
+| Live brief (reader link) | https://onthiswater.com/?area=galveston&theater=texas |
+| Live calendar (reader link) | https://onthiswater.com/calendar?area=galveston&theater=texas |
+| Morning card (screenshot only) | https://onthiswater.com/card?area=galveston&theater=texas |
+| Calendar card (screenshot only) | https://onthiswater.com/card/calendar?area=galveston&theater=texas |
 | Rules | https://onthiswater.com/for-the-letter |
 | This file | https://github.com/rmcnally11/field-brief-app/blob/main/TWITTER.md |

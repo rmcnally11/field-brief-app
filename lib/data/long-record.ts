@@ -132,31 +132,67 @@ export function gillNetSeason(month: number): {
   return { id: "spring", inSeason: false, label: "Nets are out until April. Showing the spring record." };
 }
 
-export function gillNetFor(areaId: string, month: number) {
-  const season = gillNetSeason(month);
-  const all = GILL_NET.all[areaId]?.seasons[season.id] ?? null;
-  const late = GILL_NET.late[areaId]?.seasons[season.id] ?? null;
+export type NetSeasonId = "spring" | "fall";
+export type DockSeasonId = "high" | "low";
+export type RecordEra = "all" | "late";
+export type SharedFishId = "redfish" | "speckled-trout";
+
+export const SHARED_FISH: { id: SharedFishId; name: string }[] = [
+  { id: "redfish", name: "Redfish" },
+  { id: "speckled-trout", name: "Speckled trout" },
+];
+
+export const NET_SEASON_LABEL: Record<NetSeasonId, string> = {
+  spring: "Spring nets (April–June)",
+  fall: "Fall nets (September–November)",
+};
+
+export const DOCK_SEASON_LABEL: Record<DockSeasonId, string> = {
+  high: "High-use dock (May 15–Nov 20)",
+  low: "Low-use dock (Nov 21–May 14)",
+};
+
+export function gillNetAt(areaId: string, season: NetSeasonId) {
+  const all = GILL_NET.all[areaId]?.seasons[season] ?? null;
+  const late = GILL_NET.late[areaId]?.seasons[season] ?? null;
   const bay = GILL_NET.all[areaId] ?? null;
   if (!bay || !all) return null;
-  return { bay, all, late, season, note: BAY_NOTE[areaId] ?? GILL_NET.protocol };
+  return { bay, all, late, note: BAY_NOTE[areaId] ?? GILL_NET.protocol };
 }
 
-export function gillNetCoast(month: number) {
+export function gillNetFor(areaId: string, month: number) {
   const season = gillNetSeason(month);
-  const rows = Object.entries(GILL_NET.all)
+  const picked = gillNetAt(areaId, season.id);
+  if (!picked) return null;
+  return { ...picked, season };
+}
+
+export function gillNetCoastAt(season: NetSeasonId, era: RecordEra, speciesId: SpeciesId) {
+  const file = era === "late" ? GILL_NET.late : GILL_NET.all;
+  const rows = Object.entries(file)
     .filter(([id]) => id !== "san-antonio")
     .map(([id, bay]) => {
-      const block = bay.seasons[season.id];
-      const reds = block?.species.find((s) => s.id === "redfish");
+      const block = bay.seasons[season];
+      const fish = block?.species.find((s) => s.id === speciesId);
       return {
         id,
         system: bay.system,
         sets: block?.sets ?? 0,
-        fish: block?.fish ?? 0,
-        redsPerSet: reds?.perSet ?? 0,
+        fish: fish?.catch ?? 0,
+        rate: fish?.perSet ?? 0,
+        pct: fish?.pctSets ?? 0,
       };
     })
-    .sort((a, b) => b.redsPerSet - a.redsPerSet);
+    .sort((a, b) => b.rate - a.rate);
+  return rows;
+}
+
+export function gillNetCoast(month: number) {
+  const season = gillNetSeason(month);
+  const rows = gillNetCoastAt(season.id, "all", "redfish").map((row) => ({
+    ...row,
+    redsPerSet: row.rate,
+  }));
   return { season, rows };
 }
 
@@ -177,30 +213,53 @@ export function creelSeason(month: number): {
   return { id: "low", inSeason: true, label: "Low-use dock (Nov 21–May 14)" };
 }
 
-export function creelFor(areaId: string, month: number) {
-  const season = creelSeason(month);
-  const all = CREEL.all[areaId]?.seasons[season.id] ?? null;
-  const late = CREEL.late[areaId]?.seasons[season.id] ?? null;
+export function creelAt(areaId: string, season: DockSeasonId) {
+  const all = CREEL.all[areaId]?.seasons[season] ?? null;
+  const late = CREEL.late[areaId]?.seasons[season] ?? null;
   const bay = CREEL.all[areaId] ?? null;
   if (!bay || !all) return null;
-  return { bay, all, late, season, note: BAY_NOTE[areaId] ?? CREEL.protocol };
+  return { bay, all, late, note: BAY_NOTE[areaId] ?? CREEL.protocol };
+}
+
+export function creelFor(areaId: string, month: number) {
+  const season = creelSeason(month);
+  const picked = creelAt(areaId, season.id);
+  if (!picked) return null;
+  return { ...picked, season };
+}
+
+export function creelCoastAt(season: DockSeasonId, era: RecordEra, speciesId: SpeciesId) {
+  const file = era === "late" ? CREEL.late : CREEL.all;
+  const rows = Object.entries(file)
+    .filter(([id]) => id !== "san-antonio")
+    .map(([id, bay]) => {
+      const block = bay.seasons[season];
+      const fish = block?.species.find((s) => s.id === speciesId);
+      return {
+        id,
+        system: bay.system,
+        interviews: fish?.interviews ?? 0,
+        fish: fish?.catch ?? 0,
+        rate: fish?.perInterview ?? 0,
+        pct: fish?.pctInterviews ?? 0,
+        inches: fish?.meanInches ?? null,
+      };
+    })
+    .sort((a, b) => b.rate - a.rate);
+  return rows;
 }
 
 export function creelCoast(month: number) {
   const season = creelSeason(month);
-  const rows = Object.entries(CREEL.all)
-    .filter(([id]) => id !== "san-antonio")
-    .map(([id, bay]) => {
-      const block = bay.seasons[season.id];
-      const trout = block?.species.find((s) => s.id === "speckled-trout");
-      return {
-        id,
-        system: bay.system,
-        interviews: trout?.interviews ?? 0,
-        fish: trout?.catch ?? 0,
-        troutPerInterview: trout?.perInterview ?? 0,
-      };
-    })
-    .sort((a, b) => b.troutPerInterview - a.troutPerInterview);
+  const rows = creelCoastAt(season.id, "all", "speckled-trout").map((row) => ({
+    ...row,
+    troutPerInterview: row.rate,
+  }));
   return { season, rows };
+}
+
+export function texasRecordBays() {
+  return Object.entries(GILL_NET.all)
+    .filter(([id]) => id !== "san-antonio")
+    .map(([id, bay]) => ({ id, system: bay.system }));
 }

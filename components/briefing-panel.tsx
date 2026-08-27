@@ -32,6 +32,8 @@ import { skyCopy } from "@/lib/wx";
 import { pressureInHg, pressureTrendWord } from "@/lib/pressure";
 import { LongRecord } from "@/components/long-record";
 import { longRecordBay } from "@/lib/data/long-record";
+import { LogCatchLaunch } from "@/components/log-catch";
+import { logContextFromBriefing } from "@/lib/book";
 
 function tideClock(stamp: string, tz: string) {
   const d = stamp.includes("T") ? new Date(stamp) : parseNoaaGmt(stamp);
@@ -105,8 +107,9 @@ export function BriefingPanel({
         <div className="border-t border-[color:var(--line)] px-5 py-4 md:px-7">
           <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">Morning line</p>
           <p className="mt-2 font-heading text-xl leading-snug text-[color:var(--cream)]">{line}</p>
-          <div className="mt-3">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <CopyLine text={line} />
+            <LogCatchLaunch context={logContextFromBriefing(briefing)} />
           </div>
         </div>
         <div className="border-t border-[color:var(--line)] px-3 py-4 md:px-6">

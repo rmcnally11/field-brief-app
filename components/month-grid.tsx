@@ -1,3 +1,5 @@
+"use client";
+
 import type { CalendarDay } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { MoonDisk } from "@/components/viz/moon-disk";
@@ -7,6 +9,8 @@ import { skyWord } from "@/lib/wx";
 import { formatYmdLong } from "@/lib/time";
 import { Waterline } from "@/components/viz/waterline";
 import { WindMark } from "@/components/viz/wind-mark";
+import { bestRhyme, wroteOn } from "@/lib/book";
+import { useBook } from "@/lib/book-store";
 
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -95,6 +99,8 @@ export function MonthGrid({
   theater: string;
   activity: string;
 }) {
+  const { book, ready, unlocked } = useBook();
+  const catches = ready && unlocked ? book.catches : [];
   const localFirst = new Date(`${year}-${String(month).padStart(2, "0")}-01T12:00:00`);
   const pad = localFirst.getDay();
   const today = new Date().toLocaleDateString("en-CA", { timeZone: timezone });
@@ -132,6 +138,8 @@ export function MonthGrid({
           const n = Number(day.date.slice(-2));
           const past = day.date < today;
           const sky = skyWord(day.wx);
+          const wrote = wroteOn(day, catches, areaId);
+          const rhyme = wrote.length ? null : bestRhyme(day, catches, areaId);
           return (
             <a
               key={day.date}
@@ -143,9 +151,13 @@ export function MonthGrid({
                   ? "border-[color:var(--copper)] shadow-[0_0_0_1px_var(--copper)]"
                   : day.amazing
                     ? "border-[color:var(--gold)] shadow-[0_0_0_1px_var(--gold)]"
-                    : "border-[color:var(--line)]",
+                    : wrote.length
+                      ? "border-[color:var(--sea)]"
+                      : rhyme
+                        ? "border-[color:var(--sea)]/55"
+                        : "border-[color:var(--line)]",
                 day.date === today && "ring-2 ring-[color:var(--cream)] ring-offset-1 ring-offset-[color:var(--panel)]",
-                day.confidence === "astronomical" && !day.yolo && !day.amazing && "border-dashed",
+                day.confidence === "astronomical" && !day.yolo && !day.amazing && !wrote.length && !rhyme && "border-dashed",
                 past && "opacity-55",
               )}
             >
@@ -170,7 +182,13 @@ export function MonthGrid({
               ) : null}
               <TideSpark day={day} />
               <div className="mt-auto pt-1">
-                {day.yolo ? (
+                {wrote.length ? (
+                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[color:var(--sea)]">Book</p>
+                ) : rhyme ? (
+                  <p className="truncate text-[9px] font-bold uppercase tracking-[0.12em] text-[color:var(--sea)]">
+                    Rhyme
+                  </p>
+                ) : day.yolo ? (
                   <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[color:var(--copper)]">YOLO</p>
                 ) : day.amazing ? (
                   <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[color:var(--gold)]">Go</p>

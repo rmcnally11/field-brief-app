@@ -44,3 +44,11 @@ export function calendarHref(opts: { areaId: string; theater: string; activity?:
   if (opts.month) p.set("month", opts.month);
   return `/calendar?${p}`;
 }
+
+export function bookHref(opts: { areaId: string; theater: string; activity?: string }) {
+  const p = new URLSearchParams();
+  p.set("area", opts.areaId);
+  p.set("theater", opts.theater);
+  if (opts.activity && opts.activity !== "all") p.set("activity", opts.activity);
+  return `/book?${p}`;
+}

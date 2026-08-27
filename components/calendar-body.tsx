@@ -1,5 +1,6 @@
 import { buildCalendarRange } from "@/lib/calendar";
 import { AmazingChip, MonthGrid } from "@/components/month-grid";
+import { RhymeStrip } from "@/components/rhyme-strip";
 import { YoloBanner } from "@/components/yolo-banner";
 import type { ActivityId, Area } from "@/lib/types";
 
@@ -61,6 +62,13 @@ export async function CalendarBody({
           timezone={area.timezone}
         />
       ) : null}
+      <RhymeStrip
+        areaId={area.id}
+        theater={area.theater}
+        activity={activity}
+        days={months.flatMap((m) => m.days)}
+        timezone={area.timezone}
+      />
       {amazing.length > 0 && (
         <section className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
           <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">

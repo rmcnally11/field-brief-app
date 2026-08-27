@@ -28,6 +28,7 @@ const LINKS = [
   { href: "/method", label: "Method", dek: "How the score is built" },
   { href: "/newsletter", label: "Letter", dek: "Seven live desks" },
   { href: "/fundamentals", label: "Season", dek: "Month and coast" },
+  { href: "/book", label: "Book", dek: "Your catches" },
 ];
 
 function activePath(pathname: string, href: string) {
@@ -52,7 +53,7 @@ function navHref(base: string, params: URLSearchParams) {
     q.set("b", neighborArea(getArea(area)).id);
     return `${base}?${q}`;
   }
-  if (area && (base === "/calendar" || base === "/map" || base === "/morning" || base === "/fundamentals")) {
+  if (area && (base === "/calendar" || base === "/map" || base === "/morning" || base === "/fundamentals" || base === "/book")) {
     q.set("area", area);
   }
   const s = q.toString();

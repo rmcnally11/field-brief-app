@@ -13,7 +13,8 @@ export function SiteFooter() {
       </p>
       <p className="mt-3 text-xs text-[color:var(--cream)]/40">
         On This Water is a conditions instrument, not a guarantee and not a chart for navigation.
-        Verify TPWD, FWC, Bahamas, FKNMS, and NPS rules before you fish. Tight lines.
+        Verify TPWD, FWC, Bahamas, FKNMS, and NPS rules before you fish. The book is yours, on this
+        phone. Tight lines.
       </p>
     </footer>
   );

@@ -102,6 +102,10 @@ export default async function CalendarPage({
           dashed = tide + moon only
         </span>
         <span className="inline-flex items-center gap-1.5">
+          <span className="h-5 w-5 rounded-md border border-[color:var(--sea)]" />
+          sea = a day in your book, or a rhyme
+        </span>
+        <span className="inline-flex items-center gap-1.5">
           <svg width="16" height="12" viewBox="0 0 18 14" className="text-[color:var(--cream)]/50" aria-hidden>
             <path d="M1 3.6 C6 2.2, 11 4.6, 17 3.1" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
           </svg>

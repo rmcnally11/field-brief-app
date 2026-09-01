@@ -1,5 +1,6 @@
 import type { Briefing } from "@/lib/types";
 import { goWhen } from "@/lib/go-when";
+import { DockPostedHandoff } from "@/components/dock-posted-handoff";
 
 export function GoWhen({ today, tomorrow }: { today: Briefing; tomorrow: Briefing }) {
   const row = goWhen(today, tomorrow);
@@ -20,6 +21,7 @@ export function GoWhen({ today, tomorrow }: { today: Briefing; tomorrow: Briefin
       >
         Open {row.tomorrowLabel}
       </a>
+      <DockPostedHandoff theater={today.area.theater} areaId={today.area.id} />
     </section>
   );
 }

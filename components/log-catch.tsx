@@ -92,7 +92,7 @@ export function LogCatchForm({
       <div className="space-y-3 py-2">
         <p className="font-heading text-2xl text-[color:var(--cream)]">{done} is in the book.</p>
         <p className="text-sm text-[color:var(--cream)]/65">
-          The instruments from this morning went with it. The calendar will mark days that rhyme —
+          The wind and the tide from this morning went with it. The calendar will mark days that rhyme —
           same glass, not the same fish.
         </p>
         <a
@@ -234,12 +234,12 @@ export function LogCatchLaunch({ context }: { context: LogContext }) {
         className="w-[min(100%,28rem)] overflow-y-auto border-[color:var(--line)] bg-[color:var(--ink)] text-[color:var(--cream)]"
       >
         <SheetHeader>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">The book</p>
+          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Your book</p>
           <SheetTitle className="font-heading text-2xl text-[color:var(--cream)]">
             {ready && book.handle ? `${book.handle}’s catch` : "Log the catch"}
           </SheetTitle>
           <SheetDescription className="text-[color:var(--cream)]/55">
-            Snapshot the instruments with the fish. Days that rhyme show on the calendar.
+            Snapshot the morning with the fish. Days that rhyme show on the calendar.
           </SheetDescription>
         </SheetHeader>
         <div className="px-4 pb-8">

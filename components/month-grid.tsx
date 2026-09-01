@@ -116,7 +116,7 @@ export function MonthGrid({
             <p className="mt-1 text-xs text-[color:var(--cream)]/45">
               {copperDays
                 ? `${copperDays} ${copperDays === 1 ? "day" : "days"} to book`
-                : "No copper day in this month yet"}
+                : "No book-it dry day in this month yet"}
               {astro ? ` · ${astro} tide + moon only` : ""}
             </p>
           </div>
@@ -189,7 +189,7 @@ export function MonthGrid({
                     Rhyme
                   </p>
                 ) : day.yolo ? (
-                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[color:var(--copper)]">YOLO</p>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[color:var(--copper)]">Dry</p>
                 ) : day.amazing ? (
                   <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[color:var(--gold)]">Go</p>
                 ) : day.confidence === "astronomical" ? (
@@ -239,7 +239,7 @@ export function AmazingChip({
             {formatYmdLong(day.date, timezone)}
           </p>
           <p className="truncate text-xs text-[color:var(--cream)]/55">
-            {day.yolo ? "YOLO · " : "Copper · "}
+            {day.yolo ? "Best dry day · " : "Book it · "}
             {day.moon.name} · {day.moon.springNeap}
             {day.tideRangeFt != null ? ` · Δ ${day.tideRangeFt.toFixed(1)} ft` : ""}
             {day.windMph != null ? ` · ${Math.round(day.windMph)} mph` : ""}

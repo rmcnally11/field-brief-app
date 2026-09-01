@@ -25,12 +25,12 @@ export default async function JoinPage({
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <header>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">The list · 5am · Saturday Letter</p>
+        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">The list · this morning · Saturday</p>
         <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">
-          Get tonight’s water
+          Get the morning
         </h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/65">
-          Name, home ZIP, and the water you fish. Take a whole coast or only the subsections —
+          Tell us the water. We’ll send the morning. Take a whole coast or only the subsections —
           Florida is Key Largo, Islamorada, Flamingo, Marathon, Key West, Boca Grande, Jupiter,
           and Biscayne, not Islamorada alone. A Texas-only list does not get Andros or Seychelles.
         </p>

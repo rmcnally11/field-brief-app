@@ -159,7 +159,7 @@ function DeskCard({ desk, tomorrow }: { desk: DeskIssue; tomorrow?: Briefing | n
         href={href}
         className="mt-5 text-sm text-[color:var(--sea)] underline decoration-[color:var(--sea)]/40 underline-offset-4"
       >
-        Open the {briefing?.area ? waterChipLabel(briefing.area) : "desk"} brief
+        Open {briefing?.area ? waterChipLabel(briefing.area) : "this water"}
       </a>
     </article>
   );
@@ -207,13 +207,13 @@ export function LetterIssue({
     <div className="space-y-10">
       <header className="mx-auto max-w-3xl text-center">
         <p className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--copper)]">
-          The Saturday Letter · Vol. 1 · No. {issue.weekNumber}
+          Saturday on your water · Vol. 1 · No. {issue.weekNumber}
         </p>
-        <h1 className="mt-2 font-heading text-4xl text-[color:var(--cream)] md:text-6xl">Week of the water</h1>
+        <h1 className="mt-2 font-heading text-4xl text-[color:var(--cream)] md:text-6xl">Saturday on your water.</h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/55">
           {issue.rangeLabel} · {issue.monthName} fundamentals · {edition} · {liveDesks} of{" "}
-          {issue.desks.length} {issue.desks.length === 1 ? "desk" : "desks"}
-          {issue.frozen ? " · frozen Saturday issue" : " · this week’s desks"}
+          {issue.desks.length} {issue.desks.length === 1 ? "water" : "waters"}
+          {issue.frozen ? " · frozen Saturday" : " · this week’s waters"}
         </p>
         <p className="mt-2 text-xs text-[color:var(--cream)]/45">
           Permalink:{" "}
@@ -319,11 +319,11 @@ export function LetterIssue({
         <p className="font-heading text-2xl leading-snug text-[color:var(--cream)] md:text-3xl">{issue.letter}</p>
         <p className="mt-4 text-sm text-[color:var(--cream)]/50">
           {all
-            ? "Drawn from Galveston, Venice, Islamorada, Andros, Ascension, San Juan, and Alphonse — one letter desk per coast. Open a coast chip for every water on that coast — Texas is Sabine through Lower Laguna, not Galveston only."
-            : `This edition is ${edition} only — ${waterNames}. The Saturday letter still writes from ${letterDeskNames || "the letter desk"}. Coasts you did not elect stay off this letter.`}{" "}
+            ? "Drawn from Galveston, Venice, Islamorada, Andros, Ascension, San Juan, and Alphonse — one water per coast. Open a coast chip for every water on that coast — Texas is Sabine through Lower Laguna, not Galveston only."
+            : `This edition is ${edition} only — ${waterNames}. Saturday still writes from ${letterDeskNames || "those waters"}. Coasts you did not ask for stay off this letter.`}{" "}
           Scores are 1–10. They are not bite guarantees.{" "}
           <a href={seasonHref} className="text-[color:var(--sea)] underline underline-offset-4">
-            Read this month’s seasonal fundamentals
+            The season this month
           </a>
           .
         </p>
@@ -334,7 +334,7 @@ export function LetterIssue({
           <div>
             <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
               {all
-                ? "Seven desks"
+                ? "Seven coasts"
                 : `${issue.desks.length} ${issue.desks.length === 1 ? "water" : "waters"} · ${edition}`}
             </p>
             <h2 className="font-heading text-3xl text-[color:var(--cream)]">
@@ -344,7 +344,7 @@ export function LetterIssue({
         </div>
         {issue.desks.length === 0 ? (
           <p className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5 text-sm text-[color:var(--cream)]/65">
-            No desk is on for that coast this week.
+            No water is on for that coast this week.
           </p>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

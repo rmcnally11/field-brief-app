@@ -86,7 +86,7 @@ export function UpcomingStrip({
                 </p>
               ) : null}
               {day.yolo ? (
-                <p className="mt-1 text-[9px] font-bold uppercase tracking-wide text-[color:var(--copper)]">YOLO</p>
+                <p className="mt-1 text-[9px] font-bold uppercase tracking-wide text-[color:var(--copper)]">Dry</p>
               ) : day.amazing ? (
                 <p className="mt-1 text-[9px] font-bold uppercase tracking-wide text-[color:var(--gold)]">Go</p>
               ) : null}

@@ -29,13 +29,13 @@ export function YoloBanner({
         uid={`yolo-${day.date}`}
       />
       <div className="min-w-0 flex-1">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--copper)]">Monthly YOLO day</p>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--copper)]">Best dry day left this month</p>
         <p className="mt-1 font-heading text-2xl text-[color:var(--cream)]">
           {formatYmdLong(day.date, timezone)}
         </p>
         <p className="mt-1 text-sm text-[color:var(--cream)]/65">
           Best remaining dry day this month with a real wind forecast
-          {day.amazing ? " — and it is a copper day." : "."} {day.drivers.join(" · ")}
+          {day.amazing ? " — and it is a book-it dry day." : "."} {day.drivers.join(" · ")}
         </p>
       </div>
       <span

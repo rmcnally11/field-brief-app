@@ -392,7 +392,7 @@ export function pickWindows(
         ? `${light} on ${tide} water.`
         : tod > 0.8
           ? "Moving water in the right part of the day."
-          : "Water is moving, but the clock is against you — heat or dark.",
+          : "Water is moving, but the hour is against you — heat or dark.",
     });
   }
 
@@ -664,12 +664,12 @@ export function buildBriefing(
 
   if (kind === "forecast") {
     warnings.unshift(
-      `This brief is for ${forDate}, not this morning. Wind is a forecast. Observed water versus the table is a today-only instrument.`,
+      `This page is for ${forDate}, not this morning. Wind is a forecast. Observed water versus the table is a today-only reading.`,
     );
   }
   if (kind === "astronomical") {
     warnings.unshift(
-      `This brief is for ${forDate}. No wind forecast that far out — score is tide, moon, and season. Not a copper day.`,
+      `This page is for ${forDate}. No wind forecast that far out — score is tide, moon, and season. Not a best-dry-day call.`,
     );
   }
 

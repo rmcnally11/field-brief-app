@@ -75,7 +75,7 @@ export async function CalendarBody({
             Amazing days on {area.shortName}
           </p>
           <p className="mt-1 text-sm text-[color:var(--cream)]/50">
-            Gold is a book-it dry day. Copper is the monthly YOLO. Tap a day for that morning’s brief.
+            Gold is a book-it dry day. Copper is the best dry day left this month. Tap a day for that morning.
           </p>
           <ul className="mt-4 grid gap-2 sm:grid-cols-2">
             {amazing.map((d) => (

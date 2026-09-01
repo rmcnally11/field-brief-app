@@ -57,9 +57,9 @@ export default async function MorningPage({
         <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
           {theaterLabel(briefing.area.theater)} · {briefing.area.shortName}
         </p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">This morning</h1>
+        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">One sentence you can text.</h1>
         <p className="mt-2 text-sm text-[color:var(--cream)]/65">
-          One sentence for the water on Today. Copy it. The gauges stay on the brief.
+          Copy it. Send it. The rest of that coast is named underneath.
         </p>
         <Waterline className="mt-3" />
         <DockPostedHandoff theater={briefing.area.theater} areaId={briefing.area.id} />
@@ -134,7 +134,7 @@ export default async function MorningPage({
             })}
             className="text-[color:var(--sea)] underline decoration-[color:var(--sea)]/40"
           >
-            Open the brief
+            This morning
           </a>
           <a
             href={calendarHref({

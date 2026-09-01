@@ -19,16 +19,16 @@ import { PRODUCT_LINE, PRODUCT_NAME } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
-  { href: "/", label: "Today", dek: "Today’s water" },
-  { href: "/calendar", label: "Calendar", dek: "Amazing days" },
-  { href: "/compare", label: "Compare", dek: "Stay or drive" },
-  { href: "/map", label: "Map", dek: "Marks and legal water" },
-  { href: "/morning", label: "Morning", dek: "The one-line dispatch" },
-  { href: "/species", label: "Species", dek: "Who is in play" },
-  { href: "/method", label: "Method", dek: "How the score is built" },
-  { href: "/newsletter", label: "Letter", dek: "Seven live desks" },
-  { href: "/fundamentals", label: "Season", dek: "Month and coast" },
-  { href: "/book", label: "Book", dek: "Your catches" },
+  { href: "/", label: "This morning", dek: "Pick a water" },
+  { href: "/calendar", label: "Best dry day", dek: "What’s left this month" },
+  { href: "/compare", label: "Stay or drive", dek: "Two waters, one morning" },
+  { href: "/map", label: "Your marks", dek: "Cream on the chart" },
+  { href: "/morning", label: "The line", dek: "One sentence you can text" },
+  { href: "/species", label: "The fish", dek: "Who is in play" },
+  { href: "/method", label: "The score", dek: "How the 1–10 is built" },
+  { href: "/newsletter", label: "Saturday", dek: "Only the coasts you asked for" },
+  { href: "/fundamentals", label: "The season", dek: "What this month is for" },
+  { href: "/book", label: "Your book", dek: "Write the fish" },
 ];
 
 function activePath(pathname: string, href: string) {
@@ -86,7 +86,7 @@ function HeaderBar({ links }: { links: { href: string; label: string; dek: strin
             {PRODUCT_NAME}
           </span>
           <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[color:var(--sea)] sm:inline">
-            Seven theaters
+            Seven coasts
           </span>
         </a>
         <nav className="hidden items-center gap-1 text-sm lg:flex">
@@ -137,7 +137,7 @@ function HeaderBar({ links }: { links: { href: string; label: string; dek: strin
               <Waterline className="px-4" />
               <div className="px-4 pt-3">
                 <JoinLink on={onJoin} className="w-full">
-                  Join the list
+                  Get the morning
                 </JoinLink>
               </div>
               <nav className="flex flex-1 flex-col overflow-y-auto px-2 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2">

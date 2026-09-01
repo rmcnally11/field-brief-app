@@ -85,7 +85,7 @@ export function brandBar() {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 6px">
     <tr>
       <td style="font-family:Georgia,'Times New Roman',serif;font-size:20px;color:${NAVY}">On This Water</td>
-      <td align="right" style="font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:${sea}">Seven theaters</td>
+      <td align="right" style="font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:${sea}">Seven coasts</td>
     </tr>
   </table>`;
 }
@@ -135,7 +135,7 @@ ${pre}
             ${opts.body}
             ${waterline()}
             <p style="margin:0;font-size:12px;line-height:1.5;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
-              On This Water is a conditions instrument, not a bite and not a chart for navigation.
+              Scores are 1–10. They are not a bite. Not a chart you steer by.
               <a href="${ORIGIN}" style="color:${sea}">Open the live brief</a>
             </p>
           </td>

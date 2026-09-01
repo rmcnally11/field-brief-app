@@ -63,7 +63,7 @@ function OpenBook() {
   if (book.handle && book.lockHash) {
     return (
       <form onSubmit={submit} className="mx-auto max-w-md space-y-4 rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-6">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">The book</p>
+        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Your book</p>
         <h1 className="font-heading text-3xl text-[color:var(--cream)]">{book.handle}’s book is locked</h1>
         <p className="text-sm text-[color:var(--cream)]/60">
           Same phrase you set on this phone. We do not have it. There is no reset.
@@ -85,7 +85,7 @@ function OpenBook() {
 
   return (
     <form onSubmit={submit} className="mx-auto max-w-md space-y-4 rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-6">
-      <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">The book</p>
+      <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Your book</p>
       <h1 className="font-heading text-3xl text-[color:var(--cream)]">Name your book</h1>
       <p className="text-sm text-[color:var(--cream)]/60">
         This lives on this phone. Not a cloud login. Export a copy if you change phones. We do not
@@ -158,7 +158,7 @@ function LogFromBook({ areaId, activity }: { areaId: string; activity: string })
     <section className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
       <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">Write a catch</p>
       <p className="mt-1 text-sm text-[color:var(--cream)]/55">
-        Pull this morning’s instruments, then name the fish. Wet-hands path: do it from Today.
+        Pull this morning, then name the fish. Wet-hands path: do it from this morning.
       </p>
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="min-w-0 flex-1 space-y-1.5">
@@ -233,10 +233,10 @@ export function BookPortal({
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">The book</p>
+        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Your book</p>
         <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">{book.handle}’s book</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
-          Your fish, and the instruments at that hour. The calendar marks days that rhyme with a
+          Your fish, and the wind and the tide at that hour. The calendar marks days that rhyme with a
           page you already wrote. Same glass. Not a promise you will catch again. This book is on
           this phone — we did not put it on a server.
         </p>

@@ -44,15 +44,15 @@ export default async function CalendarPage({
         <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
           This month and next · {area.name}
         </p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Amazing-day calendar</h1>
+        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Best dry day left this month</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
-          Two months for this micro-area. Each cell is a moon, tide range, sky, and a 1–10 — the
-          month recipe, not Today’s ring and not a When window. Copper outline = book it. Rain and
-          thunderstorms tax the score — a soaker cannot be a copper day. Wind and sky are only
+          Two months for this water. Each cell is a moon, tide range, sky, and a 1–10 — the
+          month recipe, not this morning’s ring. The outline is the best dry day left. Rain and
+          thunderstorms tax the score — a soaker cannot win that ribbon. Wind and sky are only
           inside the forecast; farther out is tide + moon + season.{" "}
           {gauge
-            ? `Clock is NOAA ${gauge.id} ${gauge.name} — a tide gauge on the bank, not a weather buoy.`
-            : "Clock is a modeled M2 tide. There is no NOAA gauge on this water."}
+            ? `Tide is NOAA ${gauge.id} ${gauge.name} — a gauge on the bank, not a weather buoy.`
+            : "Tide is a modeled M2. There is no NOAA gauge on this water."}
         </p>
         <Waterline className="mt-3" />
       </div>
@@ -95,7 +95,7 @@ export default async function CalendarPage({
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span className="h-5 w-5 rounded-md border border-[color:var(--copper)]" />
-          copper = YOLO
+          outline = best dry day
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span className="h-5 w-5 rounded-md border border-dashed border-[color:var(--line)]" />

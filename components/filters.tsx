@@ -177,7 +177,7 @@ function MobileFilterSheet({
               Water · method
             </span>
             <span className="mt-0.5 block truncate font-heading text-lg text-[color:var(--cream)]">
-              {area ? `${theaterLabel} · ${area.shortName}` : "All water · pick a desk"}
+              {area ? `${theaterLabel} · ${area.shortName}` : "All water · pick a water"}
             </span>
             <span className="block text-xs text-[color:var(--cream)]/50">{methodLabel}</span>
           </span>

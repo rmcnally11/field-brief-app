@@ -292,17 +292,17 @@ export const MONTH_THEATER: Record<number, Record<TheaterId, string>> = {
   },
   6: {
     texas:
-      "Heat is the clock. Trout leave the flat at midday. Reds work drains at dawn. Corpus beach tarpon is a different boat.",
+      "Too hot in the middle. Trout leave the flat at midday. Reds work drains at dawn. Corpus beach tarpon is a different boat.",
     louisiana:
       "Heat and river. Venice tarpon on the south passes. Trout at first light. Reds in the drains.",
     florida:
-      "Snook closed on both coasts. Boca still a tarpon argument. Jupiter is catch-and-release. Do not harvest a snook because the brief scored an 8.",
+      "Snook closed on both coasts. Boca still a tarpon argument. Jupiter is catch-and-release. Do not harvest a snook because the score is an 8.",
     bahamas:
       "Summer schools of 3–5 lb bones. Permit on the west sides. Bring the buff and the 8-weight and go early.",
     mexico:
       "Heat. Ascension early. Mujeres mahi. East Cape is a dawn rooster and a midday bank.",
     "puerto-rico":
-      "Heat is the clock. Condado at dawn. The drop is a boat-and-ice problem.",
+      "Too hot in the middle. Condado at dawn. The drop is a boat-and-ice problem.",
     seychelles:
       "Wind. This is not the photograph month on St François. Inner islands still fish.",
   },

@@ -14,7 +14,7 @@ function pickLead(area: Area, species: SpeciesPick[], leads?: SpeciesId[]): Spec
 }
 
 function heatNote(area: Area, water: number | null, wind: number | null) {
-  if (water != null && water >= 88) return "Heat is the clock — first light or last light.";
+  if (water != null && water >= 88) return "Too hot in the middle. First light, or last light.";
   if (water != null && water <= 58) return "Cold fish slide to guts and mud. Midday sun is legal.";
   if (wind != null && wind >= 18) {
     return area.theater === "texas" || area.theater === "louisiana"
@@ -33,7 +33,7 @@ const PLACE: Record<
   sabine: {
     incoming: "flood the Neches and Sabine marsh, then the drains at Texas Point",
     outgoing: "sit the river-marsh drains — this water dumps after a blow",
-    "high-slack": "wait — slack on a border estuary is a pause, not a hunt",
+    "high-slack": "wait — slack on a border estuary is a pause, not a reason to leave",
     "low-slack": "wait for the next dump off the marsh",
   },
   galveston: {
@@ -87,7 +87,7 @@ const PLACE: Record<
   islamorada: {
     incoming: "oceanside permit and bones, or Channel 5 current — not a Texas marsh sentence",
     outgoing: "the wrecks and the falling ocean bank; pressured fish want a clean shot",
-    "high-slack": "run or rest — slack on this water is not a hunt",
+    "high-slack": "run or rest — slack on this water is not the hour",
     "low-slack": "wait for the flood; Islamorada does not forgive a low-slack cast",
   },
   "florida-bay": {
@@ -111,7 +111,7 @@ const PLACE: Record<
   "boca-grande": {
     incoming: "the Pass — tarpon in the throat, then Gasparilla grass for reds and snook",
     outgoing: "sit the falling pass and the first harbor drains; this is current water",
-    "high-slack": "wait — slack in Boca Grande Pass is a boat parade, not a hunt",
+    "high-slack": "wait — slack in Boca Grande Pass is a boat parade, not the hour",
     "low-slack": "hold for the next push; the pass does not fish dead",
   },
   jupiter: {
@@ -235,8 +235,9 @@ export function composeHeadline(
 ): string {
   const fish = lead?.species.commonName ?? "Fish";
   const verb =
-    lead && lead.score >= 6.5 ? "should be the day" : lead && lead.inPlay ? "are the hunt" : "are in the mix";
-  const place = PLACE[area.id]?.[conditions.tides.stage] ?? "wait for moving water on this micro-area";
+    lead && (lead.score >= 6.5 || lead.inPlay) ? "today" : "are around";
+  const place = PLACE[area.id]?.[conditions.tides.stage] ?? "wait for moving water on this water";
   const extra = heatNote(area, conditions.waterTempF, conditions.weather.windMph);
-  return extra ? `${fish} ${verb} — ${place}. ${extra}` : `${fish} ${verb} — ${place}.`;
+  const leadLine = `${fish} ${verb}. ${place.charAt(0).toUpperCase()}${place.slice(1)}.`;
+  return extra ? `${leadLine} ${extra}` : leadLine;
 }

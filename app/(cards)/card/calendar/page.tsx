@@ -35,8 +35,8 @@ export default async function CalendarCardPage({
           </p>
           <h1 className="mt-1 font-heading text-5xl">{area.shortName}</h1>
           <p className="mt-2 text-sm text-[color:var(--cream)]/60">
-            This month. Gold outline = amazing dry day. Copper = YOLO. Rain and t-storm labels are
-            live from this instrument.
+            This month. Gold outline = amazing dry day. The outline is the best dry day left. Rain
+            and t-storm labels are live from this site.
           </p>
         </div>
         <p className="font-heading text-3xl text-[color:var(--cream)]/50">{months?.[0]?.label}</p>

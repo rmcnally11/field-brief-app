@@ -403,7 +403,7 @@ export default async function FundamentalsPage({
       <p className="text-center text-sm text-[color:var(--cream)]/45">
         Want this week’s weather on top of the doctrine?{" "}
         <a href="/newsletter" className="text-[color:var(--sea)] underline underline-offset-4">
-          Read the Saturday Letter
+          Saturday on your water
         </a>
         .
       </p>

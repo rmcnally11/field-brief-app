@@ -46,15 +46,8 @@ function tideStamp(stamp: string, tz: string) {
   return formatInZone(d, tz, { weekday: "short", hour: "numeric", minute: "2-digit" });
 }
 
-function subjectLead(headline: string) {
-  const lead = headline.split("—")[0]?.trim() || headline.trim();
-  return lead.replace(/\.$/, "");
-}
-
 export function morningSubject(briefing: Briefing) {
-  const score = briefing.overall.toFixed(1);
-  const lead = subjectLead(briefing.headline);
-  return `${briefing.area.shortName} ${score} · ${lead}`;
+  return `This morning on ${briefing.area.shortName}`;
 }
 
 function instruments(briefing: Briefing) {
@@ -237,7 +230,7 @@ export function morningEmailText(briefing: Briefing, yolo?: CalendarDay | null) 
   }
   if (yolo) {
     parts.push(
-      `YOLO day is ${formatYmdLong(yolo.date, briefing.area.timezone)} (${yolo.score.toFixed(1)}). Best remaining dry day with a real wind forecast.`,
+      `Best dry day is ${formatYmdLong(yolo.date, briefing.area.timezone)} (${yolo.score.toFixed(1)}). Best remaining dry day with a real wind forecast.`,
       "",
     );
   }
@@ -275,7 +268,7 @@ function morningDeskCard(
     : "";
 
   const yoloLine = yolo
-    ? `<p style="margin:10px 0 0;font-size:13px;color:${NAVY};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">YOLO <strong>${escapeHtml(formatYmdLong(yolo.date, briefing.area.timezone))}</strong> · ${yolo.score.toFixed(1)}</p>`
+    ? `<p style="margin:10px 0 0;font-size:13px;color:${NAVY};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">Best dry day <strong>${escapeHtml(formatYmdLong(yolo.date, briefing.area.timezone))}</strong> · ${yolo.score.toFixed(1)}</p>`
     : "";
 
   const extra = compact
@@ -331,7 +324,7 @@ export function morningDigestSubject(
   if (rows.length === 1) return `${prefix}${morningSubject(rows[0].briefing)}`;
   const bits = rows.slice(0, 4).map((r) => `${r.briefing.area.shortName} ${r.briefing.overall.toFixed(1)}`);
   const more = rows.length > 4 ? ` +${rows.length - 4}` : "";
-  return `${prefix}Today · ${bits.join(" · ")}${more}`;
+  return `${prefix}This morning · ${bits.join(" · ")}${more}`;
 }
 
 function quietBanner(quiet: string[]) {
@@ -396,17 +389,13 @@ export function morningDigestHtml(
   });
 }
 
-export function letterSubject(issue: NewsletterIssue, coasts: TheaterId[] | null) {
-  const edition = coastEditionLabel(coasts);
-  const names = issue.desks
-    .map((d) => d.briefing?.area.shortName ?? d.desk.replace(" desk", ""))
-    .join(" · ");
-  return `Saturday Letter · ${issue.monthName} · ${names || edition}`;
+export function letterSubject(_issue: NewsletterIssue, _coasts: TheaterId[] | null) {
+  return `Saturday on your water`;
 }
 
 export function letterEmailText(issue: NewsletterIssue, coasts: TheaterId[] | null) {
   const edition = coastEditionLabel(coasts);
-  const parts = [`Saturday Letter · ${edition}`, issue.rangeLabel, "", issue.letter, ""];
+  const parts = [`Saturday on your water · ${edition}`, issue.rangeLabel, "", issue.letter, ""];
   for (const desk of issue.desks) {
     const name = desk.briefing?.area.shortName ?? desk.desk;
     const score = desk.briefing ? desk.briefing.overall.toFixed(1) : "quiet";
@@ -506,7 +495,7 @@ export function letterEmailHtml(issue: NewsletterIssue, coasts: TheaterId[] | nu
   return emailDoc({
     preheader: `${edition} · ${issue.rangeLabel}`,
     body: `
-    ${kicker(`Saturday Letter · ${edition}`)}
+    ${kicker(`Saturday on your water · ${edition}`)}
     ${heading(`${issue.monthName} on your water`)}
     ${dek(issue.rangeLabel)}
     <p style="margin:16px 0 0;font-size:16px;line-height:1.55;color:${NAVY}">${escapeHtml(issue.letter)}</p>
@@ -564,7 +553,7 @@ function calendarGridHtml(month: CalendarMonth, area: Area) {
     <tr>${head}</tr>
     ${rows.join("")}
   </table>
-  <p style="margin:10px 0 0;font-size:12px;color:${MUTED};line-height:1.45;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">Gold ring = amazing dry day. Copper = YOLO. Pip is the 1–10. Wind is light / breeze / windy — not a direction.</p>`;
+  <p style="margin:10px 0 0;font-size:12px;color:${MUTED};line-height:1.45;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">Gold ring = amazing dry day. Copper = best dry day left. Pip is the 1–10. Wind is light / breeze / windy — not a direction.</p>`;
 }
 
 function upcomingHtml(days: CalendarDay[], area: Area) {
@@ -576,7 +565,7 @@ function upcomingHtml(days: CalendarDay[], area: Area) {
       const label = formatYmdLong(d.date, area.timezone);
       const sky = skyCopy(d.wx, d.precipChance) || "sky later";
       const wind = windWord(d.windMph);
-      const tag = d.yolo ? "YOLO" : d.amazing ? "Amazing" : d.confidence;
+      const tag = d.yolo ? "Best dry" : d.amazing ? "Amazing" : d.confidence;
       const bg = scoreHex(d.score);
       return `<tr>
         <td style="padding:10px 0;border-bottom:1px solid ${LINE}">
@@ -606,7 +595,7 @@ export function calendarDigestSubject(rows: Array<{ area: Area; month: CalendarM
     const { area, month } = rows[0];
     const yolo = month.days.find((d) => d.yolo);
     return yolo
-      ? `Calendar · ${area.shortName} · YOLO ${formatYmdLong(yolo.date, area.timezone)}`
+      ? `Calendar · ${area.shortName} · best dry day ${formatYmdLong(yolo.date, area.timezone)}`
       : `Calendar · ${area.shortName} · ${month.label}`;
   }
   const names = rows.slice(0, 4).map((r) => r.area.shortName).join(" · ");
@@ -620,18 +609,18 @@ export function calendarEmailText(area: Area, month: CalendarMonth) {
   const lines = [
     `On This Water calendar · ${theaterLabel(area.theater)} · ${area.name}`,
     month.label,
-    yolo ? `YOLO: ${yolo.date} · ${yolo.score.toFixed(1)}` : null,
+    yolo ? `Best dry day: ${yolo.date} · ${yolo.score.toFixed(1)}` : null,
     amazing.length ? `Amazing dry days: ${amazing.join(", ")}` : null,
     "",
     ...month.days.map((d) => {
-      const mark = d.yolo ? " YOLO" : d.amazing ? " amazing" : "";
+      const mark = d.yolo ? " dry" : d.amazing ? " amazing" : "";
       return `${d.date}  ${d.score.toFixed(1)}${mark}  ${d.drivers[0] ?? ""}`;
     }),
     "",
     `Live calendar: ${calendarHref(area.id, area.theater)}`,
     `Graphic card: ${calendarCardUrl(area.id, area.theater)}`,
     "",
-    "Scores are 1–10, not a bite. Rain and thunderstorms cannot own a copper day.",
+    "Scores are 1–10, not a bite. Rain and thunderstorms cannot own the best dry day.",
   ];
   return lines.filter((l) => l != null).join("\n");
 }
@@ -651,7 +640,7 @@ function calendarWaterBlock(area: Area, month: CalendarMonth) {
       <td style="padding:16px">
         ${kicker(`${theaterLabel(area.theater)} · ${area.shortName}`)}
         <p style="margin:8px 0 0;font-size:24px;line-height:1.2;color:${NAVY};font-family:Georgia,'Times New Roman',serif">${escapeHtml(area.shortName)}</p>
-        <p style="margin:6px 0 12px;font-size:14px;color:${MUTED}">${escapeHtml(month.label)}${yolo ? ` · YOLO ${escapeHtml(formatYmdLong(yolo.date, area.timezone))} · ${yolo.score.toFixed(1)}` : ""}</p>
+        <p style="margin:6px 0 12px;font-size:14px;color:${MUTED}">${escapeHtml(month.label)}${yolo ? ` · best dry day ${escapeHtml(formatYmdLong(yolo.date, area.timezone))} · ${yolo.score.toFixed(1)}` : ""}</p>
         ${calendarGridHtml(month, area)}
         ${upcomingHtml(month.days, area)}
         <p style="margin:16px 0 0">${btn(calendarHref(area.id, area.theater), `Open ${area.shortName} calendar`)}</p>
@@ -673,7 +662,7 @@ export function calendarDigestHtml(rows: Array<{ area: Area; month: CalendarMont
     ${heading(rows.length === 1 ? first.area.shortName : `${rows.length} month grids`)}
     ${dek(
       rows.length === 1
-        ? `${first.month.label} · scores, moon, rain, and the copper YOLO day.`
+        ? `${first.month.label} · scores, moon, rain, and the best dry day left.`
         : `${first.month.label}. Every water you left on — not just the first desk.`,
     )}
     ${sectionTitle(rows.length === 1 ? "The month" : "Your water")}

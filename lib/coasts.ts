@@ -12,26 +12,26 @@ export const CADENCE_META: { id: Cadence; label: string; title: string; blurb: s
   {
     id: "daily",
     label: "Daily",
-    title: "5am morning brief",
-    blurb: "Every morning at 5, a live line for each piece of water you leave on — wind, tide, score, and what is actually in play.",
+    title: "This morning",
+    blurb: "Every morning at 5, a live line for each piece of water you leave on — wind, tide, score, and the fish.",
   },
   {
     id: "weekly",
     label: "Weekly",
-    title: "Saturday Letter",
-    blurb: "Once a week, the letter for those desks only. A Texas signup does not get Andros or Seychelles.",
+    title: "Saturday",
+    blurb: "Once a week, Saturday on the coasts you asked for. A Texas signup does not get Andros or Seychelles.",
   },
   {
     id: "calendar",
     label: "Calendar",
-    title: "Sunday month calendar",
-    blurb: "The 1–10 grid for the month ahead, moon, wet marks, and the copper YOLO day.",
+    title: "Best dry day",
+    blurb: "The 1–10 grid for the month ahead, moon, wet marks, and the best dry day left this month.",
   },
   {
     id: "seasonal",
     label: "Seasonal",
-    title: "First-of-month fundamentals",
-    blurb: "On the 1st: what is in season, what is closed, and how to fish those coasts this month.",
+    title: "The season",
+    blurb: "On the 1st: what this month is for, on the coasts you asked for.",
   },
 ];
 

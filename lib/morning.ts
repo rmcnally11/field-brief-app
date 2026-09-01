@@ -22,7 +22,7 @@ export function morningLine(briefing: Briefing, yolo?: CalendarDay | null) {
       : "";
   const yoloBit =
     yolo && !yolo.date.startsWith("x")
-      ? ` YOLO day is ${formatYmdLong(yolo.date, briefing.area.timezone)}.`
+      ? ` Best dry day is ${formatYmdLong(yolo.date, briefing.area.timezone)}.`
       : "";
   if (briefing.kind === "forecast") {
     return `${name} ${score} on ${formatYmdLong(briefing.forDate, briefing.area.timezone)}. ${wind}.${sky}${vs}${yoloBit} Scores are 1–10, not a bite.`;

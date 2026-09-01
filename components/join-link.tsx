@@ -5,7 +5,7 @@ export function JoinLink({
   on = false,
   compact = false,
   className,
-  children = "Join",
+  children = "Get the morning",
 }: {
   href?: string;
   on?: boolean;

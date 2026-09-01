@@ -6,8 +6,8 @@ import { parseActivity } from "@/lib/briefing";
 import { readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
 
 export const metadata: Metadata = {
-  title: "The Book",
-  description: "Log a catch with the instruments from that morning. The calendar marks days that rhyme.",
+  title: "Your book",
+  description: "Write the fish. The wind and the tide stay with it.",
 };
 
 export const dynamic = "force-dynamic";

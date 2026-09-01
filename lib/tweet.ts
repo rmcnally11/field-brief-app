@@ -68,7 +68,7 @@ function extraBit(briefing: Briefing) {
 
 export function morningTweetText(briefing: Briefing, yolo?: CalendarDay | null, kicker?: string) {
   const place = PLACE[briefing.area.id] ?? `${theaterLabel(briefing.area.theater)} fishing`;
-  const yoloBit = yolo ? ` YOLO day ${yolo.date.slice(5)}.` : "";
+  const yoloBit = yolo ? ` Best dry day left is ${yolo.date.slice(5)}.` : "";
   const kick = kicker ? ` ${kicker}.` : "";
   const line = `${briefing.area.shortName} fishing weather: ${briefing.overall.toFixed(1)} this morning. ${place}. Wind ${windBit(briefing)}, ${skyBit(briefing)}.${extraBit(briefing)}${kick} ${PRODUCT_NAME} — a 1–10, not a bite.${yoloBit}`;
   return `${line}\n${deskHref(briefing.area.id, briefing.area.theater)}`;
@@ -100,7 +100,7 @@ export function calendarTweetText(
   const rains = days.filter((d) => d.wx === "rain").slice(0, 2);
   const yoloBit = yolo
     ? `Best remaining dry day is ${yolo.date.slice(5)} (${yolo.score.toFixed(1)}).`
-    : "No YOLO day with a real wind forecast yet.";
+    : "No best dry day with a real wind forecast yet.";
   const wetBit = storms.length
     ? ` Thunderstorms ${storms.map((d) => d.date.slice(5)).join(", ")}.`
     : rains.length
@@ -113,5 +113,5 @@ export function calendarTweetText(
 export function calendarAlt(shortName: string, days: CalendarDay[], areaId?: string) {
   const yolo = days.find((d) => d.yolo);
   const place = areaId ? PLACE[areaId] ?? shortName : shortName;
-  return `${PRODUCT_NAME} ${place} calendar. Month grid with moon, tide, and fishing weather.${yolo ? ` YOLO ${yolo.date}.` : ""} Copper is YOLO. Gold is an amazing dry day. Rain and thunderstorm labels are from this site.`;
+  return `${PRODUCT_NAME} ${place} calendar. Month grid with moon, tide, and fishing weather.${yolo ? ` Best dry day ${yolo.date}.` : ""} The outline is the best dry day left. Gold is an amazing dry day. Rain and thunderstorm labels are from this site.`;
 }

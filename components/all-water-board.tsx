@@ -22,7 +22,7 @@ export function AllWaterSkeleton() {
       <div>
         <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">All water</p>
         <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">
-          Seven theaters this morning
+          This morning on your water.
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
           Texas through the Seychelles. Reading the gauges.
@@ -95,14 +95,13 @@ export function AllWaterBoard({
     <div className="space-y-6">
       <div>
         <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
-          All water · {live} of {desks.length} desks live
+          Seven coasts this morning · {live} of {desks.length} live
         </p>
         <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">
-          Seven theaters this morning
+          This morning on your water.
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
-          Texas through the Seychelles. Same 1–10. Not a bite. Pick a desk — the
-          brief is one water. This page is the whole book.
+          Texas through the Seychelles. Same 1–10. Not a bite. Pick a water. This page is the whole morning.
         </p>
         <Waterline className="mt-3" />
         <DockPostedHandoff compact />
@@ -112,7 +111,7 @@ export function AllWaterBoard({
         <div className="rounded-2xl border border-rose-400/40 bg-rose-50 p-6 text-rose-900">
           <p className="font-heading text-xl">The gauges did not answer.</p>
           <p className="mt-2 text-sm opacity-80">
-            Every letter desk is quiet. Try a coast, or come back in a few minutes.
+            Every coast is quiet. Try a water, or come back in a few minutes.
           </p>
         </div>
       ) : (
@@ -162,7 +161,7 @@ export function AllWaterBoard({
                     href={href}
                     className="text-[color:var(--sea)] underline decoration-[color:var(--sea)]/40"
                   >
-                    Open the {name} brief
+                    Open {name}
                   </a>
                   <a
                     href={morningHref({
@@ -172,7 +171,7 @@ export function AllWaterBoard({
                     })}
                     className="text-[color:var(--cream)]/55 underline"
                   >
-                    Morning
+                    The line
                   </a>
                 </div>
               </article>

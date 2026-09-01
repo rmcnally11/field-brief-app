@@ -3,7 +3,7 @@ import { Waterline } from "@/components/viz/waterline";
 import { GITHUB_REPO, PRODUCT_NAME, siteOrigin } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "For Saturday Letter and Twitter bots",
+  title: "For Saturday and Twitter bots",
   description:
     "Substack and X agents may only reprint On This Water. Morning and calendar pictures are screenshots of this site.",
 };
@@ -11,13 +11,13 @@ export const metadata: Metadata = {
 const ORIGIN = siteOrigin();
 
 const DESK_HREFS = [
-  ["Texas desk — Galveston", `${ORIGIN}/?area=galveston&theater=texas`],
-  ["Louisiana desk — Venice", `${ORIGIN}/?area=venice&theater=louisiana`],
-  ["Florida desk — Islamorada", `${ORIGIN}/?area=islamorada&theater=florida`],
-  ["Bahamas desk — Andros", `${ORIGIN}/?area=andros&theater=bahamas`],
-  ["Mexico desk — Ascension", `${ORIGIN}/?area=ascension&theater=mexico`],
-  ["Puerto Rico desk — San Juan", `${ORIGIN}/?area=san-juan&theater=puerto-rico`],
-  ["Seychelles desk — Alphonse", `${ORIGIN}/?area=alphonse&theater=seychelles`],
+  ["Texas water — Galveston", `${ORIGIN}/?area=galveston&theater=texas`],
+  ["Louisiana water — Venice", `${ORIGIN}/?area=venice&theater=louisiana`],
+  ["Florida water — Islamorada", `${ORIGIN}/?area=islamorada&theater=florida`],
+  ["Bahamas water — Andros", `${ORIGIN}/?area=andros&theater=bahamas`],
+  ["Mexico water — Ascension", `${ORIGIN}/?area=ascension&theater=mexico`],
+  ["Puerto Rico water — San Juan", `${ORIGIN}/?area=san-juan&theater=puerto-rico`],
+  ["Seychelles water — Alphonse", `${ORIGIN}/?area=alphonse&theater=seychelles`],
 ];
 
 export default function ForTheLetterPage() {

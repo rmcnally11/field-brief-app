@@ -106,7 +106,7 @@ export function BriefingPanel({
           </div>
         )}
         <div className="border-t border-[color:var(--line)] px-5 py-4 md:px-7">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">Morning line</p>
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--copper)]">The line</p>
           <p className="mt-2 font-heading text-xl leading-snug text-[color:var(--cream)]">{line}</p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <CopyLine text={line} />
@@ -540,15 +540,16 @@ export function BriefingPanel({
         <div className="space-y-4">
           <h2 className="font-heading text-2xl text-[color:var(--cream)]">When</h2>
           <p className="text-sm text-[color:var(--cream)]/55">
-            When is moving water in a good hour — not the day. First light and last light are named
-            when the clock is the story. Today’s ring mixes the best mark, the lead fish, and the
-            best window, then taxes the sky. A strong incoming can sit under a weak day if the wind
-            or the fish is off. Calendar cells are a third recipe: range, moon, and the day’s forecast.
+            When to go is moving water in a good hour — not the day. First light and last light
+            are named when the hour is the story. Today’s ring mixes the best mark, the lead fish,
+            and the best window, then taxes the sky. A strong incoming can sit under a weak day if
+            the wind or the fish is off. Calendar cells are a third recipe: range, moon, and the
+            day’s forecast.
           </p>
           <ul className="space-y-2">
             {briefing.when.length === 0 ? (
               <li className="text-sm text-[color:var(--cream)]/55">
-                No strong moving-water window in the next couple of days — slack-heavy or the clock is wrong.
+                No strong moving-water window in the next couple of days — slack-heavy, or stay home.
               </li>
             ) : (
               briefing.when.map((w) => (

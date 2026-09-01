@@ -30,12 +30,12 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(`https://${PRODUCT_DOMAIN}`),
-  title: "On This Water — seven saltwater theaters",
+  title: "On This Water — seven coasts this morning",
   description:
-    "The water, as it is this morning. Live NOAA tides, a Saturday Letter, seasonal fundamentals by coast and species, and monthly 1–10 calendars.",
+    "This morning on your water. Live NOAA tides, Saturday on the coasts you asked for, and monthly 1–10 calendars. Not a bite.",
   openGraph: {
-    title: "On This Water — seven saltwater theaters",
-    description: "The water, as it is this morning. Live NOAA tides, not a bite.",
+    title: "On This Water — seven coasts this morning",
+    description: "This morning on your water. Live NOAA tides, not a bite.",
     url: `https://${PRODUCT_DOMAIN}`,
     siteName: "On This Water",
     images: [{ url: "/api/og/tide?area=galveston", width: 1200, height: 520, alt: "Galveston tide" }],
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "On This Water",
-    description: "The water, as it is this morning.",
+    description: "This morning on your water.",
     images: ["/api/og/tide?area=galveston"],
   },
 };

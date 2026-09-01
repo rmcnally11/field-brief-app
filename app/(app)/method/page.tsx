@@ -36,8 +36,8 @@ export default function MethodPage() {
   return (
     <div className="space-y-8 text-[color:var(--cream)]/80">
       <div>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Transparency</p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">How the score is built</h1>
+        <p className="kicker text-[color:var(--copper)]">Transparency</p>
+        <h1 className="page-title mt-3 text-[color:var(--cream)]">How the score is built</h1>
         <p className="mt-3 max-w-2xl text-sm">
           The brief answers three questions: <em>where</em> on this water, <em>when</em> the tide is
           moving, and <em>why</em> — tied to a gauge, not a vibe. The calendar is the same engine

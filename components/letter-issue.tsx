@@ -68,7 +68,7 @@ function DeskCard({ desk, tomorrow }: { desk: DeskIssue; tomorrow?: Briefing | n
     <article className="flex flex-col rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">{desk.desk}</p>
+          <p className="kicker text-[color:var(--copper)]">{desk.desk}</p>
           <h2 className="mt-1 font-heading text-2xl text-[color:var(--cream)]">
             {briefing?.area ? waterChipLabel(briefing.area) : theaterLabel(desk.theater)}
           </h2>
@@ -206,10 +206,10 @@ export function LetterIssue({
   return (
     <div className="space-y-10">
       <header className="mx-auto max-w-3xl text-center">
-        <p className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--copper)]">
+        <p className="kicker text-[color:var(--copper)]">
           Saturday on your water · Vol. 1 · No. {issue.weekNumber}
         </p>
-        <h1 className="mt-2 font-heading text-4xl text-[color:var(--cream)] md:text-6xl">Saturday on your water.</h1>
+        <h1 className="page-title mt-3 text-[color:var(--cream)]">Saturday on your water.</h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/55">
           {issue.rangeLabel} · {issue.monthName} fundamentals · {edition} · {liveDesks} of{" "}
           {issue.desks.length} {issue.desks.length === 1 ? "water" : "waters"}
@@ -274,7 +274,7 @@ export function LetterIssue({
 
       {issue.desks.length > 0 ? (
         <section>
-          <p className="text-center text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+          <p className="kicker text-center text-[color:var(--copper)]">
             This week on your coast
           </p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
@@ -332,7 +332,7 @@ export function LetterIssue({
       <section>
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+            <p className="kicker text-[color:var(--copper)]">
               {all
                 ? "Seven coasts"
                 : `${issue.desks.length} ${issue.desks.length === 1 ? "water" : "waters"} · ${edition}`}
@@ -365,7 +365,7 @@ export function LetterIssue({
 
       <section className="grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
         <article className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+          <p className="kicker text-[color:var(--copper)]">
             Box score · {issue.monthName}
           </p>
           <h2 className="mt-1 font-heading text-2xl text-[color:var(--cream)]">In peak this month</h2>
@@ -393,7 +393,7 @@ export function LetterIssue({
           )}
         </article>
         <article className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Rules</p>
+          <p className="kicker text-[color:var(--copper)]">Rules</p>
           <h2 className="mt-1 font-heading text-2xl text-[color:var(--cream)]">Closed or closing</h2>
           {issue.closures.length === 0 ? (
             <p className="mt-3 text-sm text-[color:var(--cream)]/65">

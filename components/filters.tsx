@@ -192,7 +192,7 @@ function MobileFilterSheet({
         className="max-h-[min(88dvh,40rem)] gap-0 rounded-t-3xl border-[color:var(--line)] bg-[color:var(--ink)] text-[color:var(--cream)]"
       >
         <SheetHeader className="pb-1">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--copper)]">Pick the water</p>
+          <p className="kicker text-[color:var(--copper)]">Pick the water</p>
           <SheetTitle className="font-heading text-2xl text-[color:var(--cream)]">Filters</SheetTitle>
           <SheetDescription className="text-[color:var(--cream)]/50">
             Theater, micro-area, then the method. Same brief. Bigger taps.

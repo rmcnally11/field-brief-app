@@ -43,7 +43,7 @@ export default async function MorningCardPage({
     <article className="box-border flex h-[675px] w-[1200px] flex-col bg-[color:var(--ink)] p-8">
       <header className="flex items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--copper)]">
+          <p className="kicker text-[color:var(--copper)]">
             On This Water · {theaterLabel(area.theater)} desk
           </p>
           <h1 className="mt-1 font-heading text-5xl text-[color:var(--cream)]">{area.shortName}</h1>

@@ -25,8 +25,8 @@ export default async function JoinPage({
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <header>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">The list · this morning · Saturday</p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">
+        <p className="kicker text-[color:var(--copper)]">The list · this morning · Saturday</p>
+        <h1 className="page-title mt-3 text-[color:var(--cream)]">
           Get the morning
         </h1>
         <p className="mt-3 text-sm text-[color:var(--cream)]/65">

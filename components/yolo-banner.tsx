@@ -29,7 +29,7 @@ export function YoloBanner({
         uid={`yolo-${day.date}`}
       />
       <div className="min-w-0 flex-1">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--copper)]">Best dry day left this month</p>
+        <p className="kicker text-[color:var(--copper)]">Best dry day left this month</p>
         <p className="mt-1 font-heading text-2xl text-[color:var(--cream)]">
           {formatYmdLong(day.date, timezone)}
         </p>

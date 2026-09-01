@@ -20,10 +20,8 @@ export function AllWaterSkeleton() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">All water</p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">
-          This morning on your water.
-        </h1>
+        <p className="kicker text-[color:var(--copper)]">All water</p>
+        <h1 className="home-line mt-3 text-[color:var(--cream)]">This morning on your water.</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
           Texas through the Seychelles. Reading the gauges.
         </p>
@@ -94,12 +92,10 @@ export function AllWaterBoard({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+        <p className="kicker text-[color:var(--copper)]">
           Seven coasts this morning · {live} of {desks.length} live
         </p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">
-          This morning on your water.
-        </h1>
+        <h1 className="home-line mt-3 text-[color:var(--cream)]">This morning on your water.</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
           Texas through the Seychelles. Same 1–10. Not a bite. Pick a water. This page is the whole morning.
         </p>
@@ -131,10 +127,10 @@ export function AllWaterBoard({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
-                      {desk.desk}
-                    </p>
-                    <h2 className="mt-1 font-heading text-2xl text-[color:var(--cream)]">{name}</h2>
+                    <p className="kicker text-[color:var(--copper)]">{desk.desk}</p>
+                    <h2 className="mt-1 font-heading text-lg leading-[1.15] text-[color:var(--cream)] md:text-xl">
+                      {name}
+                    </h2>
                     <p className="text-xs text-[color:var(--cream)]/45">{desk.kicker}</p>
                   </div>
                   {briefing ? (

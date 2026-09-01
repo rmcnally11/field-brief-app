@@ -6,7 +6,7 @@ export function GoWhen({ today, tomorrow }: { today: Briefing; tomorrow: Briefin
   const row = goWhen(today, tomorrow);
   return (
     <section className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
-      <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Today or tomorrow</p>
+      <p className="kicker text-[color:var(--copper)]">Today or tomorrow</p>
       <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
         <h2 className="font-heading text-2xl text-[color:var(--cream)]">{row.title}</h2>
         <p className="font-mono text-sm text-[color:var(--cream)]/70">

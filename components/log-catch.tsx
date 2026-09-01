@@ -234,7 +234,7 @@ export function LogCatchLaunch({ context }: { context: LogContext }) {
         className="w-[min(100%,28rem)] overflow-y-auto border-[color:var(--line)] bg-[color:var(--ink)] text-[color:var(--cream)]"
       >
         <SheetHeader>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Your book</p>
+          <p className="kicker text-[color:var(--copper)]">Your book</p>
           <SheetTitle className="font-heading text-2xl text-[color:var(--cream)]">
             {ready && book.handle ? `${book.handle}’s catch` : "Log the catch"}
           </SheetTitle>

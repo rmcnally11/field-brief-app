@@ -116,10 +116,10 @@ export default async function FundamentalsPage({
   return (
     <div className="space-y-8">
       <header>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+        <p className="kicker text-[color:var(--copper)]">
           Doctrine · not a honey-hole list
         </p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">
+        <h1 className="page-title mt-3 text-[color:var(--cream)]">
           Seasonal fundamentals
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">

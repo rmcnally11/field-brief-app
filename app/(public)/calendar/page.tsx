@@ -41,10 +41,10 @@ export default async function CalendarPage({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+        <p className="kicker text-[color:var(--copper)]">
           This month and next · {area.name}
         </p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Best dry day left this month</h1>
+        <h1 className="page-title mt-3 text-[color:var(--cream)]">Best dry day left this month</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
           Two months for this water. Each cell is a moon, tide range, sky, and a 1–10 — the
           month recipe, not this morning’s ring. The outline is the best dry day left. Rain and

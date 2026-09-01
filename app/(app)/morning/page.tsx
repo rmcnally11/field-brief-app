@@ -54,10 +54,10 @@ export default async function MorningPage({
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+        <p className="kicker text-[color:var(--copper)]">
           {theaterLabel(briefing.area.theater)} · {briefing.area.shortName}
         </p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">One sentence you can text.</h1>
+        <h1 className="page-title mt-3 text-[color:var(--cream)]">One sentence you can text.</h1>
         <p className="mt-2 text-sm text-[color:var(--cream)]/65">
           Copy it. Send it. The rest of that coast is named underneath.
         </p>
@@ -163,7 +163,7 @@ export default async function MorningPage({
 
       {neighbors.length > 0 ? (
         <section>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+          <p className="kicker text-[color:var(--copper)]">
             {theaterLabel(briefing.area.theater)}
           </p>
           <h2 className="mt-1 font-heading text-2xl text-[color:var(--cream)]">Also this morning</h2>

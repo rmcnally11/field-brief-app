@@ -37,7 +37,7 @@ export function UpcomingStrip({
     <div>
       <div className="mb-3 flex items-end justify-between gap-3">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Next two weeks</p>
+          <p className="kicker text-[color:var(--copper)]">Next two weeks</p>
           <h2 className="font-heading text-2xl text-[color:var(--cream)]">Look at the water, not the table</h2>
         </div>
         <a href={hrefBase} className="text-xs text-[color:var(--cream)]/55 underline decoration-[color:var(--copper)]/40">

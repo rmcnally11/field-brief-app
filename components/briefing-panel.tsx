@@ -71,11 +71,11 @@ export function BriefingPanel({
         <Waterline />
         <div className="grid gap-6 p-5 md:grid-cols-[1fr_auto] md:p-7">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+            <p className="kicker text-[color:var(--copper)]">
               {theaterLabel(area.theater)} ·{" "}
               {area.name}
             </p>
-            <h1 className="mt-2 font-heading text-3xl leading-tight text-[color:var(--cream)] md:text-5xl">
+            <h1 className="page-title mt-3 text-[color:var(--cream)]">
               {briefing.headline}
             </h1>
             <p className="mt-4 max-w-2xl text-[color:var(--cream)]/70">{area.summary}</p>

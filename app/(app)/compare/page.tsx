@@ -26,7 +26,7 @@ function DeskColumn({ briefing, error }: { briefing?: Briefing; error?: string }
     <article className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+          <p className="kicker text-[color:var(--copper)]">
             {area.theater} · {area.shortName}
           </p>
           <h2 className="mt-1 font-heading text-3xl text-[color:var(--cream)]">{area.name}</h2>
@@ -111,8 +111,8 @@ export default async function ComparePage({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Stay or drive</p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Two desks, one day</h1>
+        <p className="kicker text-[color:var(--copper)]">Stay or drive</p>
+        <h1 className="page-title mt-3 text-[color:var(--cream)]">Two desks, one day</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
           {dayLabel}. Same method. Same 1–10. Pick the water, not the drive you already decided.
         </p>

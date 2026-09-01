@@ -80,22 +80,18 @@ function HeaderBar({ links }: { links: { href: string; label: string; dek: strin
 
   return (
     <header className="sticky top-0 z-30 border-b border-[color:var(--line)] bg-[color:var(--ink)]/80 pt-[env(safe-area-inset-top)] backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-6">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 md:px-6">
         <a href="/" className="flex min-w-0 items-baseline gap-2">
-          <span className="font-heading text-lg tracking-tight text-[color:var(--cream)]">
-            {PRODUCT_NAME}
-          </span>
-          <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[color:var(--sea)] sm:inline">
-            Seven coasts
-          </span>
+          <span className="wordmark text-[color:var(--cream)]">{PRODUCT_NAME}</span>
+          <span className="geo-lockup hidden text-[color:var(--sea)] sm:inline">Seven coasts</span>
         </a>
-        <nav className="hidden items-center gap-1 text-sm lg:flex">
+        <nav className="hidden items-center gap-0.5 xl:flex">
           {links.map((l) => (
             <a
               key={l.label}
               href={l.href}
               className={cn(
-                "cursor-pointer rounded-md px-2.5 py-1.5 text-[color:var(--cream)]/75 transition hover:bg-[color:var(--cream)]/6 hover:text-[color:var(--cream)]",
+                "nav-link cursor-pointer whitespace-nowrap rounded-md px-2 py-1.5 text-[color:var(--cream)]/75 transition hover:bg-[color:var(--cream)]/6 hover:text-[color:var(--cream)]",
                 activePath(pathname, l.href.split("?")[0] ?? l.href) && "text-[color:var(--cream)]",
               )}
             >
@@ -113,7 +109,7 @@ function HeaderBar({ links }: { links: { href: string; label: string; dek: strin
                   variant="ghost"
                   size="icon"
                   aria-label="Open menu"
-                  className="touch-manipulation text-[color:var(--cream)] hover:bg-[color:var(--cream)]/8 lg:hidden"
+                  className="touch-manipulation text-[color:var(--cream)] hover:bg-[color:var(--cream)]/8 xl:hidden"
                 />
               }
             >
@@ -124,7 +120,7 @@ function HeaderBar({ links }: { links: { href: string; label: string; dek: strin
               className="w-[min(100%,22rem)] gap-0 border-[color:var(--line)] bg-[color:var(--ink)] text-[color:var(--cream)]"
             >
               <SheetHeader className="border-b border-[color:var(--line)] pb-3">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--copper)]">
+                <p className="kicker text-[color:var(--copper)]">
                   The coast
                 </p>
                 <SheetTitle className="font-heading text-2xl text-[color:var(--cream)]">

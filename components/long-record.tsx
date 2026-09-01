@@ -171,7 +171,7 @@ export function LongRecord({
       <div className="space-y-4">
         {controls}
         <article className="rounded-3xl border border-[color:var(--sea)]/35 bg-[color:var(--panel)] p-5">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+          <p className="kicker text-[color:var(--copper)]">
             Same fish · {nets.bay.system} · {fishName}
           </p>
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -217,7 +217,7 @@ export function LongRecord({
 
         <div className="grid gap-4 lg:grid-cols-2">
           <article className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+            <p className="kicker text-[color:var(--copper)]">
               Long record · {nets.bay.system} · gill nets
             </p>
             <h2 className="mt-1 font-heading text-2xl text-[color:var(--cream)] md:text-3xl">
@@ -277,7 +277,7 @@ export function LongRecord({
           </article>
 
           <article className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+            <p className="kicker text-[color:var(--copper)]">
               Long record · {dock.bay.system} · dock counts
             </p>
             <h2 className="mt-1 font-heading text-2xl text-[color:var(--cream)] md:text-3xl">
@@ -383,7 +383,7 @@ export function LongRecord({
       {controls}
       <div className="grid gap-4 lg:grid-cols-2">
         <article className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+          <p className="kicker text-[color:var(--copper)]">
             Long record · Texas gill nets
           </p>
           <h2 className="mt-1 font-heading text-2xl text-[color:var(--cream)]">
@@ -414,7 +414,7 @@ export function LongRecord({
         </article>
 
         <article className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-5">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">
+          <p className="kicker text-[color:var(--copper)]">
             Long record · Texas dock counts
           </p>
           <h2 className="mt-1 font-heading text-2xl text-[color:var(--cream)]">

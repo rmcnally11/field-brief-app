@@ -38,9 +38,9 @@ export function ScoreRing({
           y="48"
           textAnchor="middle"
           fill={cream}
-          fontFamily="var(--font-newsreader), Georgia, serif"
-          fontSize="22"
-          fontWeight="600"
+          fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+          fontSize="28"
+          fontWeight="500"
         >
           {score.toFixed(1)}
         </text>

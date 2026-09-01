@@ -9,8 +9,8 @@ export default function SpeciesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Who swims where</p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Species</h1>
+        <p className="kicker text-[color:var(--copper)]">Who swims where</p>
+        <h1 className="page-title mt-3 text-[color:var(--cream)]">Species</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
           Doctrine from the Field Manual, limits from TPWD Outdoor Annual 2025–26 and FWC. Bahamas
           flats fish are treated as catch-and-release. The year bar is peak (copper) versus present

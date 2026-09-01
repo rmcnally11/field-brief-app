@@ -88,8 +88,8 @@ export function MapPageClient({
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Chart</p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">Marks and legal water</h1>
+        <p className="kicker text-[color:var(--copper)]">Chart</p>
+        <h1 className="page-title mt-3 text-[color:var(--cream)]">Marks and legal water</h1>
         <p className="mt-2 max-w-3xl text-sm text-[color:var(--cream)]/65">
           Pick a micro-area and the chart zooms to that water only — Flamingo does not keep Islamorada
           lit. Larger pins are today’s Where list. Troll, hump, and color-change stay off the inshore

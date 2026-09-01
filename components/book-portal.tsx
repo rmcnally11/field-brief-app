@@ -63,7 +63,7 @@ function OpenBook() {
   if (book.handle && book.lockHash) {
     return (
       <form onSubmit={submit} className="mx-auto max-w-md space-y-4 rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-6">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Your book</p>
+        <p className="kicker text-[color:var(--copper)]">Your book</p>
         <h1 className="font-heading text-3xl text-[color:var(--cream)]">{book.handle}’s book is locked</h1>
         <p className="text-sm text-[color:var(--cream)]/60">
           Same phrase you set on this phone. We do not have it. There is no reset.
@@ -85,7 +85,7 @@ function OpenBook() {
 
   return (
     <form onSubmit={submit} className="mx-auto max-w-md space-y-4 rounded-3xl border border-[color:var(--line)] bg-[color:var(--panel)] p-6">
-      <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Your book</p>
+      <p className="kicker text-[color:var(--copper)]">Your book</p>
       <h1 className="font-heading text-3xl text-[color:var(--cream)]">Name your book</h1>
       <p className="text-sm text-[color:var(--cream)]/60">
         This lives on this phone. Not a cloud login. Export a copy if you change phones. We do not
@@ -233,8 +233,8 @@ export function BookPortal({
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--copper)]">Your book</p>
-        <h1 className="mt-1 font-heading text-4xl text-[color:var(--cream)] md:text-5xl">{book.handle}’s book</h1>
+        <p className="kicker text-[color:var(--copper)]">Your book</p>
+        <h1 className="page-title mt-3 text-[color:var(--cream)]">{book.handle}’s book</h1>
         <p className="mt-2 max-w-2xl text-sm text-[color:var(--cream)]/65">
           Your fish, and the wind and the tide at that hour. The calendar marks days that rhyme with a
           page you already wrote. Same glass. Not a promise you will catch again. This book is on

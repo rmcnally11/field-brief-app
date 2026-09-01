@@ -1,6 +1,7 @@
 import type { Briefing } from "@/lib/types";
 import { DESKS } from "@/lib/desks";
 import { theaterLabel } from "@/lib/data/theaters";
+import { DockPostedHandoff } from "@/components/dock-posted-handoff";
 import { ScoreRing } from "@/components/viz/score-ring";
 import { Waterline } from "@/components/viz/waterline";
 import { briefHref, morningHref } from "@/lib/hrefs";
@@ -104,6 +105,7 @@ export function AllWaterBoard({
           brief is one water. This page is the whole book.
         </p>
         <Waterline className="mt-3" />
+        <DockPostedHandoff compact />
       </div>
 
       {live === 0 ? (

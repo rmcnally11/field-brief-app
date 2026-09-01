@@ -1,3 +1,4 @@
+import { fuelHref, fuelMailLine } from "@/lib/dock-posted";
 import type { Area, Briefing, CalendarDay, TheaterId } from "@/lib/types";
 import { DESKS } from "@/lib/desks";
 import { morningLine } from "@/lib/morning";
@@ -152,6 +153,11 @@ function hrefs(briefing: Briefing, origin?: string) {
   };
 }
 
+function fuelMailHtml(briefing: Briefing) {
+  const next = fuelHref({ theater: briefing.area.theater, areaId: briefing.area.id });
+  return `Posted fuel on that coast — <a href="${escapeHtml(next.href)}" style="color:${copper}">${escapeHtml(next.label)}</a>`;
+}
+
 function tideImage(briefing: Briefing, opts?: { origin?: string; bleed?: boolean }) {
   const src = tideChartUrl(briefing.area.id, mailOrigin(opts?.origin), briefing.forDate);
   const tides = briefing.conditions.tides;
@@ -239,6 +245,7 @@ export function morningEmailText(briefing: Briefing, yolo?: CalendarDay | null) 
     `Live brief: ${links.brief}`,
     `Calendar: ${links.calendar}`,
     `Map: ${links.map}`,
+    fuelMailLine({ theater: briefing.area.theater, areaId: briefing.area.id }),
     "",
     "Scores are 1–10, not a bite. This is not a chart for navigation. The gauges stay live on the page — this mail is a snapshot.",
   );
@@ -272,7 +279,8 @@ function morningDeskCard(
     : "";
 
   const extra = compact
-    ? `${watch}${yoloLine}`
+    ? `${watch}${yoloLine}
+    <p style="margin:10px 0 0;font-size:13px;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${fuelMailHtml(briefing)}</p>`
     : `${instrumentTiles(briefing)}
     ${tides.length
       ? `<p style="margin:4px 0 0;font-size:13px;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${tides
@@ -281,7 +289,8 @@ function morningDeskCard(
       : ""}
     ${play ? `<p style="margin:12px 0 0;font-size:14px;color:${NAVY}">In play · ${escapeHtml(play)}</p>` : ""}
     ${watch}${yoloLine}
-    <p style="margin:14px 0 0">${btn(links.brief, `Open ${briefing.area.shortName}`)}</p>`;
+    <p style="margin:14px 0 0">${btn(links.brief, `Open ${briefing.area.shortName}`)}</p>
+    <p style="margin:10px 0 0;font-size:13px;color:${MUTED};font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">${fuelMailHtml(briefing)}</p>`;
 
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 18px;background:${PAGE};border:1px solid ${LINE};border-radius:18px">
     ${chart ? `<tr><td style="padding:0;font-size:0;line-height:0">${chart}</td></tr>` : ""}

@@ -7,6 +7,7 @@ import { readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
 import { siteOrigin } from "@/lib/brand";
 import { CopyLine } from "@/components/copy-line";
 import { YoloBanner } from "@/components/yolo-banner";
+import { DockPostedHandoff } from "@/components/dock-posted-handoff";
 import { Waterline } from "@/components/viz/waterline";
 import { ScoreRing } from "@/components/viz/score-ring";
 import { briefHref, calendarHref, morningHref } from "@/lib/hrefs";
@@ -61,6 +62,7 @@ export default async function MorningPage({
           One sentence for the water on Today. Copy it. The gauges stay on the brief.
         </p>
         <Waterline className="mt-3" />
+        <DockPostedHandoff theater={briefing.area.theater} areaId={briefing.area.id} />
       </div>
 
       <nav className="flex flex-wrap gap-1.5">

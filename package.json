@@ -6,7 +6,8 @@
     "dev": "next dev --port 43217 --hostname 127.0.0.1",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:sister": "node --experimental-strip-types scripts/test-dock-posted.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

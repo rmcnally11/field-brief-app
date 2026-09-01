@@ -1,4 +1,4 @@
-import { DOCK_POSTED } from "@/lib/dock-posted";
+import { dockPostedHomeHref } from "@/lib/dock-posted";
 
 export function SiteFooter() {
   return (
@@ -13,10 +13,10 @@ export function SiteFooter() {
         </a>
         .
       </p>
-      <p className="mt-3 text-xs text-[color:var(--cream)]/40">
+      <p data-testid="dock-posted-credit" className="mt-3 text-xs text-[color:var(--cream)]/40">
         Posted fuel on the same coast —{" "}
         <a
-          href={DOCK_POSTED}
+          href={dockPostedHomeHref()}
           className="font-medium text-[color:var(--copper)] underline decoration-[color:var(--copper)]/40 underline-offset-2"
         >
           Dock Posted

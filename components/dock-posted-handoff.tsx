@@ -12,6 +12,7 @@ export function DockPostedHandoff({
   const next = fuelHref({ theater, areaId });
   return (
     <p
+      data-testid="dock-posted-handoff"
       className={
         compact
           ? "mt-2 text-xs text-[color:var(--cream)]/45"
@@ -21,6 +22,7 @@ export function DockPostedHandoff({
       Posted fuel on this coast —{" "}
       <a
         href={next.href}
+        data-testid="dock-posted-handoff-link"
         className="text-[color:var(--copper)] underline decoration-[color:var(--copper)]/40 underline-offset-2"
       >
         {next.label}

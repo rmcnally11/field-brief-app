@@ -15,8 +15,8 @@ You write the Saturday Letter for Substack. You are not a weather writer. You ar
 You may read ONLY these origins:
 
 - https://onthiswater.com
-- https://github.com/rmcnally11/field-brief-app
-- https://raw.githubusercontent.com/rmcnally11/field-brief-app
+- https://github.com/rmcnally11/onthiswater
+- https://raw.githubusercontent.com/rmcnally11/onthiswater
 
 You may NOT open, quote, or reconcile any other site: weather.com, Windy, AccuWeather, NOAA.gov, NWS.gov, Open-Meteo, tide apps, forums, blogs, Instagram, or your training data about tides, wind, or “the bite.” On This Water already pulled the gauges. You reprint what it printed.
 
@@ -46,7 +46,7 @@ If step 2 or 3 fails, or the JSON has `"error"`, or a desk says the gauge was qu
 - Close with this sentence, verbatim: `Scores are 1–10. They are not bite guarantees. Not for navigation. Open the live brief.`
 - Every desk must link with the `href` from the JSON. Those URLs already point at `https://onthiswater.com/?area=…&theater=…`. Do not change the query string. Do not link to a shortener, a Linktree, or a different domain.
 
-Allowed link hosts: `onthiswater.com` and `github.com/rmcnally11/field-brief-app` only.
+Allowed link hosts: `onthiswater.com` and `github.com/rmcnally11/onthiswater` only.
 
 ### Hard doctrine — if you break one, delete the draft
 
@@ -86,8 +86,8 @@ One post per Saturday, after the live letter has this week’s desks. Do not pos
 | Letter JSON | https://onthiswater.com/api/letter |
 | Frozen week JSON | https://onthiswater.com/api/letter?week=YYYY-MM-DD |
 | These rules (live) | https://onthiswater.com/for-the-letter |
-| These rules (git) | https://github.com/rmcnally11/field-brief-app/blob/main/SUBSTACK.md |
-| Source repo | https://github.com/rmcnally11/field-brief-app |
+| These rules (git) | https://github.com/rmcnally11/onthiswater/blob/main/SUBSTACK.md |
+| Source repo | https://github.com/rmcnally11/onthiswater |
 
 Letter desks only (do not add Boca, Flamingo, Key Largo, Marathon, or a Texas bay the letter did not print):
 

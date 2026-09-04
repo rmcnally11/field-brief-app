@@ -48,7 +48,7 @@ export default function ForTheLetterPage() {
               className="underline decoration-[color:var(--copper)]/40"
               href={GITHUB_REPO}
             >
-              github.com/rmcnally11/field-brief-app
+              {GITHUB_REPO.replace(/^https?:\/\//, "")}
             </a>
           </li>
         </ul>

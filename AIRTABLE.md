@@ -44,7 +44,7 @@ Do not paste this token into the repo, a commit, a chat, or a screenshot.
 
 The variable name must be exactly `AIRTABLE_API_KEY`. The app also accepts `AIRTABLE_TOKEN`, but use `AIRTABLE_API_KEY`.
 
-1. Open the [Vercel dashboard](https://vercel.com/dashboard) and the **field-brief-app** project.
+1. Open the [Vercel dashboard](https://vercel.com/dashboard) and the **onthiswater** project.
 2. Go to **Settings → Environment Variables**.
 3. Click **Add New**.
 4. **Key:** `AIRTABLE_API_KEY`

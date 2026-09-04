@@ -2,7 +2,7 @@
 
 Inshore and offshore conditions for seven theaters: the **Texas coast**, **Louisiana**, **Florida** (Keys, Boca Grande, Jupiter), the **Bahamas**, **Mexico** (Yucatan flats + Baja), **Puerto Rico**, and the **Seychelles**. The brief tells you **where**, **when**, and **why** fish should be on a given piece of water — and which species are actually in play.
 
-GitHub: [rmcnally11/field-brief-app](https://github.com/rmcnally11/field-brief-app). Live site: [onthiswater.com](https://onthiswater.com) (Vercel project still named `field-brief-app`). Substack bots: [SUBSTACK.md](./SUBSTACK.md). Twitter / X bots: [TWITTER.md](./TWITTER.md) (morning + calendar screenshots of `/card`). Live rules: [/for-the-letter](https://onthiswater.com/for-the-letter). Your three My Maps are imported as cream pins:
+GitHub: [rmcnally11/onthiswater](https://github.com/rmcnally11/onthiswater). Live site: [onthiswater.com](https://onthiswater.com) (Vercel project `onthiswater`). Substack bots: [SUBSTACK.md](./SUBSTACK.md). Twitter / X bots: [TWITTER.md](./TWITTER.md) (morning and calendar screenshots of `/card`). Live rules: [/for-the-letter](https://onthiswater.com/for-the-letter). Your three My Maps are imported as cream pins:
 
 - [GULF ATLAS! - FISH](https://www.google.com/maps/d/u/0/edit?mid=1eqN2MMRViRbG4xwKDcL0Tzotogjcktw&usp=sharing)
 - [FL Keys — zones, wrecks, humps, bridges](https://www.google.com/maps/d/u/0/edit?mid=1nn7DQ_IHmDLXRUFsatM4hj9zIqmaUg4&usp=sharing)
@@ -51,7 +51,7 @@ No API keys for the gauges. NOAA, NWS, USGS, and Open-Meteo are public. NWS requ
 
 This repo does **not** auto-deploy. The Preview you see in Cursor is this cloud VM. To get an `https://….vercel.app` link:
 
-1. Import `rmcnally11/field-brief-app` in [vercel.com](https://vercel.com). Production branch is `main`.
+1. Import `rmcnally11/onthiswater` in [vercel.com](https://vercel.com). Production branch is `main`. The Vercel project is `onthiswater`.
 2. Framework: Next.js. For the list and mail: `AIRTABLE_API_KEY` (PAT on the Airtable list base), `RESEND_API_KEY`, `RESEND_FROM`, `SUBSCRIBER_EMAILS`, `CRON_SECRET`. Set `NEXT_PUBLIC_SITE_URL=https://onthiswater.com` so cards and mail links use the brand domain.
 3. After the first deploy, every `git push` to the connected branch rebuilds the site.
 

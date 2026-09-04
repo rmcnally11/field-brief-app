@@ -18,17 +18,25 @@ import { getArea, neighborArea } from "@/lib/data/areas";
 import { PRODUCT_LINE, PRODUCT_NAME } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
-const LINKS = [
-  { href: "/", label: "This morning", dek: "Pick a water" },
-  { href: "/calendar", label: "Best dry day", dek: "What’s left this month" },
-  { href: "/compare", label: "Stay or drive", dek: "Two waters, one morning" },
-  { href: "/map", label: "Your marks", dek: "Cream on the chart" },
+type NavItem = {
+  href: string;
+  label: string;
+  dek: string;
+  /** Show in the desktop bar from this breakpoint. Sheet always has every item. */
+  bar?: "lg" | "2xl";
+};
+
+const LINKS: NavItem[] = [
+  { href: "/", label: "This morning", dek: "Pick a water", bar: "lg" },
+  { href: "/calendar", label: "Best dry day", dek: "What’s left this month", bar: "lg" },
+  { href: "/compare", label: "Stay or drive", dek: "Two waters, one morning", bar: "2xl" },
+  { href: "/map", label: "Your marks", dek: "Cream on the chart", bar: "lg" },
   { href: "/morning", label: "The line", dek: "One sentence you can text" },
   { href: "/species", label: "The fish", dek: "Who is in play" },
   { href: "/method", label: "The score", dek: "How the 1–10 is built" },
-  { href: "/newsletter", label: "Saturday", dek: "Only the coasts you asked for" },
+  { href: "/newsletter", label: "Saturday", dek: "Only the coasts you asked for", bar: "lg" },
   { href: "/fundamentals", label: "The season", dek: "What this month is for" },
-  { href: "/book", label: "Your book", dek: "Write the fish" },
+  { href: "/book", label: "Your book", dek: "Write the fish", bar: "lg" },
 ];
 
 function activePath(pathname: string, href: string) {
@@ -74,24 +82,26 @@ function HeaderWithWater() {
   return <HeaderBar links={links} />;
 }
 
-function HeaderBar({ links }: { links: { href: string; label: string; dek: string }[] }) {
+function HeaderBar({ links }: { links: NavItem[] }) {
   const pathname = usePathname();
   const onJoin = activePath(pathname, "/join");
+  const barLinks = links.filter((l) => l.bar);
 
   return (
     <header className="sticky top-0 z-30 border-b border-[color:var(--line)] bg-[color:var(--ink)]/80 pt-[env(safe-area-inset-top)] backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 md:px-6">
-        <a href="/" className="flex min-w-0 items-baseline gap-2">
+      <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 md:px-6">
+        <a href="/" className="flex shrink-0 items-baseline gap-2">
           <span className="wordmark text-[color:var(--cream)]">{PRODUCT_NAME}</span>
-          <span className="geo-lockup hidden text-[color:var(--sea)] sm:inline">Seven coasts</span>
+          <span className="geo-lockup hidden text-[color:var(--sea)] xl:inline">Seven coasts</span>
         </a>
-        <nav className="hidden items-center gap-0.5 xl:flex">
-          {links.map((l) => (
+        <nav className="hidden min-w-0 flex-1 items-center justify-end overflow-hidden lg:flex">
+          {barLinks.map((l) => (
             <a
               key={l.label}
               href={l.href}
               className={cn(
                 "nav-link cursor-pointer whitespace-nowrap rounded-md px-2 py-1.5 text-[color:var(--cream)]/75 transition hover:bg-[color:var(--cream)]/6 hover:text-[color:var(--cream)]",
+                l.bar === "2xl" && "hidden 2xl:inline-flex",
                 activePath(pathname, l.href.split("?")[0] ?? l.href) && "text-[color:var(--cream)]",
               )}
             >
@@ -99,8 +109,8 @@ function HeaderBar({ links }: { links: { href: string; label: string; dek: strin
             </a>
           ))}
         </nav>
-        <div className="flex items-center gap-2">
-          <JoinLink on={onJoin} compact />
+        <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
+          <JoinLink on={onJoin} compact className="hidden sm:inline-flex" />
           <Sheet>
             <SheetTrigger
               render={
@@ -109,7 +119,7 @@ function HeaderBar({ links }: { links: { href: string; label: string; dek: strin
                   variant="ghost"
                   size="icon"
                   aria-label="Open menu"
-                  className="touch-manipulation text-[color:var(--cream)] hover:bg-[color:var(--cream)]/8 xl:hidden"
+                  className="touch-manipulation text-[color:var(--cream)] hover:bg-[color:var(--cream)]/8"
                 />
               }
             >

@@ -144,7 +144,7 @@ export default async function MorningPage({
             })}
             className="text-[color:var(--cream)]/60 underline"
           >
-            Calendar
+            Best dry day
           </a>
         </div>
       </article>

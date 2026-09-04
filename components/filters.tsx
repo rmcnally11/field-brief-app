@@ -163,7 +163,7 @@ function MobileFilterSheet({
 
   return (
     <Sheet>
-      <div className="sticky top-[calc(3.25rem+env(safe-area-inset-top))] z-20 md:hidden">
+      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-20 md:hidden">
         <SheetTrigger
           render={
             <button
@@ -195,7 +195,7 @@ function MobileFilterSheet({
           <p className="kicker text-[color:var(--copper)]">Pick the water</p>
           <SheetTitle className="font-heading text-2xl text-[color:var(--cream)]">Filters</SheetTitle>
           <SheetDescription className="text-[color:var(--cream)]/50">
-            Theater, micro-area, then the method. Same brief. Bigger taps.
+            Coast, then the water, then the method. Same morning. Bigger taps.
           </SheetDescription>
           {params.get("date") ? (
             <a
@@ -208,7 +208,7 @@ function MobileFilterSheet({
         </SheetHeader>
         <div className="flex-1 space-y-5 overflow-y-auto px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
           <section>
-            <h3 className="mb-2 text-[11px] uppercase tracking-[0.16em] text-[color:var(--cream)]/40">Theater</h3>
+            <h3 className="mb-2 text-[11px] uppercase tracking-[0.16em] text-[color:var(--cream)]/40">Coast</h3>
             <div className="grid grid-cols-2 gap-2">
               {THEATERS.map((t) => (
                 <a
@@ -235,7 +235,7 @@ function MobileFilterSheet({
             </div>
           </section>
           <section>
-            <h3 className="mb-2 text-[11px] uppercase tracking-[0.16em] text-[color:var(--cream)]/40">Micro-area</h3>
+            <h3 className="mb-2 text-[11px] uppercase tracking-[0.16em] text-[color:var(--cream)]/40">Water</h3>
             <div className="grid grid-cols-2 gap-2">
               {visibleAreas.map((a) => (
                 <a

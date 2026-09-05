@@ -4,5 +4,55 @@
       "path": "/api/cron/dispatch",
       "schedule": "0 10 * * *"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.onthiswater.com" }],
+      "destination": "https://onthiswater.com/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.onthiswater.com" }],
+      "destination": "https://onthiswater.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "onthiswater.vercel.app" }],
+      "destination": "https://onthiswater.com/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "onthiswater.vercel.app" }],
+      "destination": "https://onthiswater.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "field-brief-app.vercel.app" }],
+      "destination": "https://onthiswater.com/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "field-brief-app.vercel.app" }],
+      "destination": "https://onthiswater.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "onthiswater-bobby-204e.vercel.app" }],
+      "destination": "https://onthiswater.com/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "onthiswater-bobby-204e.vercel.app" }],
+      "destination": "https://onthiswater.com/:path*",
+      "permanent": true
+    }
   ]
 }

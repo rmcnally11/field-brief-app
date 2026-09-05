@@ -1,8 +1,16 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { getBriefing, parseActivity } from "@/lib/briefing";
 import { readWaterPref, resolveDesk } from "@/lib/prefs";
 import { MapPageClient } from "@/components/map-page";
 import type { SpotPick } from "@/lib/types";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata: Metadata = pageMeta({
+  title: "Map",
+  description: "Satellite chart of this water — NOAA wrecks, FKNMS polygons, and the pins you saved.",
+  path: "/map",
+});
 
 export default async function MapPage({
   searchParams,

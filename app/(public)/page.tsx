@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { getBriefing, parseActivity, parseBriefDate } from "@/lib/briefing";
 import { FilterBar } from "@/components/filters";
 import { BriefingPanel } from "@/components/briefing-panel";
@@ -7,8 +8,54 @@ import { UpcomingLoader, UpcomingSkeleton } from "@/components/upcoming-loader";
 import { isAllWaterQuery, readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
 import { getYoloDay } from "@/lib/calendar";
 import { addDaysYmd, ymdInZone } from "@/lib/time";
+import { AREA_BY_ID } from "@/lib/data/areas";
+import { JsonLd } from "@/components/json-ld";
+import {
+  faqJsonLd,
+  HOME_DESCRIPTION,
+  HOME_TITLE,
+  ogImageForArea,
+  organizationJsonLd,
+  pageMeta,
+  webAppJsonLd,
+} from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ area?: string; date?: string }>;
+}): Promise<Metadata> {
+  const q = await searchParams;
+  const area = q.area ? AREA_BY_ID[q.area] : null;
+  const date = parseBriefDate(q.date);
+  if (area && date) {
+    return pageMeta({
+      title: `${area.shortName}, ${date} — tide and wind`,
+      description: `This morning on ${area.shortName}. Live NOAA tides and wind. Scores are 1–10, not a bite.`,
+      path: `/morning/${area.id}/${date}`,
+      image: ogImageForArea(area.id),
+      imageAlt: `${area.shortName} tide`,
+    });
+  }
+  if (area) {
+    return pageMeta({
+      title: `${area.shortName} this morning — tide, wind, go or wait`,
+      description: `This morning on ${area.shortName}. Live NOAA tides and wind. Scores are 1–10, not a bite.`,
+      path: `/morning/${area.id}`,
+      image: ogImageForArea(area.id),
+      imageAlt: `${area.shortName} tide`,
+    });
+  }
+  return pageMeta({
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
+    path: "/",
+    image: ogImageForArea("galveston"),
+    absoluteTitle: true,
+  });
+}
 
 export default async function Home({
   searchParams,
@@ -23,6 +70,9 @@ export default async function Home({
     const activity = parseActivity(q.activity);
     return (
       <div className="space-y-6">
+        <JsonLd data={organizationJsonLd()} />
+        <JsonLd data={webAppJsonLd()} />
+        <JsonLd data={faqJsonLd()} />
         <Suspense>
           <FilterBar areaId={undefined} activity={q.activity ?? activity} theater="all" />
         </Suspense>
@@ -54,6 +104,9 @@ export default async function Home({
 
   return (
     <div className="space-y-6">
+      <JsonLd data={organizationJsonLd()} />
+      <JsonLd data={webAppJsonLd()} />
+      <JsonLd data={faqJsonLd()} />
       <Suspense>
         <FilterBar
           areaId={briefing?.area.id ?? desk.area.id}

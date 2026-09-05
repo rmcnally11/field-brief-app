@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PRODUCT_DOMAIN } from "@/lib/brand";
+import { HOME_DESCRIPTION, HOME_TITLE, ogImageForArea } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,25 +32,28 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(`https://${PRODUCT_DOMAIN}`),
-  title: "On This Water — seven coasts this morning",
-  description:
-    "This morning on your water. Live NOAA tides, Saturday on the coasts you asked for, and monthly 1–10 calendars. Not a bite.",
+  title: {
+    default: HOME_TITLE,
+    template: "%s — On This Water",
+  },
+  description: HOME_DESCRIPTION,
+  alternates: { canonical: `https://${PRODUCT_DOMAIN}/` },
   openGraph: {
-    title: "On This Water — seven coasts this morning",
-    description: "This morning on your water. Live NOAA tides, not a bite.",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
     url: `https://${PRODUCT_DOMAIN}`,
     siteName: "On This Water",
-    images: [{ url: "/api/og/tide?area=galveston", width: 1200, height: 520, alt: "Galveston tide" }],
+    images: [{ url: ogImageForArea("galveston"), width: 1200, height: 520, alt: "Galveston tide" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "On This Water",
-    description: "This morning on your water.",
-    images: ["/api/og/tide?area=galveston"],
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
+    images: [ogImageForArea("galveston")],
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"

@@ -1,8 +1,17 @@
+import type { Metadata } from "next";
 import { SPECIES } from "@/lib/data/species";
 import { Badge } from "@/components/ui/badge";
 import { MonthHeat, MonthHeatLegend } from "@/components/viz/month-heat";
 import { TempBar } from "@/components/viz/temp-bar";
 import { Waterline } from "@/components/viz/waterline";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata: Metadata = pageMeta({
+  title: "Species on this water",
+  description:
+    "Who swims where — drum, snook, hogfish, the snappers, grouper, cobia, kings, billfish. Doctrine from the Field Manual, limits from TPWD and FWC.",
+  path: "/species",
+});
 
 export default function SpeciesPage() {
   const nowMonth = new Date().getUTCMonth() + 1;

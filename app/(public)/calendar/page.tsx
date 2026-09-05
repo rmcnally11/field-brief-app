@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { parseActivity } from "@/lib/briefing";
 import { FilterBar } from "@/components/filters";
 import { CalendarBody, CalendarSkeleton } from "@/components/calendar-body";
@@ -6,8 +7,27 @@ import { clockParts } from "@/lib/time";
 import { Waterline } from "@/components/viz/waterline";
 import { readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
 import { tideGauge } from "@/lib/data/tide-gauges";
+import { AREA_BY_ID } from "@/lib/data/areas";
+import { ogImageForArea, pageMeta } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ area?: string }>;
+}): Promise<Metadata> {
+  const q = await searchParams;
+  const area = q.area ? AREA_BY_ID[q.area] : null;
+  const name = area?.shortName ?? "this water";
+  return pageMeta({
+    title: `Best dry days on ${name}`,
+    description: `Two months of 1–10 scores for ${area?.name ?? "your water"}. Rain and thunderstorms tax the score. A soaker cannot win the ribbon.`,
+    path: area ? `/calendar?area=${area.id}&theater=${area.theater}` : "/calendar",
+    image: ogImageForArea(area?.id ?? "galveston"),
+    imageAlt: `${name} calendar`,
+  });
+}
 
 export default async function CalendarPage({
   searchParams,

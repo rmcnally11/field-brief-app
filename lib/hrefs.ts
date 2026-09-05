@@ -1,5 +1,12 @@
 import type { ActivityId } from "@/lib/types";
 
+function activityQuery(activity?: ActivityId | "all" | string) {
+  const p = new URLSearchParams();
+  if (activity && activity !== "all") p.set("activity", activity);
+  const q = p.toString();
+  return q ? `?${q}` : "";
+}
+
 export function briefHref(opts: {
   areaId: string;
   theater: string;
@@ -28,12 +35,16 @@ export function compareHref(opts: {
   return `/compare?${p}`;
 }
 
-export function morningHref(opts: { areaId: string; theater: string; activity?: string }) {
-  const p = new URLSearchParams();
-  p.set("area", opts.areaId);
-  p.set("theater", opts.theater);
-  if (opts.activity && opts.activity !== "all") p.set("activity", opts.activity);
-  return `/morning?${p}`;
+export function morningHref(opts: {
+  areaId: string;
+  theater?: string;
+  activity?: string;
+  date?: string | null;
+}) {
+  const base = opts.date
+    ? `/morning/${opts.areaId}/${opts.date}`
+    : `/morning/${opts.areaId}`;
+  return `${base}${activityQuery(opts.activity)}`;
 }
 
 export function calendarHref(opts: { areaId: string; theater: string; activity?: string; month?: string }) {
@@ -51,4 +62,8 @@ export function bookHref(opts: { areaId: string; theater: string; activity?: str
   p.set("theater", opts.theater);
   if (opts.activity && opts.activity !== "all") p.set("activity", opts.activity);
   return `/book?${p}`;
+}
+
+export function coastHref(slug: string) {
+  return `/${slug}`;
 }

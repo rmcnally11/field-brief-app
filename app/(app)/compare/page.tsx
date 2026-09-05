@@ -9,8 +9,16 @@ import { WindTable } from "@/components/wind-table";
 import { compareHref, briefHref } from "@/lib/hrefs";
 import { formatYmdLong } from "@/lib/time";
 import type { Briefing } from "@/lib/types";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = pageMeta({
+  title: "Stay or drive",
+  description: "Two desks, one morning. Compare tide, wind, and the 1–10 on two waters.",
+  path: "/compare",
+});
 
 function DeskColumn({ briefing, error }: { briefing?: Briefing; error?: string }) {
   if (error || !briefing) {

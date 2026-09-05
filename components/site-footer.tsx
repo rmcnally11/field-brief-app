@@ -14,12 +14,12 @@ export function SiteFooter() {
         .
       </p>
       <p data-testid="dock-posted-credit" className="mt-3 text-xs text-[color:var(--cream)]/40">
-        Posted fuel on the same coast —{" "}
+        What they posted on the pump —{" "}
         <a
           href={dockPostedHomeHref()}
           className="font-medium text-[color:var(--copper)] underline decoration-[color:var(--copper)]/40 underline-offset-2"
         >
-          Dock Posted
+          marina fuel on this water
         </a>
         . Tide and wind live here.
       </p>

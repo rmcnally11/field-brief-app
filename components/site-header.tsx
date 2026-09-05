@@ -31,7 +31,7 @@ const LINKS: NavItem[] = [
   { href: "/calendar", label: "Best dry day", dek: "What’s left this month", bar: "lg" },
   { href: "/compare", label: "Stay or drive", dek: "Two waters, one morning", bar: "2xl" },
   { href: "/map", label: "Your marks", dek: "Cream on the chart", bar: "lg" },
-  { href: "/morning", label: "The line", dek: "One sentence you can text" },
+  { href: "/morning", label: "The line", dek: "This morning on this water" },
   { href: "/species", label: "The fish", dek: "Who is in play" },
   { href: "/method", label: "The score", dek: "How the 1–10 is built" },
   { href: "/newsletter", label: "Saturday", dek: "Only the coasts you asked for", bar: "lg" },
@@ -61,7 +61,15 @@ function navHref(base: string, params: URLSearchParams) {
     q.set("b", neighborArea(getArea(area)).id);
     return `${base}?${q}`;
   }
-  if (area && (base === "/calendar" || base === "/map" || base === "/morning" || base === "/fundamentals" || base === "/book")) {
+  if (base === "/morning") {
+    if (!area) return base;
+    const path = date ? `/morning/${area}/${date}` : `/morning/${area}`;
+    const rest = new URLSearchParams();
+    if (activity) rest.set("activity", activity);
+    const s = rest.toString();
+    return s ? `${path}?${s}` : path;
+  }
+  if (area && (base === "/calendar" || base === "/map" || base === "/fundamentals" || base === "/book")) {
     q.set("area", area);
   }
   const s = q.toString();

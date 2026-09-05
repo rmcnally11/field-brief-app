@@ -4,11 +4,14 @@ import { BookPortal } from "@/components/book-portal";
 import { FilterBar } from "@/components/filters";
 import { parseActivity } from "@/lib/briefing";
 import { readWaterPref, resolveDeskForTheater } from "@/lib/prefs";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Your book",
   description: "Write the fish. The wind and the tide stay with it.",
-};
+  path: "/book",
+  index: false,
+});
 
 export const dynamic = "force-dynamic";
 

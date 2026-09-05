@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import { MorningMail } from "@/components/morning-mail";
 import { desksForCoasts, isAllCoasts, letterDeskForArea, resolveElectedCoasts } from "@/lib/coasts";
 import { readCoastsPref, readWaterPref } from "@/lib/prefs";
 import { Waterline } from "@/components/viz/waterline";
+import { JsonLd } from "@/components/json-ld";
+import { faqJsonLd, HOME_FAQ, pageMeta } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = pageMeta({
+  title: "Get the morning",
+  description:
+    "This morning in the inbox. Tell us the water. A Texas-only list does not get Andros or Seychelles.",
+  path: "/join",
+});
 
 export default async function JoinPage({
   searchParams,
@@ -24,6 +34,7 @@ export default async function JoinPage({
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
+      <JsonLd data={faqJsonLd(HOME_FAQ)} />
       <header>
         <p className="kicker text-[color:var(--copper)]">The list · this morning · Saturday</p>
         <h1 className="page-title mt-3 text-[color:var(--cream)]">

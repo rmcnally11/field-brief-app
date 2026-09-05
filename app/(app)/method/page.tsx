@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
 import { Waterline } from "@/components/viz/waterline";
 import { ScoreRing } from "@/components/viz/score-ring";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata: Metadata = pageMeta({
+  title: "How the score is built",
+  description:
+    "Where, when, and why on this water — tied to a NOAA gauge, not a vibe. Observed, inferred, and the method tax.",
+  path: "/method",
+});
 
 const LAYERS = [
   {
@@ -74,7 +83,7 @@ export default function MethodPage() {
             published launch directory.
           </li>
           <li>
-            Texas GLO Beach &amp; Bay Access from{" "}
+            Texas GLO Beach & Bay Access from{" "}
             <a className="underline" href="https://www.glo.texas.gov/coast/coastal-management/beach-access">
               glo.texas.gov
             </a>

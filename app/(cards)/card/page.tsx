@@ -9,8 +9,17 @@ import { WindCompass } from "@/components/viz/wind-compass";
 import { MoonDisk } from "@/components/viz/moon-disk";
 import { TideCurve } from "@/components/viz/tide-curve";
 import { Waterline } from "@/components/viz/waterline";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = pageMeta({
+  title: "Morning card",
+  description: "Share card for this morning.",
+  path: "/card",
+  index: false,
+});
 
 export default async function MorningCardPage({
   searchParams,

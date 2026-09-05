@@ -1,31 +1,29 @@
-import { fuelHref } from "@/lib/dock-posted";
+import { cavalierHref } from "@/lib/cavaliers";
 
-export function DockPostedHandoff({
+export function CavalierHandoff({
   theater,
-  areaId,
   compact = false,
 }: {
   theater?: string | null;
-  areaId?: string | null;
   compact?: boolean;
 }) {
-  const next = fuelHref({ theater, areaId });
+  if (theater !== "texas") return null;
   return (
     <p
-      data-testid="dock-posted-handoff"
+      data-testid="cavalier-handoff"
       className={
         compact
           ? "mt-2 text-xs text-[color:var(--cream)]/45"
           : "mt-4 text-sm text-[color:var(--cream)]/55"
       }
     >
-      What they posted on the pump —{" "}
+      Bread at the slip before you leave —{" "}
       <a
-        href={next.href}
-        data-testid="dock-posted-handoff-link"
+        href={cavalierHref()}
+        data-testid="cavalier-handoff-link"
         className="text-[color:var(--copper)] underline decoration-[color:var(--copper)]/40 underline-offset-2"
       >
-        marina fuel on this water
+        provisions on this water
       </a>
       .
     </p>
